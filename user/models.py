@@ -4,6 +4,7 @@ from questionnaire.models import *
 
 class Visitor(Model):
     visitor_id = IntegerField(primary_key=True)
+    visitor_ip = CharField(max_length=30)
 
 
 class User(Model):
@@ -15,8 +16,8 @@ class User(Model):
         ('banned', "封禁")
     )
     user_status = CharField(max_length=10, choices=status_choices, default='free')
-    user_created_questionnaires = ManyToManyField(Questionnaire)
-    user_filled_questionnaires = ManyToManyField(Questionnaire)
+    user_created_questionnaires = ManyToManyField(Questionnaire, related_name='created_by_users')
+    user_filled_questionnaires = ManyToManyField(Questionnaire, related_name='filled_by_users')
 
 
 class Admin(Model):
