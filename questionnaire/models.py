@@ -26,6 +26,7 @@ class Question(Model):
     q_type = CharField(max_length=20, choices=question_types, default='single')
     q_title = TextField()
     q_description = TextField()
+    q_option_count = IntegerField()
     q_options = JSONField()
     q_correct_answer = TextField()
     q_answers = ManyToManyField(Answer)
