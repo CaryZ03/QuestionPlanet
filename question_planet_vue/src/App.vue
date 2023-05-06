@@ -1,21 +1,75 @@
 <template>
   <div id="app">
-    <nav>
-      <router-link to="/">Home</router-link> |
-      <router-link to="/about">About</router-link> |
-      <router-link to="/new">New</router-link>
-    </nav>
+    <ul class="header">
+      <li><router-link to="/">主页</router-link> </li>
+      <li><router-link to="/about">关于</router-link></li>
+      <li><router-link to="/new">新页面</router-link></li>
+      <li><router-link to="/login">Login</router-link></li>
+    </ul>
     <router-view/>
   </div>
 </template>
 
+
+
 <style>
+ul {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    border: 1px solid #e7e7e7;
+    background-color: #f3f3f3;
+}
+
+li {
+    float: left;
+}
+
+li a {
+    display: block;
+    color: #666;
+    text-align: center;
+    padding: 14px 16px;
+    text-decoration: none;
+}
+
+li a:hover:not(.active) {
+    background-color: #ddd;
+}
+
+li a.active {
+    color: white;
+    background-color: #4CAF50;
+}
+
+
 #app {
   font-family: Avenir, Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
   color: #2c3e50;
+}
+#app ul {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    border: 1px solid #e7e7e7;
+    background-color: #f3f3f3;
+}
+#app li{
+  float: left;
+}
+
+#app li a:hover:not(.active) {
+    background-color: #ddd;
+}
+
+#app li a.active {
+    color: white;
+    background-color: #4CAF50;
 }
 
 nav {
