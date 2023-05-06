@@ -37,7 +37,9 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'question_planet_django.apps.QuestionPlanetDjangoConfig',
+    'user',
+    'questionnaire',
+    'data',
 ]
 
 MIDDLEWARE = [
@@ -77,8 +79,12 @@ WSGI_APPLICATION = 'QuestionPlanet.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'question_planet',
+        'USER': 'caryz',
+        'PASSWORD': '123456',
+        'HOST': '182.92.102.246',
+        'PORT': '3306',
     }
 }
 
