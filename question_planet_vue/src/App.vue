@@ -4,15 +4,39 @@
       <li><router-link to="/">主页</router-link> </li>
       <li><router-link to="/about">关于</router-link></li>
       <li><router-link to="/new">新页面</router-link></li>
-      <li><router-link to="/login">Login</router-link></li>
+      <li v-show="!isLogin"><router-link to="/login">Login</router-link></li>
+      <li><router-link to="/register">Register</router-link></li>
+
     </ul>
     <router-view/>
   </div>
 </template>
 
+<script>
+export default {
+  name:'app',
+  data() {
+    return {
+      isLogin:false
+    }
+  },
+  methods: {
+    login(){
+      isLogin=true
+    }
+  },
+}
+</script>
+
 
 
 <style>
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
 ul {
     list-style-type: none;
     margin: 0;

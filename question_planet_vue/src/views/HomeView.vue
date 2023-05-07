@@ -17,7 +17,7 @@
 </script>
 <style>
 body {
-  background-image: url('../assets/BackGround.jpg');
+  /* background-image: url('../assets/BackGround.jpg'); */
   background-repeat: no-repeat;
   background-attachment: fixed;  
   background-size: cover;
