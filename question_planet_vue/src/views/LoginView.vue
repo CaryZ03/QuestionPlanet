@@ -55,6 +55,7 @@
 
 <script>
 export default {
+  name:'register',
   data() {
     return {
       loginAccount:'',
@@ -64,7 +65,7 @@ export default {
   methods:{
     login(){
       //todo
-      alert("login todo")
+      this.$store.dispatch('login')
     },
     register(){
       alert("register todo")

@@ -34,18 +34,16 @@
       <div class="login-form">
         <!-- 标题盒子 -->
         <div class="title-box">
-          <h1>登录</h1>
+          <h1>注册</h1>
         </div>
         <!-- 输入框盒子 -->
         <div class="input-box">
-          <input type="text" v-model="loginAccount" placeholder="用户名">
-          <input type="password" v-model="loginCode" placeholder="密码">
+          <input type="text" v-model="registerAccount" placeholder="用户名">
+          <input type="password" v-model="registerCode" placeholder="密码">
         </div>
         <!-- 按钮盒子 -->
         <div class="btn-box">
-          <button @click="login">登录</button>
-          <!-- 绑定点击事件 -->
-          <p @click="register">没有账号?去注册</p>
+          <button @click="register">注册</button>
         </div>
       </div>
     </div>
@@ -55,16 +53,17 @@
 
 <script>
 export default {
+  name:'register',
   data() {
     return {
-      loginAccount:'',
-      loginCode:''
+      registerAccount:'',
+      registerCode:''
     }
   },
   methods:{
     login(){
       //todo
-      alert("login todo")
+      this.$store.dispatch('login')
     },
     register(){
       alert("register todo")
@@ -229,6 +228,7 @@ span {
 
 /* 标题盒子 */
 .title-box {
+  
   height: 300px;
   line-height: 500px;
 
@@ -236,7 +236,9 @@ span {
 
 /* 标题 */
 .title-box h1 {
+  
   text-align: center;
+  bottom: 80%;
   color: white;
   /* 禁止选中 */
   user-select: none;

@@ -1,28 +1,32 @@
 <template>
-  <div id="app">
+  <span id="app">
     <ul class="header">
       <li><router-link to="/">主页</router-link> </li>
       <li><router-link to="/about">关于</router-link></li>
-      <li><router-link to="/new">新页面</router-link></li>
-      <li v-show="!isLogin"><router-link to="/login">Login</router-link></li>
-      <li><router-link to="/register">Register</router-link></li>
+      <li v-if="this.$store.state.isLogin"><router-link to="/new">创建问卷</router-link></li>
+      <li v-else><router-link to="/login">创建问卷</router-link></li>
 
+      <li v-show="!this.$store.state.isLogin"><router-link to="/login">Login</router-link></li>
+      <li><router-link to="/register">Register</router-link></li>
     </ul>
     <router-view/>
-  </div>
+  </span>
 </template>
 
 <script>
+
+
+
 export default {
+
   name:'app',
   data() {
     return {
-      isLogin:false
     }
   },
+
   methods: {
-    login(){
-      isLogin=true
+    show(){
     }
   },
 }
