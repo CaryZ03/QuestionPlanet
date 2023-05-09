@@ -148,6 +148,21 @@
 
       </div>
     </div>
+
+
+    <!-- 问卷大纲区域 -->
+    <div class="outline-area">
+      <div class="outline-title">问卷大纲</div>
+      <div class="outline-list">
+        <!-- <ol>
+          <li size="medium" v-for="(question, index) in questions" :key="index">{{ question.title }}</li>
+        </ol> -->
+        <el-link class= "outline-item"  v-for="(question, index) in questions" :key="index"  @click.prevent="scrollToQuestion(index)">{{ index + 1 }}.{{ question.title }}</el-link>
+      </div>
+      
+    </div>
+  
+
   </div>
 </template>
 
@@ -184,6 +199,7 @@ export default {
           {src: "https://via.placeholder.com/150x150?text=Image+4"},
           {src: "https://via.placeholder.com/150x150?text=Image+5"},
         ],
+      
       };
       if (type === "single" || type === "multiple") {
         question.options = [
@@ -193,6 +209,8 @@ export default {
       } else if (type === "rating") {
         question.stars = [false, false, false, false, false];
       }
+      // 为题目卡片动态生成唯一 ID
+      question.id = 'question-' + this.questions.length;
       this.questions.push(question);
     },
 
@@ -247,7 +265,29 @@ export default {
         }
       });
     },
+
+
+    scrollToQuestion(index) {
+      // 获取锚点值
+      const hash = '#question-' + (index + 1);
+
+      // 查找对应的问题卡片元素
+      const questionCard = document.querySelector(hash);
+      if (!questionCard) {
+        return;
+      }
+
+      // 滚动到可视区域
+      questionCard.scrollIntoView({ behavior: "smooth" });
+    }
+
+
+
+
   },
+
+  
+
 };
 </script>
 
@@ -260,8 +300,10 @@ export default {
   bottom: 0;
   z-index: 100;
   padding: 1rem;
-  width: 32rem;
+  width: 30%;
   overflow-y: scroll;
+  background-color: #ccd2d8;
+  /* color: #409EFF; */
 
   /* display: flex;
   justify-content: flex-start; 
@@ -277,19 +319,79 @@ export default {
 
 }
 
+.outline-area{
+  position: fixed;
+  top: 4rem;
+  left: 82%;
+  bottom: 0;
+  z-index: 100;
+  padding: 1rem;
+  width: 20%;
+  background-color: #d8e5f3;
+  /* overflow-y: scroll;
+  background-color: #ccd2d8;
+  display: flex;
+  justify-content: space-between;
+  flex-direction: row;
+  flex-wrap: wrap; */
+}
 
+.outline-list{
+  
+  top: 6rem;
+  left: 10%;
+  right: 10%;
+  /* height: 90%; */
+  height: calc(100% - 6rem);
+  z-index: 100;
+  padding: 1rem;
+  width: 77%;
+  overflow-y: scroll;
+  background-color: #ffffff;
+  /* background-color: #aebac5; */
+  
+
+  /* display: flex;
+  justify-content: space-between;
+  flex-direction: row;
+  flex-wrap: wrap; */
+}
+
+.outline-title{
+  border-radius: 4px ;
+  background-color: white;
+  left: 10%;
+  width: 90%;
+  
+}
+
+.outline-item{
+  box-shadow: none !important;
+  /* border: 1px solid #dee2e6 !important; */
+  border-radius: 0.25rem !important;
+  margin: 0rem;
+
+
+  display: block;
+  padding: 0.5rem;
+  text-align: left!important;
+  width:90%;
+  /* background-color: #9b5d5d; */
+}
 
 .tool{
   box-shadow: none !important;
   border: 1px solid #dee2e6 !important;
   border-radius: 0.25rem !important;
   margin: 0.5rem;
-  width: 14rem;
+  width:45%;
+  background-color: #ffffff;
   /* height: 10rem; */
 }
 
 .tool-body{
   padding: 0.5rem !important;
+  
 }
 
 .tool-title{
@@ -305,17 +407,22 @@ export default {
 .question-card{
   position: fixed;
   top: 4rem;
-  left: 35rem;
+  left: 35%;
   bottom: 0;
   z-index: 100;
   padding: 1rem;
-  width: 50rem;
+  width: 44%;
   overflow-y: scroll;
 }
 .card {
   box-shadow: none !important;
   border: 1px solid #dee2e6 !important;
   border-radius: 0.25rem !important;
+
+  
+  width: 90%;
+
+  
   /* margin: 1rem;
   width: 18rem; */
  
