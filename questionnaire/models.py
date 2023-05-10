@@ -8,7 +8,7 @@ class Answer(Model):
     a_question = ForeignKey('Question', on_delete=CASCADE, null=True)
     a_createTime = DateTimeField(auto_now_add=True)
     a_content = TextField()
-    a_score = IntegerField()
+    a_score = DecimalField(max_digits=6, decimal_places=2)
     a_comment = TextField()
 
 
@@ -29,6 +29,7 @@ class Question(Model):
     q_option_count = IntegerField()
     q_options = JSONField()
     q_correct_answer = TextField()
+    q_score = DecimalField(max_digits=6, decimal_places=2)
     q_answers = ManyToManyField(Answer)
 
 
