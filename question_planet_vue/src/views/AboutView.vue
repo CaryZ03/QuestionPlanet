@@ -99,7 +99,97 @@
     <!-- 问题列表 -->
     <div class="question-card" id="question-list">
       <div v-for="(question, index) in questions" :key="index" class="card mb-2">
+        <el-container style="box-shadow: 0 2px 4px rgba(0, 0, 0, .12), 0 0 6px rgba(0, 0, 0, .04)">
+        <el-main v-if="question.isEdit">
+          <span class="red_star" v-if="question.isMandatory">*&nbsp;</span>
+          <span class="red_star" v-else></span>
 
+          <span v-if="question.type === 'single'">{{ index + 1 }}.单选题</span>
+          <span v-if="question.type === 'multiple'">{{ index + 1 }}.多选题</span>
+          <span v-if="question.type === 'text'">{{ index + 1 }}.填空题</span>
+          <div style="line-height: 30px;">&emsp;</div>
+
+          <div class="title">标题</div>
+          <el-input placeholder="请输入标题" v-model="question.title" clearable></el-input>
+          <div style="line-height: 30px;">&emsp;</div>
+          
+          <div v-if="question.type === 'single' || question.type === 'multiple'">
+          <div class="division"><span class="title">选项</span></div>
+          <div class="single_choice_ques" v-for="(item, index_item) in question.options">
+          <el-row>
+          <el-col :span="3"><div><el-button type="danger" icon="el-icon-minus" circle size="small" v-on:click="deleteNode(index, i)"></el-button></div></el-col>
+          <el-col :span="21"><div><el-input placeholder="请输入题目内容" v-model="item.label" clearable></el-input></div></el-col>
+          </el-row>
+          </div>
+
+          <el-row>
+          <el-col :span="3"><div><el-button type="primary" icon="el-icon-plus" circle size="small" v-on:click="addNode(index)"></el-button></div></el-col>
+          <el-col :span="21"><div style="line-height: 200%; color: #0099ff;">添加选项</div></el-col>
+          </el-row>
+          </div>
+
+          <div v-else-if="question.type === 'text'">
+            <div class="division"><span class="title">内容</span></div>
+            <el-input type="textarea" autosize placeholder="请输入内容" v-model="question.answer"></el-input>
+          </div>
+
+          <div style="line-height: 30px;">&emsp;</div>
+          <div class="division"><span class="title">设置</span></div>
+
+          <el-row>
+          <el-col :span="21"><div style="line-height: 200%; color: #000;">此题目必须回答</div></el-col>
+          <el-col :span="3"><el-switch v-model="question.isMandatory" active-color="#0099ff" inactive-color="#c2bdbd"></el-switch></el-col>
+          </el-row>
+        </el-main>
+
+        <el-main v-else>
+          <span class="red_star" v-if="question.isMandatory">*&nbsp;</span>
+          <span class="red_star" v-else></span>
+          <span v-if="question.type === 'single'">{{ index + 1 }}.单选题</span>
+          <span v-if="question.type === 'multiple'">{{ index + 1 }}.多选题</span>
+          <span v-if="question.type === 'text'">{{ index + 1 }}.填空题</span>
+          <div style="line-height: 30px;">&emsp;</div>
+          <div>题目：{{ question.title }}</div>
+
+          <div style="line-height: 30px;">&emsp;</div>
+
+          <div v-if="question.type === 'single' || question.type === 'multiple'">
+          <div class="division"><span class="title">选项</span></div>
+          <div v-if="question.type === 'single'">
+            <el-radio-group v-model="question.selectedOption">
+            <el-radio v-for="(option, index_option) in question.options" :label="index_option" :key="index_option">{{ option.label }}</el-radio>
+            </el-radio-group>
+          </div>
+          
+          <div v-if="question.type === 'multiple'">
+            <div v-for="(option, index_option) in question.options" :key="index_option">
+              <el-checkbox :label="index_option" v-model="option.checked">{{ option.label }}</el-checkbox>
+            </div>
+          </div>
+          <el-row>
+          <!--<input class="form-check-input" type="checkbox" v-if="question.type === 'multiple'" v-model="option.checked">
+          <input class="form-check-input" type="radio" v-if="question.type === 'single'" v-model="question.selectedOption" :value="optionIndex">
+          <label class="form-check-label">{{ option.label }}</label>-->
+          </el-row>
+          </div>
+
+          <div v-else-if="question.type === 'text'">
+            <div class="division"><span class="title">内容</span></div>
+            <el-input type="textarea" autosize placeholder="请输入内容" v-model="question.answer"></el-input>
+          </div>
+
+        </el-main>
+        <el-footer>
+            <el-button icon="el-icon-folder-checked" circle v-on:click="change_to_save_mode(index)" v-if="question.isEdit"></el-button>
+            <el-button icon="el-icon-edit" circle v-on:click="change_to_edit_mode(index)" v-else></el-button>
+            &emsp;&emsp;&emsp;&emsp;
+            <el-button icon="el-icon-delete" circle v-on:click="removeQuestion(index)"></el-button>
+            &emsp;&emsp;&emsp;&emsp;
+            <el-button icon="el-icon-top" circle v-on:click="upNode(index)"></el-button>
+            &emsp;&emsp;&emsp;&emsp;
+            <el-button icon="el-icon-bottom" circle v-on:click="downNode(index)"></el-button>
+        </el-footer>
+        </el-container>
         <!-- 问题标题 -->
         <div class="card-header">
           <h5>{{ index + 1 }}.{{ question.title }}</h5>
@@ -111,7 +201,7 @@
             <div v-for="(option, optionIndex) in question.options" :key="optionIndex" class="form-check">
               <input class="form-check-input" type="checkbox" v-if="question.type === 'multiple'" v-model="option.checked">
               <input class="form-check-input" type="radio" v-if="question.type === 'single'" v-model="question.selectedOption" :value="optionIndex">
-              <label class="form-check-label">{{ option.label }}</label>
+              <label class="form-check-label">{{ option.label }} {{ question.selectedOption }}</label>
             </div>
           </div>
           <div v-else-if="question.type === 'text'">
@@ -187,10 +277,12 @@ export default {
     addQuestion(type) {
       let question = {
         type: type,
-        title: "这是标题",
+        isEdit: true,
+        isMandatory: true,
+        title: "",
         options: [],
         selectedOption: null,
-        answer: "这是答案",
+        answer: "",
         stars: [false, false, false, false, false],
         images: [
           {src: "https://via.placeholder.com/150x150?text=Image+1"},
@@ -212,6 +304,41 @@ export default {
       // 为题目卡片动态生成唯一 ID
       question.id = 'question-' + this.questions.length;
       this.questions.push(question);
+    },
+
+    // 选择题添加选项
+    addNode(index) {
+      this.questions[index].options.push({label: "选项", checked: false});
+    },
+    //删除样本div
+    deleteNode(index, i) {
+      this.questions[index].options.splice(i, 1);  //删除index为i,位置的数组元素
+    },
+    // 题目上移
+    upNode(i) {
+      if(i <= 0) return
+
+          [this.questions[i-1],this.questions[i]] = [this.questions[i],this.questions[i-1]]
+
+          this.$forceUpdate()
+    },
+    //题目下移
+    downNode(i) {
+      if(i >= this.questions.length - 1) return
+
+      [this.questions[i+1],this.questions[i]] = [this.questions[i],this.questions[i+1]]
+
+          this.$forceUpdate()
+    },
+
+    //退出编辑模式
+    change_to_save_mode(index) {
+      this.questions[index].isEdit = false;
+    },
+
+    //退出编辑模式
+    change_to_edit_mode(index) {
+      this.questions[index].isEdit = true;
     },
 
     // 删除问题
@@ -509,4 +636,62 @@ export default {
     overflow-y: visible;
   }
 }
+
+.login {
+    width: 600px;
+    position:absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    margin: auto;
+  }
+
+  .title {
+    color: #857e7e;
+    font-size: 13px;
+  }
+
+  .red_star {
+    color: #ff0000;
+    font-size: 13px;
+  }
+
+  .division {
+    line-height: 30px;
+  }
+  
+  .el-header, .el-footer {
+    background-color: #dbe1e9;
+    color: #333;
+    text-align: center;
+    line-height: 60px;
+  }
+  
+  .el-aside {
+    background-color: #D3DCE6;
+    color: #333;
+    text-align: center;
+    line-height: 200px;
+  }
+  
+  .el-main {
+    background-color: #E9EEF3;
+    color: #333;
+    text-align: left;
+  }
+  
+  body > .el-container {
+    margin-bottom: 40px;
+    border-radius: 60%;
+  }
+  
+  .el-container:nth-child(5) .el-aside,
+  .el-container:nth-child(6) .el-aside {
+    line-height: 260px;
+  }
+  
+  .el-container:nth-child(7) .el-aside {
+    line-height: 320px;
+  }
 </style>
