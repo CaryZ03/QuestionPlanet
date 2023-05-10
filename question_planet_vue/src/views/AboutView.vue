@@ -166,11 +166,6 @@
               <el-checkbox :label="index_option" v-model="option.checked">{{ option.label }}</el-checkbox>
             </div>
           </div>
-          <el-row>
-          <!--<input class="form-check-input" type="checkbox" v-if="question.type === 'multiple'" v-model="option.checked">
-          <input class="form-check-input" type="radio" v-if="question.type === 'single'" v-model="question.selectedOption" :value="optionIndex">
-          <label class="form-check-label">{{ option.label }}</label>-->
-          </el-row>
           </div>
 
           <div v-else-if="question.type === 'text'">
@@ -190,51 +185,8 @@
             <el-button icon="el-icon-bottom" circle v-on:click="downNode(index)"></el-button>
         </el-footer>
         </el-container>
-        <!-- 问题标题 -->
-        <div class="card-header">
-          <h5>{{ index + 1 }}.{{ question.title }}</h5>
-        </div>
 
-        <!-- 问题选项 -->
-        <div class="card-body">
-          <div v-if="question.type === 'single' || question.type === 'multiple'">
-            <div v-for="(option, optionIndex) in question.options" :key="optionIndex" class="form-check">
-              <input class="form-check-input" type="checkbox" v-if="question.type === 'multiple'" v-model="option.checked">
-              <input class="form-check-input" type="radio" v-if="question.type === 'single'" v-model="question.selectedOption" :value="optionIndex">
-              <label class="form-check-label">{{ option.label }} {{ question.selectedOption }}</label>
-            </div>
-          </div>
-          <div v-else-if="question.type === 'text'">
-            <input type="text" class="form-control" v-model="question.answer">
-          </div>
-          <div v-else-if="question.type === 'rating'">
-            <div class="rating">
-              <span class="star" v-for="(star, starIndex) in question.stars" :key="starIndex" @click="selectStar(question, starIndex)">
-                <i :class="[star ? 'fas' : 'far', 'fa-star']"></i>
-              </span>
-            </div>
-          </div>
-          <div v-else-if="question.type === 'sorting'">
-            <div class="sorting">
-              <span class="option" v-for="(option, optionIndex) in question.options" :key="optionIndex">
-                {{ option.label }}
-                <span class="handle" @mousedown="dragStart($event, question, option)" @touchstart="dragStart($event, question, option)">
-                  <i class="fa fa-bars"></i>
-                </span>
-              </span>
-            </div>
-          </div>
-          <div v-else-if="question.type === 'image'">
-            <div class="image-question">
-              <img v-for="(image, imageIndex) in question.images" :key="imageIndex" :src="image.src" @click="selectImage(question, imageIndex)">
-            </div>
-          </div>
-        </div>
-
-        <!-- 删除问题按钮 -->
-        <div class="card-footer text-right">
-          <button type="button" class="btn btn-danger btn-sm" @click="removeQuestion(index)">删除问题</button>
-        </div>
+        <div style="line-height: 30px;">&emsp;</div>
 
       </div>
     </div>
@@ -543,7 +495,7 @@ export default {
 }
 .card {
   box-shadow: none !important;
-  border: 1px solid #dee2e6 !important;
+  
   border-radius: 0.25rem !important;
 
   
