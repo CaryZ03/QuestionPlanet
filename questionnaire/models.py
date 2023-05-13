@@ -4,7 +4,9 @@ from user.models import *
 
 class Answer(Model):
     a_id = IntegerField(primary_key=True)
+    a_is_user = BooleanField(default=False)
     a_user = ForeignKey('user.User', on_delete=CASCADE, null=True)
+    a_visitor = ForeignKey('user.Visitor', on_delete=CASCADE, null=True)
     a_question = ForeignKey('Question', on_delete=CASCADE, null=True)
     a_createTime = DateTimeField(auto_now_add=True)
     a_content = TextField()
@@ -35,7 +37,9 @@ class Question(Model):
 
 class AnswerSheet(Model):
     as_id = IntegerField(primary_key=True)
+    as_is_user = BooleanField(default=False)
     as_user = ForeignKey('user.User', on_delete=CASCADE, null=True)
+    as_visitor = ForeignKey('user.Visitor', on_delete=CASCADE, null=True)
     as_questionnaire = ForeignKey('Questionnaire', on_delete=CASCADE, null=True)
     as_createTime = DateTimeField(auto_now_add=True)
     as_answers = ManyToManyField(Answer)
@@ -56,7 +60,7 @@ class Questionnaire(Model):
     qn_status = CharField(max_length=20, choices=status_choices, default='unpublished')
     qn_refillable = BooleanField(default=True)
     qn_questions = ManyToManyField(Question)
-    qn_answers = ManyToManyField(AnswerSheet)
+    qn_answersheets = ManyToManyField(AnswerSheet)
 
 
 

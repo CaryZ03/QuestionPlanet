@@ -15,7 +15,11 @@
   <component name="NewModuleRootManager">
     <content url="file://$MODULE_DIR$" />
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
     <orderEntry type="jdk" jdkName="django" jdkType="Python SDK" />
+=======
+    <orderEntry type="jdk" jdkName="Python 3.9 (django) (2)" jdkType="Python SDK" />
+>>>>>>> Stashed changes
 =======
     <orderEntry type="jdk" jdkName="Python 3.9 (django) (2)" jdkType="Python SDK" />
 >>>>>>> Stashed changes
