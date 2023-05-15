@@ -176,7 +176,7 @@
         </el-main>
         <el-footer>
             <el-button icon="el-icon-folder-checked" circle v-on:click="change_to_save_mode(index)" v-if="question.isEdit"></el-button>
-            <el-button icon="el-icon-edit" circle v-on:click="change_to_edit_mode(index)" v-else></el-button>
+            <el-button icon="el-icon-edit" circle v-on:click="change_to_edit_mode(index)" v-else></el-button>           
             &emsp;&emsp;&emsp;&emsp;
             <el-button icon="el-icon-delete" circle v-on:click="removeQuestion(index)"></el-button>
             &emsp;&emsp;&emsp;&emsp;
