@@ -5,7 +5,7 @@
       <div class="box">
       <!-- 滑动盒子 -->
       <div class="pre-box">
-        <h1>WELCOME</h1>
+        <h1>问卷猩球</h1>
         <p>JOIN US!</p>
         <div class="img-box">
           <img src="../assets/waoku.jpg" alt="">
@@ -45,8 +45,10 @@
         <div class="btn-box">
           <button @click="login">登录</button>
           <!-- 绑定点击事件 -->
-          <p @click="register">没有账号?去注册</p>
+          <p @click="register"><router-link to="/register">没有账号?去注册</router-link></p> <br>
         </div>
+        <br>
+        <p @click="register"><router-link to="/register">忘记密码？</router-link></p> <br>
       </div>
     </div>
     </div>

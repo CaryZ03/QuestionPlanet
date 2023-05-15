@@ -7,7 +7,7 @@
       <li v-else><router-link to="/login">创建问卷</router-link></li>
 
       <li v-show="!this.$store.state.isLogin"><router-link to="/login">Login</router-link></li>
-      <li><router-link to="/register">Register</router-link></li>
+      <li v-show="!this.$store.state.isLogin"> <router-link to="/register">Register</router-link></li>
     </ul>
     <router-view/>
   </span>
