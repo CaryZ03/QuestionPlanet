@@ -68,7 +68,7 @@ export default {
     login() {
       //todo
       this.$store.dispatch('login', this.loginAccount, this.loginCode),
-      console.log(this.$store.state.loginAccount),
+      console.log(this.$store.state.curUserID),
       //todo先检查一波
       
 
@@ -76,7 +76,7 @@ export default {
           path: "/new/" + this.loginAccount
       }),
       
-      console.log(this.$store.state.loginAccount)
+      console.log(this.$store.state.curUserID)
     },
     register() {
       alert("register todo")

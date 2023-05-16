@@ -4,15 +4,15 @@
       <ul>
         <li><router-link active-class="" to="/">主页</router-link> </li>
         <li><router-link active-class="" to="/about">关于</router-link></li>
-        <li v-if="this.$store.state.isLogin"><router-link active-class="" to="/new">创建问卷</router-link></li>
+        <li v-if="this.$store.state.isLogin"><router-link active-class="" :to="'/new/'+this.$store.state.curUserID">创建问卷</router-link></li>
         <li v-else><router-link active-class="" to="/login">创建问卷</router-link></li>
         <!-- <StepSlideVue></StepSlideVue>
        -->
 
-        <li v-show="!this.$store.state.isLogin"><router-link active-class="" to="/login">Login</router-link></li>
-        <li v-show="!this.$store.state.isLogin"> <router-link active-class="" to="/register">Register</router-link></li>
+        <li v-show="!this.$store.state.isLogin"><router-link  active-class="" to="/login" >Login</router-link></li>
+        <li v-show="!this.$store.state.isLogin"> <router-link active-class="" to="/register" >Register</router-link></li>
 
-
+        <li v-if="this.$store.state.isLogin"><router-link active-class="" to="/userInfo">个人信息</router-link></li>
       </ul>
       <router-view />
     </span>
@@ -27,10 +27,20 @@ export default {
   name: 'app',
   data() {
     return {
+      // curUserID:this.$store.state.curUserID
     }
   },
 
   methods: {
+    pushNew(){
+      this.$router.push({
+        name:'New',
+        params:{
+          userID:this.$store.state.curUserID,
+        }
+      }),
+      alert("my new ")
+    },
     show() {
     }
   },
