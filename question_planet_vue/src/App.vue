@@ -7,6 +7,7 @@
         <li v-if="this.$store.state.isLogin"><router-link active-class="" :to="'/new/'+this.$store.state.curUserID">创建问卷</router-link></li>
         <li v-else><router-link active-class="" to="/login">创建问卷</router-link></li>
 
+<<<<<<< HEAD
         <li v-show="!this.$store.state.isLogin"><router-link  active-class="" to="/login" >Login</router-link></li>
         <li v-show="!this.$store.state.isLogin"> <router-link active-class="" to="/register" >Register</router-link></li>
 
@@ -15,6 +16,13 @@
       <router-view />
     </span>
   </div>
+=======
+      <li v-show="!this.$store.state.isLogin"><router-link to="/login">Login</router-link></li>
+      <li><router-link to="/register">Register</router-link></li>
+    </ul>
+    <router-view/>
+  </span>
+>>>>>>> parent of 088d7a8 (Nothing important)
 </template>
 
 <script>

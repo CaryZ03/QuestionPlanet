@@ -3,6 +3,7 @@
     <!-- 最外层的大盒子 -->
     <div class="bigBox">
       <div class="box">
+<<<<<<< HEAD
         <!-- 滑动盒子 -->
         <div class="pre-box">
           <h1>问卷猩球</h1>
@@ -51,6 +52,54 @@
           <p @click="register"><router-link to="/register">忘记密码？</router-link></p> <br>
         </div>
       </div>
+=======
+      <!-- 滑动盒子 -->
+      <div class="pre-box">
+        <h1>WELCOME</h1>
+        <p>JOIN US!</p>
+        <div class="img-box">
+          <img src="../assets/waoku.jpg" alt="">
+        </div>
+      </div>
+      <!-- 注册盒子 -->
+      <div class="register-form">
+        <!-- 标题盒子 -->
+        <div class="title-box">
+          <h1>注册</h1>
+        </div>
+        <!-- 输入框盒子 -->
+        <div class="input-box">
+          <input type="text" placeholder="用户名">
+          <input type="password" placeholder="密码">
+          <input type="password" placeholder="确认密码">
+        </div>
+        <!-- 按钮盒子 -->
+        <div class="btn-box">
+          <button>注册</button>
+          <!-- 绑定点击事件 -->
+          <p onclick="mySwitch()">已有账号?去登录</p>
+        </div>
+      </div>
+      <!-- 登录盒子 -->
+      <div class="login-form">
+        <!-- 标题盒子 -->
+        <div class="title-box">
+          <h1>登录</h1>
+        </div>
+        <!-- 输入框盒子 -->
+        <div class="input-box">
+          <input type="text" v-model="loginAccount" placeholder="用户名">
+          <input type="password" v-model="loginCode" placeholder="密码">
+        </div>
+        <!-- 按钮盒子 -->
+        <div class="btn-box">
+          <button @click="login">登录</button>
+          <!-- 绑定点击事件 -->
+          <p @click="register">没有账号?去注册</p>
+        </div>
+      </div>
+    </div>
+>>>>>>> parent of 088d7a8 (Nothing important)
     </div>
   </div>
 </template>

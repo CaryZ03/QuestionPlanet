@@ -5,7 +5,7 @@
       <div class="box">
       <!-- 滑动盒子 -->
       <div class="pre-box">
-        <h1>问卷猩球</h1>
+        <h1>WELCOME</h1>
         <p>JOIN US!</p>
         <div class="img-box">
           <img src="../assets/waoku.jpg" alt="">
