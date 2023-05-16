@@ -98,7 +98,7 @@
 
     <!-- 问题列表 -->
     <div class="question-card" id="question-list">
-      <div v-for="(question, index) in questions" :key="index" class="card mb-2">
+      <div v-for="(question, index) in questions" :key="index" class="card mb-2" v-bind:id="question.id">
         <el-container style="box-shadow: 0 2px 4px rgba(0, 0, 0, .12), 0 0 6px rgba(0, 0, 0, .04)">
         <el-main v-if="question.isEdit">
           <span class="red_star" v-if="question.isMandatory">*&nbsp;</span>
@@ -199,7 +199,7 @@
         <!-- <ol>
           <li size="medium" v-for="(question, index) in questions" :key="index">{{ question.title }}</li>
         </ol> -->
-        <el-link class= "outline-item"  v-for="(question, index) in questions" :key="index"  @click.prevent="scrollToQuestion(index)">{{ index + 1 }}.{{ question.title }}</el-link>
+        <el-link class= "outline-item"   v-for="(question, index) in questions" :key="index"  @click.prevent="scrollToQuestion(question, index)"  >{{ index + 1 }}.{{ question.title }}</el-link>
       </div>
       
     </div>
@@ -254,7 +254,7 @@ export default {
         question.stars = [false, false, false, false, false];
       }
       // 为题目卡片动态生成唯一 ID
-      question.id = 'question-' + this.questions.length;
+      question.id = 'question-' + (this.questions.length+1 );
       this.questions.push(question);
     },
 
@@ -346,18 +346,31 @@ export default {
     },
 
 
-    scrollToQuestion(index) {
-      // 获取锚点值
-      const hash = '#question-' + (index + 1);
+
+    
+
+
+    scrollToQuestion(question, index) {
+      
+      this.$nextTick(()=>{
+          
+      //获取锚点值
+      const hash = '.outline-item #question-' + (index+1 );
+
 
       // 查找对应的问题卡片元素
-      const questionCard = document.querySelector(hash);
+      //const questionCard = document.querySelector(hash);
+      const questionCard  = document.getElementById(question.id);
+      console.log(questionCard);
+      // const questionCard = document.querySelector(hash);
       if (!questionCard) {
         return;
       }
-
-      // 滚动到可视区域
-      questionCard.scrollIntoView({ behavior: "smooth" });
+      // // 滚动到可视区域
+      // questionCard.scrollIntoView({ behavior: "smooth" });
+        questionCard.scrollIntoView({ behavior: "smooth" });
+      })
+      
     }
 
 
@@ -365,6 +378,10 @@ export default {
 
   },
 
+
+  
+
+  
   
 
 };
