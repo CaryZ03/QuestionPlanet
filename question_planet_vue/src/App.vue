@@ -6,8 +6,6 @@
         <li><router-link active-class="" to="/about">关于</router-link></li>
         <li v-if="this.$store.state.isLogin"><router-link active-class="" :to="'/new/'+this.$store.state.curUserID">创建问卷</router-link></li>
         <li v-else><router-link active-class="" to="/login">创建问卷</router-link></li>
-        <!-- <StepSlideVue></StepSlideVue>
-       -->
 
         <li v-show="!this.$store.state.isLogin"><router-link  active-class="" to="/login" >Login</router-link></li>
         <li v-show="!this.$store.state.isLogin"> <router-link active-class="" to="/register" >Register</router-link></li>
@@ -49,7 +47,7 @@ export default {
 
 
 
-<style>
+<style >
 * {
   margin: 0;
   padding: 0;
