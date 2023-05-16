@@ -436,12 +436,12 @@ export default {
   
   top: 6rem;
   left: 10%;
-  right: 10%;
+  /* right: 10%; */
   /* height: 90%; */
-  height: calc(100% - 6rem);
+  height: calc(100% - 2rem);
   z-index: 100;
   padding: 1rem;
-  width: 77%;
+  width: 90%;
   overflow-y: scroll;
   background-color: #ffffff;
   /* background-color: #aebac5; */
