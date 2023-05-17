@@ -1,3 +1,5 @@
+import json
+
 from django.db.models import *
 from user.models import *
 
@@ -61,6 +63,18 @@ class Questionnaire(Model):
     qn_refillable = BooleanField(default=True)
     qn_questions = ManyToManyField(Question)
     qn_answersheets = ManyToManyField(AnswerSheet)
+
+    def to_json(self):
+        info = {
+            "qn_id": qn_id,
+            "qn_title": qn_title,
+            "qn_description": qn_description,
+            "qn_createTime": qn_createTime,
+            "qn_endTime": qn_endTime,
+            "qn_status": qm_status,
+            "qn_refillable": qn_refillable
+        }
+        return json.dumps(info)
 
 
 
