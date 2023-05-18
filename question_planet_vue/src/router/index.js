@@ -5,6 +5,7 @@ import HomeView from '../views/HomeView.vue'
 const Login = () => import('../views/LoginView.vue');
 const Register = () => import('../views/RegisterView.vue');
 const CreateQuestionnaireView = () => import('../views/CreateView.vue');
+const UserInfoView = () => import('../views/UserInfoView.vue')
 Vue.use(VueRouter)
 
 const routes = [
@@ -63,6 +64,14 @@ const routes = [
     // this generates a separate chunk (about.[hash].js) for this route
     // which is lazy-loaded when the route is visited.
     component:Register
+  },
+  {
+    path: '/userInfo',
+    name: 'UserInfo',
+    // route level code-splitting
+    // this generates a separate chunk (about.[hash].js) for this route
+    // which is lazy-loaded when the route is visited.
+    component:UserInfoView
   }
 ]
 
