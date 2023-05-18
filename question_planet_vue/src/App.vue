@@ -1,6 +1,7 @@
 <template>
-  <div>
-    <span id="app">
+  <body>
+    <div>
+      <span id="app">
       <ul>
         <li><router-link active-class="" to="/">主页</router-link> </li>
         <li><router-link active-class="" to="/about">关于</router-link></li>
@@ -16,7 +17,9 @@
       </ul>
       <router-view />
     </span>
-  </div>
+    </div>
+  </body>
+
 </template>
 
 <script>

@@ -115,7 +115,7 @@
           
           <div v-if="question.type === 'single' || question.type === 'multiple'">
           <div class="division"><span class="title">选项</span></div>
-          <div class="single_choice_ques" v-for="(item, index_item) in question.options">
+          <div class="single_choice_ques" v-for="(item, index_item) in question.options" :key="index_item">
           <el-row>
           <el-col :span="3"><div><el-button type="danger" icon="el-icon-minus" circle size="small" v-on:click="deleteNode(index, i)"></el-button></div></el-col>
           <el-col :span="21"><div><el-input placeholder="请输入题目内容" v-model="item.label" clearable></el-input></div></el-col>
