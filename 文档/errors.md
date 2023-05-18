@@ -1,5 +1,15 @@
 # 1 api/user/
 
+## 100 system
+
+1001：未登录
+
+1002：已登录
+
+1003：用户不一致
+
+1004：需要管理员权限
+
 ## 101 user_register
 
 ### 请求类型：POST
@@ -8,10 +18,10 @@
 
 ```json
 {
-    "username": "username",
-    "password1": "password1",
-    "password2": "password2",
-    "email": "email"*
+    "username": username,
+    "password1": password1,
+    "password2": password2,
+    "email": email*
 }
 ```
 
@@ -41,10 +51,10 @@
 
 ### 输入数据：
 
-```
+```json
 {
-    "username": "username",
-    "password": "password"
+    "username": username,
+    "password": password
 }
 ```
 
@@ -72,8 +82,8 @@
 
 ```json
 {
-    "adminname": "adminname",
-    "password": "password"
+    "adminname": adminname,
+    "password": password
 }
 ```
 
@@ -93,7 +103,66 @@
 
 1032：密码错误
 
-## 104 logout
+## 104 send_verification_code
+
+### 请求类型：POST
+
+### 输入数据：
+
+```json
+{
+    "username": username
+}
+```
+
+### 返回数据：
+
+```json
+{
+    "errno": 0,
+    "msg": "邮件发送成功",
+    "code": code
+}
+```
+
+### 错误码：
+
+1041：用户不存在
+
+1042：邮箱不存在
+
+## 105 reset_password
+
+### 请求类型：POST
+
+### 输入数据：
+
+```json
+{
+    "username": username,
+    "password1": password1,
+    "password2": password2
+}
+```
+
+### 返回数据：
+
+```json
+{
+    "errno": 0,
+    "msg": "重置密码成功"
+}
+```
+
+### 错误码：
+
+1051：用户不存在
+
+1052：两次输入的密码相同
+
+1053：密码不合法
+
+## 106 logout
 
 ### 请求类型：POST
 
@@ -116,7 +185,30 @@
 
 ### 错误码：无
 
-## 105 check_profile
+## 107 cancel_account
+
+### 请求类型：POST
+
+### 输入数据：
+
+```json
+{
+    "id": id
+}
+```
+
+### 返回数据：
+
+```json
+{
+    "errno": 0,
+    "msg": "注销成功"
+}
+```
+
+### 错误码：无
+
+## 108 check_profile
 
 ### 请求类型：GET
 
@@ -146,7 +238,7 @@
 
 ### 错误码：无
 
-## 106 check_profile_admin
+## 109 check_profile_admin
 
 ### 请求类型：GET
 
@@ -172,11 +264,9 @@
 }
 ```
 
-### 错误码：
+### 错误码：无
 
-0：返回管理员信息成功
-
-## 107 change_profile
+## 110 change_profile
 
 ### 请求类型：POST
 
@@ -185,10 +275,10 @@
 ```json
 {
     "id": id,
-    "username": "username",
-    "password1": "password1",
-    "password2": "password2",
-    "email": "email"*
+    "username": username,
+    "password1": password1,
+    "password2": password2,
+    "email": email*
 }
 ```
 
@@ -203,15 +293,15 @@
 
 ### 错误码：
 
-1071：用户名不合法
+1101：用户名不合法
 
-1072：用户名已存在
+1102：用户名已存在
 
-1073：两次输入的密码相同
+1103：两次输入的密码相同
 
-1074：密码不合法
+1104：密码不合法
 
-## 108 change_profile_admin
+## 111 change_profile_admin
 
 ### 请求类型：POST
 
@@ -220,10 +310,10 @@
 ```json
 {
     "id": id,
-    "username": "username",
-    "password1": "password1",
-    "password2": "password2",
-    "email": "email"*
+    "username": username,
+    "password1": password1,
+    "password2": password2,
+    "email": email*
 }
 ```
 
@@ -246,7 +336,7 @@
 
 1084：密码不合法
 
-## 109 check_created_questionnaires
+## 112 check_created_questionnaires
 
 ### 请求类型：GET
 
@@ -281,7 +371,7 @@
 
 ### 错误码：无
 
-## 110 check_filled_questionnaires
+## 113 check_filled_questionnaires
 
 ### 请求类型：GET
 
@@ -315,3 +405,53 @@
 ```
 
 ### 错误码：无
+
+## 114 ban_user
+
+### 请求类型：POST
+
+### 输入数据：
+
+```json
+{
+    "username": username
+}
+```
+
+### 返回数据：
+
+```json
+{
+    "errno": 0,
+    "msg": "用户封禁成功"
+}
+```
+
+### 错误码：
+
+1141：用户不存在
+
+## 115 un_ban_user
+
+### 请求类型：POST
+
+### 输入数据：
+
+```json
+{
+    "username": username
+}
+```
+
+### 返回数据：
+
+```json
+{
+    "errno": 0,
+    "msg": "用户解封成功"
+}
+```
+
+### 错误码：
+
+1151：用户不存在
