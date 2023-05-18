@@ -6,7 +6,9 @@ Vue.use(Vuex)
 export default new Vuex.Store({
   state: {
     isLogin:false,
-    curUserID:''
+    curUserID:'',
+    my_naire_num:0,
+    my_bin_num:0,
   },
   getters: {
   },
@@ -15,7 +17,7 @@ export default new Vuex.Store({
     login(context,id){
       console.log('1')
       context.commit('LOGIN',id)
-    }
+    },
   },
   mutations: {
     LOGIN(state,id){
