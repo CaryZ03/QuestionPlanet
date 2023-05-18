@@ -1,14 +1,18 @@
+import json
+
 from django.db.models import *
 from user.models import *
 
 
 class Answer(Model):
     a_id = IntegerField(primary_key=True)
+    a_is_user = BooleanField(default=False)
     a_user = ForeignKey('user.User', on_delete=CASCADE, null=True)
+    a_visitor = ForeignKey('user.Visitor', on_delete=CASCADE, null=True)
     a_question = ForeignKey('Question', on_delete=CASCADE, null=True)
     a_createTime = DateTimeField(auto_now_add=True)
     a_content = TextField()
-    a_score = IntegerField()
+    a_score = DecimalField(max_digits=6, decimal_places=2)
     a_comment = TextField()
 
 
@@ -29,12 +33,15 @@ class Question(Model):
     q_option_count = IntegerField()
     q_options = JSONField()
     q_correct_answer = TextField()
+    q_score = DecimalField(max_digits=6, decimal_places=2)
     q_answers = ManyToManyField(Answer)
 
 
 class AnswerSheet(Model):
     as_id = IntegerField(primary_key=True)
+    as_is_user = BooleanField(default=False)
     as_user = ForeignKey('user.User', on_delete=CASCADE, null=True)
+    as_visitor = ForeignKey('user.Visitor', on_delete=CASCADE, null=True)
     as_questionnaire = ForeignKey('Questionnaire', on_delete=CASCADE, null=True)
     as_createTime = DateTimeField(auto_now_add=True)
     as_answers = ManyToManyField(Answer)
@@ -55,7 +62,19 @@ class Questionnaire(Model):
     qn_status = CharField(max_length=20, choices=status_choices, default='unpublished')
     qn_refillable = BooleanField(default=True)
     qn_questions = ManyToManyField(Question)
-    qn_answers = ManyToManyField(AnswerSheet)
+    qn_answersheets = ManyToManyField(AnswerSheet)
+
+    def to_json(self):
+        info = {
+            "qn_id": qn_id,
+            "qn_title": qn_title,
+            "qn_description": qn_description,
+            "qn_createTime": qn_createTime,
+            "qn_endTime": qn_endTime,
+            "qn_status": qm_status,
+            "qn_refillable": qn_refillable
+        }
+        return json.dumps(info)
 
 
 
