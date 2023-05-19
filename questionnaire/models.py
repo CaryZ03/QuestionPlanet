@@ -6,13 +6,10 @@ from user.models import *
 
 class Answer(Model):
     a_id = IntegerField(primary_key=True)
-    a_is_user = BooleanField(default=False)
-    a_user = ForeignKey('user.User', on_delete=CASCADE, null=True)
-    a_visitor = ForeignKey('user.Visitor', on_delete=CASCADE, null=True)
+    a_answersheet = ForeignKey('Answersheet', on_delete=CASCADE, null=True)
     a_question = ForeignKey('Question', on_delete=CASCADE, null=True)
-    a_createTime = DateTimeField(auto_now_add=True)
     a_content = TextField()
-    a_score = DecimalField(max_digits=6, decimal_places=2)
+    a_score = DecimalField(max_digits=6, decimal_places=2, default=0)
     a_comment = TextField()
 
 
@@ -33,7 +30,7 @@ class Question(Model):
     q_option_count = IntegerField()
     q_options = JSONField()
     q_correct_answer = TextField()
-    q_score = DecimalField(max_digits=6, decimal_places=2)
+    q_score = DecimalField(max_digits=6, decimal_places=2, default=0.0)
     q_answers = ManyToManyField(Answer)
 
 
@@ -46,6 +43,7 @@ class AnswerSheet(Model):
     as_createTime = DateTimeField(auto_now_add=True)
     as_answers = ManyToManyField(Answer)
     as_score = IntegerField()
+    as_temporary_save = JSONField()
 
 
 class Questionnaire(Model):

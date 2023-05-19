@@ -11,6 +11,7 @@ class Visitor(Model):
 
 class User(Model):
     user_id = IntegerField(primary_key=True)
+    user_ip = CharField(max_length=30)
     user_name = CharField(max_length=100)
     user_password = CharField(max_length=20)
     user_email = CharField(max_length=50, default='')
@@ -45,10 +46,3 @@ class Admin(Model):
             "admin_password": self.admin_password
         }
         return json.dumps(info)
-
-
-
-
-
-
-

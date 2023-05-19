@@ -65,7 +65,7 @@ def admin_required(view_func):
             return JsonResponse({'errno': 1001, 'msg': "未登录"})
         elif request.session['id'] != json.loads(request.body).get('id'):
             return JsonResponse({'errno': 1003, 'msg': "用户不一致"})
-        elif request.session['admin'] != 'admin':
+        elif request.session['role'] != 'admin':
             return JsonResponse({'errno': 1004, 'msg': "需要管理员权限"})
         else:
             return view_func(request, *args, **kwargs)
@@ -281,8 +281,7 @@ def check_questionnaire_list(request):
     else:
         return JsonResponse({'errno': 1121, 'msg': '未指定问卷列表'})
     qn_info = []
-    for qn_id in questionnaires:
-        qn = Questionnaire.objects.get(qn_id=qn_id)
+    for qn in questionnaires:
         qn_info.append(qn.to_json())
     return JsonResponse({'errno': 0, 'msg': '返回问卷列表成功', 'qn_info': qn_info})
 
