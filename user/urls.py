@@ -13,8 +13,6 @@ urlpatterns = [
     path('check_profile_admin', check_profile_admin),
     path('change_profile', change_profile),
     path('change_profile_admin', change_profile_admin),
-    path('check_created_questionnaires', check_created_questionnaires),
-    path('check_filled_questionnaires', check_filled_questionnaires),
-    path('ban_user', ban_user),
-    path('un_ban_user', un_ban_user),
+    path('check_questionnaire_list', check_questionnaire_list),
+    path('change_user_status', change_user_status),
 ]

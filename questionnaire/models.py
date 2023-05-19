@@ -57,7 +57,8 @@ class Questionnaire(Model):
     status_choices = (
         ('unpublished', "未发布"),
         ('published', "已发布"),
-        ('closed', "已关闭")
+        ('closed', "已关闭"),
+        ('banned', "已封禁")
     )
     qn_status = CharField(max_length=20, choices=status_choices, default='unpublished')
     qn_refillable = BooleanField(default=True)
@@ -66,13 +67,13 @@ class Questionnaire(Model):
 
     def to_json(self):
         info = {
-            "qn_id": qn_id,
-            "qn_title": qn_title,
-            "qn_description": qn_description,
-            "qn_createTime": qn_createTime,
-            "qn_endTime": qn_endTime,
-            "qn_status": qm_status,
-            "qn_refillable": qn_refillable
+            "qn_id": self.qn_id,
+            "qn_title": self.qn_title,
+            "qn_description": self.qn_description,
+            "qn_createTime": self.qn_createTime,
+            "qn_endTime": self.qn_endTime,
+            "qn_status": self.qn_status,
+            "qn_refillable": self.qn_refillable
         }
         return json.dumps(info)
 

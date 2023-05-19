@@ -336,7 +336,7 @@
 
 1084：密码不合法
 
-## 112 check_created_questionnaires
+## 112 check_questionnaires
 
 ### 请求类型：GET
 
@@ -344,7 +344,8 @@
 
 ```json
 {
-    "id": id
+    "id": id,
+    "type": type
 }
 ```
 
@@ -353,7 +354,7 @@
 ```json
 {
     "errno": 0,
-    "msg": "返回已创建问卷列表成功",
+    "msg": "返回问卷列表成功",
     'qn_info': [
         {
             "qn_id": qn_id,
@@ -369,44 +370,11 @@
 }
 ```
 
-### 错误码：无
+### 错误码：
 
-## 113 check_filled_questionnaires
+1121：未指定问卷列表
 
-### 请求类型：GET
-
-### 输入数据：
-
-```json
-{
-    "id": id
-}
-```
-
-### 返回数据：
-
-```json
-{
-    "errno": 0,
-    "msg": "返回已填写问卷列表成功",
-    'qn_info': [
-        {
-            "qn_id": qn_id,
-            "qn_title": qn_title,
-            "qn_description": qn_description,
-            "qn_createTime": qn_createTime,
-            "qn_endTime": qn_endTime,
-            "qn_status": qm_status,
-            "qn_refillable": qn_refillable
-        },
-        ...
-    ]
-}
-```
-
-### 错误码：无
-
-## 114 ban_user
+## 113 change_user_status
 
 ### 请求类型：POST
 
@@ -414,7 +382,8 @@
 
 ```json
 {
-    "username": username
+    "username": username,
+    "status": status
 }
 ```
 
@@ -423,35 +392,11 @@
 ```json
 {
     "errno": 0,
-    "msg": "用户封禁成功"
+    "msg": "用户封禁成功",
+    "status": status
 }
 ```
 
 ### 错误码：
 
-1141：用户不存在
-
-## 115 un_ban_user
-
-### 请求类型：POST
-
-### 输入数据：
-
-```json
-{
-    "username": username
-}
-```
-
-### 返回数据：
-
-```json
-{
-    "errno": 0,
-    "msg": "用户解封成功"
-}
-```
-
-### 错误码：
-
-1151：用户不存在
+1131：用户不存在

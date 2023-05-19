@@ -21,8 +21,8 @@ urlpatterns = [
     # path('sort_questionnaire', sort_questionnaire),
     # path('export_questionnaire', export_questionnaire),
     # path('submit_questionnaire', submit_questionnaire),
+    # path('submit_questionnaire', submit_questionnaire),
     # path('share_questionnaire', share_questionnaire),
     # # 管理员操作
-    # path('ban_questionnaire', ban_questionnaire),
-    # path('un_ban_questionnaire', un_ban_questionnaire),
+    path('ban_questionnaire', ban_questionnaire),
 ]
