@@ -6,7 +6,6 @@ urlpatterns = [
     path('fill_questionnaire', fill_questionnaire),
     path('save_answers', save_answers),
     path('submit_answers', submit_answers),
-    path('refill_questionnaire', refill_questionnaire),
     # 编辑问卷
     path('save_questionnaire', save_questionnaire),
     # 管理问卷

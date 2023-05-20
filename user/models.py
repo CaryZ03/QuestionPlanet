@@ -4,14 +4,15 @@ from django.db.models import *
 from questionnaire.models import *
 
 
-class Visitor(Model):
-    visitor_id = IntegerField(primary_key=True)
-    visitor_ip = CharField(max_length=30)
+class Filler(Model):
+    filler_id = IntegerField(primary_key=True)
+    filler_ip = CharField(max_length=30)
+    filler_is_user = BooleanField(default=False)
+    filler_uid = ForeignKey('User', on_delete=SET_NULL, null=True)
 
 
 class User(Model):
     user_id = IntegerField(primary_key=True)
-    user_ip = CharField(max_length=30)
     user_name = CharField(max_length=100)
     user_password = CharField(max_length=20)
     user_email = CharField(max_length=50, default='')

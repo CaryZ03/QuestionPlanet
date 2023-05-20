@@ -36,20 +36,20 @@ class Question(Model):
 
 class AnswerSheet(Model):
     as_id = IntegerField(primary_key=True)
-    as_is_user = BooleanField(default=False)
-    as_user = ForeignKey('user.User', on_delete=CASCADE, null=True)
-    as_visitor = ForeignKey('user.Visitor', on_delete=CASCADE, null=True)
+    as_filler = ForeignKey('user.Filler', on_delete=CASCADE, null=True)
     as_questionnaire = ForeignKey('Questionnaire', on_delete=CASCADE, null=True)
     as_createTime = DateTimeField(auto_now_add=True)
     as_answers = ManyToManyField(Answer)
     as_score = IntegerField()
-    as_temporary_save = JSONField()
+    as_temporary_save = JSONField(default='')
+    as_submitted = BooleanField(default=False)
 
 
 class Questionnaire(Model):
     qn_id = IntegerField(primary_key=True)
     qn_title = TextField()
     qn_description = TextField()
+    qn_creator = ForeignKey('user.User', on_delete=SET_NULL, null=True)
     qn_createTime = DateTimeField(auto_now_add=True)
     qn_endTime = DateTimeField(default=None)
     status_choices = (
@@ -74,7 +74,3 @@ class Questionnaire(Model):
             "qn_refillable": self.qn_refillable
         }
         return json.dumps(info)
-
-
-
-

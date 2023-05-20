@@ -6,7 +6,7 @@ from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_http_methods
 from django.http.response import JsonResponse
 import json
-from user.models import User, Admin, Visitor
+from user.models import User, Admin, Filler
 from questionnaire.models import Questionnaire, AnswerSheet, Question, Answer
 from user.views import login_required, not_login_required, admin_required
 
@@ -15,7 +15,7 @@ def questionnaire_exists(view_func):
     def wrapper(request, *args, **kwargs):
         qnid = request.body.get('qnid')
         if not Questionnaire.objects.filter(qn_id=qnid).exists():
-            return JsonResponse({'errno': 1005, 'msg': "问卷不存在"})
+            return JsonResponse({'errno': 2001, 'msg': "问卷不存在"})
         else:
             return view_func(request, *args, **kwargs)
     return wrapper
@@ -40,23 +40,20 @@ def fill_questionnaire(request):
     uid = request.session.get('id')
     if not uid:
         filler_ip = get_client_ip(request)
-        if User.objects.filter(user_ip=filler_ip).exists():
-            filler = User.objects.get(user_ip=filler_ip)
-        elif Visitor.objects.filter(visitor_ip=filler_ip).exists():
-            filler = Visitor.objects.get(visisitor_ip=filler_ip)
+        if Filler.objects.filter(filler_ip=filler_ip).exists():
+            filler = Filler.objects.get(filler_ip=filler_ip)
         else:
-            filler = Visitor.objects.create(visisitor_ip=filler_ip)
+            filler = Filler.objects.create(filler_ip=filler_ip)
     else:
-        filler = User.objects.get(user_id=uid)
-    new_as = AnswerSheet.objects.create(as_questionnaire=qn_id)
-    if filler is User:
-        new_as.as_is_user = True
-        new_as.as_user = filler
+        filler = Filler.objects.get(filler_uid=uid)
+    questionnaire = Questionnaire.objects.get(qn_id=qn_id)
+    if AnswerSheet.objects.filter(as_questionnaire=questionnaire, as_filler=filler).exists():
+        answer_sheet = AnswerSheet.objects.get(as_filler=filler)
     else:
-        new_as.as_is_user = False
-        new_as.as_visitor = filler
-    new_as.save()
-    return JsonResponse({'errno': 0, 'msg': "答卷创建成功", 'as_id': new_as.as_id})
+        answer_sheet = AnswerSheet.objects.create(as_questionnaire=questionnaire, as_filler=filler)
+        answer_sheet.save()
+    temp_save = answer_sheet.as_temporary_save
+    return JsonResponse({'errno': 0, 'msg': "答卷创建成功", 'as_id': answer_sheet.as_id, 'temp_save': temp_save})
 
 
 # path('save_answers', save_answers),
@@ -68,37 +65,44 @@ def fill_questionnaire(request):
 def save_answers(request):
     answer_sheet = request.POST.get('as_id')
     answer_data = request.POST.get('answer_data')
-    answer_sheet.as_temporary_save = answer_data
-    answer_sheet.save()
-    return JsonResponse({'errno': 0, 'msg': "答卷保存成功"})
+    if answer_data is not None:
+        answer_sheet.as_temporary_save = answer_data
+        answer_sheet.save()
+        return JsonResponse({'errno': 0, 'msg': "答卷保存成功"})
+    else:
+        answer_sheet.delete()
+        return JsonResponse({'errno': 0, 'msg': "答卷删除成功"})
 
 
 @csrf_exempt
 @questionnaire_exists
 @require_http_methods(['POST'])
 def submit_answers(request):
-        # 获取请求参数
-        answer_sheet = request.POST.get('as_id')
-        answer_data = request.POST.get('answer_data')
+    # 获取请求参数
+    as_id = request.POST.get('as_id')
+    answer_data = request.POST.get('answer_data')
 
-        # 解析答案数据，创建答案对象
-        answer_list = json.loads(answer_data)
-        for q_id, a_content in answer_list:
-            answer = Answer.objects.create(
-                a_answersheet=answer_sheet,
-                a_question=q_id,
-                a_content=a_content
-            )
-            question = Question.objects.get(q_id=q_id)
-            if question.q_correct_answer == a_content:
-                answer.a_score = question.q_score
+    answer_sheet = AnswerSheet.objects.get(as_id=as_id)
+    # 解析答案数据，创建答案对象
+    answer_list = json.loads(answer_data)
+    for q_id, a_content in answer_list:
+        question = Question.objects.get(q_id=q_id)
+        answer = Answer.objects.create(
+            a_answersheet=answer_sheet,
+            a_question=question,
+            a_content=a_content
+        )
+        if question.q_correct_answer == a_content:
+            answer.a_score = question.q_score
 
-            answer.save()
-            answer_sheet.as_answers.add(answer)
-            answer_sheet.as_score += answer.a_score # 计算得分
+        answer.save()
+        answer_sheet.as_answers.add(answer)
+        answer_sheet.as_score += answer.a_score  # 计算得分
 
-        answer_sheet.save()
-        return JsonResponse({'code': 0, 'message': 'success.'})
+    answer_sheet.as_temporary_save = answer_data
+    answer_sheet.as_submitted = True
+    answer_sheet.save()
+    return JsonResponse({'code': 0, 'message': '答卷提交成功'})
 
 
 # path('refill_questionnaire', refill_questionnaire),
@@ -109,7 +113,10 @@ def submit_answers(request):
 @login_required
 @require_http_methods(['POST'])
 def create_questionnaire(request):
+    user_id = request.session.get('id')
+    user = User.objects.get(user_id=user_id)
     qn = Questionnaire.objects.create()
+    qn.qn_creator = user
     qn.save()
     # 返回问卷创建成功的响应
     return JsonResponse({'errno': 0, 'message': '问卷创建成功', 'qn_id': qn.qn_id})
@@ -156,7 +163,7 @@ def save_questionnaire(request):
 
     qn.save()
     # 返回问卷创建成功的响应
-    return JsonResponse({'code': 0, 'message': '问卷创建成功'})
+    return JsonResponse({'code': 0, 'message': '问卷保存成功'})
 
 
 @csrf_exempt

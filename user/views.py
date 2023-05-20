@@ -4,7 +4,8 @@ from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_http_methods
 from django.http.response import JsonResponse
 import json
-from user.models import User, Admin
+
+from user.models import User, Admin, Filler
 from questionnaire.models import Questionnaire
 from random import randint
 import smtplib
@@ -76,6 +77,7 @@ def admin_required(view_func):
 @not_login_required
 @require_http_methods(['POST'])
 def user_register(request):
+    from questionnaire.views import get_client_ip
     data_json = json.loads(request.body)
     username = data_json['username']
     password1 = data_json['password1']
@@ -92,6 +94,9 @@ def user_register(request):
     else:
         new_user = User.objects.create(user_name=username, user_password=password1, user_email=email)
         new_user.save()
+        filler_ip = get_client_ip(request)
+        new_filler = Filler.objects.create(filler_ip=filler_ip, filler_is_user=True, filler_uid=new_user.user_id)
+        new_filler.save()
         return JsonResponse({'errno': 0, 'msg': "注册成功", 'username': new_user.user_name})
 
 
