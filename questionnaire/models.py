@@ -6,13 +6,10 @@ from user.models import *
 
 class Answer(Model):
     a_id = IntegerField(primary_key=True)
-    a_is_user = BooleanField(default=False)
-    a_user = ForeignKey('user.User', on_delete=CASCADE, null=True)
-    a_visitor = ForeignKey('user.Visitor', on_delete=CASCADE, null=True)
+    a_answersheet = ForeignKey('Answersheet', on_delete=CASCADE, null=True)
     a_question = ForeignKey('Question', on_delete=CASCADE, null=True)
-    a_createTime = DateTimeField(auto_now_add=True)
     a_content = TextField()
-    a_score = DecimalField(max_digits=6, decimal_places=2)
+    a_score = DecimalField(max_digits=6, decimal_places=2, default=0)
     a_comment = TextField()
 
 
@@ -33,31 +30,33 @@ class Question(Model):
     q_option_count = IntegerField()
     q_options = JSONField()
     q_correct_answer = TextField()
-    q_score = DecimalField(max_digits=6, decimal_places=2)
+    q_score = DecimalField(max_digits=6, decimal_places=2, default=0.0)
     q_answers = ManyToManyField(Answer)
 
 
 class AnswerSheet(Model):
     as_id = IntegerField(primary_key=True)
-    as_is_user = BooleanField(default=False)
-    as_user = ForeignKey('user.User', on_delete=CASCADE, null=True)
-    as_visitor = ForeignKey('user.Visitor', on_delete=CASCADE, null=True)
+    as_filler = ForeignKey('user.Filler', on_delete=CASCADE, null=True)
     as_questionnaire = ForeignKey('Questionnaire', on_delete=CASCADE, null=True)
     as_createTime = DateTimeField(auto_now_add=True)
     as_answers = ManyToManyField(Answer)
     as_score = IntegerField()
+    as_temporary_save = JSONField(default='')
+    as_submitted = BooleanField(default=False)
 
 
 class Questionnaire(Model):
     qn_id = IntegerField(primary_key=True)
     qn_title = TextField()
     qn_description = TextField()
+    qn_creator = ForeignKey('user.User', on_delete=SET_NULL, null=True)
     qn_createTime = DateTimeField(auto_now_add=True)
     qn_endTime = DateTimeField(default=None)
     status_choices = (
         ('unpublished', "未发布"),
         ('published', "已发布"),
-        ('closed', "已关闭")
+        ('closed', "已关闭"),
+        ('banned', "已封禁")
     )
     qn_status = CharField(max_length=20, choices=status_choices, default='unpublished')
     qn_refillable = BooleanField(default=True)
@@ -66,16 +65,12 @@ class Questionnaire(Model):
 
     def to_json(self):
         info = {
-            "qn_id": qn_id,
-            "qn_title": qn_title,
-            "qn_description": qn_description,
-            "qn_createTime": qn_createTime,
-            "qn_endTime": qn_endTime,
-            "qn_status": qm_status,
-            "qn_refillable": qn_refillable
+            "qn_id": self.qn_id,
+            "qn_title": self.qn_title,
+            "qn_description": self.qn_description,
+            "qn_createTime": self.qn_createTime,
+            "qn_endTime": self.qn_endTime,
+            "qn_status": self.qn_status,
+            "qn_refillable": self.qn_refillable
         }
         return json.dumps(info)
-
-
-
-

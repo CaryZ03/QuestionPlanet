@@ -4,9 +4,11 @@ from django.db.models import *
 from questionnaire.models import *
 
 
-class Visitor(Model):
-    visitor_id = IntegerField(primary_key=True)
-    visitor_ip = CharField(max_length=30)
+class Filler(Model):
+    filler_id = IntegerField(primary_key=True)
+    filler_ip = CharField(max_length=30)
+    filler_is_user = BooleanField(default=False)
+    filler_uid = ForeignKey('User', on_delete=SET_NULL, null=True)
 
 
 class User(Model):
@@ -24,11 +26,11 @@ class User(Model):
 
     def to_json(self):
         info = {
-            "user_id": user.user_id,
-            "user_name": user.user_name,
-            "user_password": user.user_password,
-            "user_email": user.user_email,
-            "user_status": user.user_status
+            "user_id": self.user_id,
+            "user_name": self.user_name,
+            "user_password": self.user_password,
+            "user_email": self.user_email,
+            "user_status": self.user_status
         }
         return json.dumps(info)
 
@@ -40,15 +42,8 @@ class Admin(Model):
 
     def to_json(self):
         info = {
-            "admin_id": admin.admin_id,
-            "admin_name": admin.admin_name,
-            "admin_password": admin.admin_password
+            "admin_id": self.admin_id,
+            "admin_name": self.admin_name,
+            "admin_password": self.admin_password
         }
         return json.dumps(info)
-
-
-
-
-
-
-
