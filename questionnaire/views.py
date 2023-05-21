@@ -36,7 +36,7 @@ def get_client_ip(request):
 @questionnaire_exists
 @require_http_methods(['POST'])
 def fill_questionnaire(request, qn_id):
-    uid = request.session.get('id')
+    uid = request.session.get('uid')
     if not uid:
         filler_ip = get_client_ip(request)
         if Filler.objects.filter(filler_ip=filler_ip).exists():
@@ -95,6 +95,8 @@ def submit_answers(request):
             answer.a_score = question.q_score
 
         answer.save()
+        question.q_answers.add(answer)
+        question.save()
         answer_sheet.as_answers.add(answer)
         answer_sheet.as_score += answer.a_score  # 计算得分
 
@@ -112,7 +114,7 @@ def submit_answers(request):
 @login_required
 @require_http_methods(['POST'])
 def create_questionnaire(request):
-    user_id = request.session.get('id')
+    user_id = request.session.get('uid')
     user = User.objects.get(user_id=user_id)
     qn = Questionnaire.objects.create()
     qn.qn_creator = user
@@ -150,6 +152,7 @@ def save_questionnaire(request):
             q_questionnaire=qn,
             q_position=i,
             q_type=q_data.get('q_type'),
+            q_manditory=q_data.get('q_manditory'),
             q_title=q_data.get('q_title'),
             q_description=q_data.get('q_description'),
             q_option_count=q_data.get('q_option_count'),

@@ -200,7 +200,7 @@ class Admin(Model):
 
 ```json
 {
-    "id": id
+    "uid": uid
 }
 ```
 
@@ -223,7 +223,7 @@ class Admin(Model):
 
 ```json
 {
-    "id": id
+    "uid": uid
 }
 ```
 
@@ -246,7 +246,7 @@ class Admin(Model):
 
 ```json
 {
-    "id": id
+    "uid": uid
 }
 ```
 
@@ -276,7 +276,7 @@ class Admin(Model):
 
 ```json
 {
-    "id": id
+    "uid": uid
 }
 ```
 
@@ -304,7 +304,7 @@ class Admin(Model):
 
 ```json
 {
-    "id": id,
+    "uid": uid,
     "username": username,
     "password1": password1,
     "password2": password2,
@@ -339,7 +339,7 @@ class Admin(Model):
 
 ```json
 {
-    "id": id,
+    "uid": uid,
     "username": username,
     "password1": password1,
     "password2": password2,
@@ -374,7 +374,7 @@ class Admin(Model):
 
 ```json
 {
-    "id": id,
+    "uid": uid,
     "type": type
 }
 ```
@@ -594,7 +594,7 @@ else
 
 ```json
 {
-    "id": 用户id
+    "uid": 用户id
 }
 ```
 
@@ -620,7 +620,7 @@ else
 
 ```json
 {
-    "id": 用户id,
+    "uid": 用户id,
     "qn_id": 问卷id,
     "qn_title": 问卷标题,
     "qn_description": 问卷描述,
@@ -662,7 +662,7 @@ else
 
 ```json
 {
-    "id": 用户id,
+    "uid": 用户id,
     "qn_id": 问卷id
 }
 ```
@@ -688,7 +688,7 @@ else
 
 ```json
 {
-    "id": 用户id,
+    "uid": 用户id,
     "qn_id": 问卷id,
     "status": 目标状态(unpublished, published, closed, banned)
 }
