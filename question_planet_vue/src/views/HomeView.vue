@@ -78,7 +78,7 @@ export default ({
   top: 35%;
 }
 </style>
-<style>
+<style scoped>
 .el-header,
 .el-footer {
   background-color: #B3C0D1;
