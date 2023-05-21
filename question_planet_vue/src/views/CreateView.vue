@@ -126,7 +126,7 @@
                                 <el-row>
                                     <el-col :span="3">
                                         <div><el-button type="danger" icon="el-icon-minus" circle size="small"
-                                                v-on:click="deleteNode(index, i)"></el-button></div>
+                                                v-on:click="deleteNode(index, index_item)"></el-button></div>
                                     </el-col>
                                     <el-col :span="21">
                                         <div><el-input placeholder="请输入题目内容" v-model="item.label" clearable></el-input>
