@@ -1,29 +1,38 @@
 <template>
   <div>
-    <div class="box">
+        <div>
 
-      <div class="box-btn" v-show="!this.$store.state.isLogin">
-        <el-row>
-          <router-link to="/login"><el-button round>登录</el-button></router-link>
+          <div class="box-btn" v-show="!this.$store.state.isLogin">
+            <el-row>
+              <router-link to="/login"><el-button round>登录</el-button></router-link>
+              <router-link to="/register"><el-button round>注册</el-button></router-link><br>
+              <router-link v-if="this.$store.state.isLogin" to="/new"><el-button round>创建问卷</el-button></router-link>
+              <router-link v-else to="/login"><el-button round>创建问卷</el-button></router-link>
+              <br>
 
-          <router-link to="/register"><el-button round>注册</el-button></router-link><br>
+            </el-row>
+          </div>
 
-          <router-link v-if="this.$store.state.isLogin" to="/new"><el-button round>创建问卷</el-button></router-link>
-          <router-link v-else to="/login"><el-button round>创建问卷</el-button></router-link>
-          <br>
-
-        </el-row>
+        </div>
       </div>
-
-      <!-- <img alt="Vue logo" src="../assets/logo.png"> -->
-      <!-- <HelloWorld msg="Welcome to Your Vue.js App"/> -->
-    </div>
-  </div>
 </template>
 
+
 <script>
+import StepSlideVue from "../components/StepSlide.vue"
+
+
+export default ({
+  name: 'HomeViewVue',
+  data: {
+
+  }
+
+})
 </script>
-<style >
+<style scoped>
+.stepLine {}
+
 .box {
   width: 1050px;
   height: 600px;
@@ -67,5 +76,41 @@
   height: 100%;
   width: 100%;
   top: 35%;
+}
+</style>
+<style>
+.el-header,
+.el-footer {
+  background-color: #B3C0D1;
+  color: #333;
+  text-align: center;
+  line-height: 60px;
+}
+
+.el-aside {
+  background-color: #D3DCE6;
+  color: #333;
+  text-align: center;
+  line-height: 200px;
+}
+
+.el-main {
+  background-color: #E9EEF3;
+  color: #333;
+  text-align: center;
+  line-height: 160px;
+}
+
+body>.el-container {
+  margin-bottom: 40px;
+}
+
+.el-container:nth-child(5) .el-aside,
+.el-container:nth-child(6) .el-aside {
+  line-height: 260px;
+}
+
+.el-container:nth-child(7) .el-aside {
+  line-height: 320px;
 }
 </style>
