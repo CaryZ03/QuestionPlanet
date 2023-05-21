@@ -41,7 +41,7 @@ class AnswerSheet(Model):
     as_createTime = DateTimeField(auto_now_add=True)
     as_answers = ManyToManyField(Answer)
     as_score = IntegerField()
-    as_temporary_save = JSONField(default='')
+    as_temporary_save = JSONField(default=None)
     as_submitted = BooleanField(default=False)
 
 
