@@ -35,8 +35,7 @@ def get_client_ip(request):
 @csrf_exempt
 @questionnaire_exists
 @require_http_methods(['POST'])
-def fill_questionnaire(request):
-    qn_id = request.POST.get('qn_id')
+def fill_questionnaire(request, qn_id):
     uid = request.session.get('id')
     if not uid:
         filler_ip = get_client_ip(request)

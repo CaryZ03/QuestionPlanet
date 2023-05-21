@@ -632,7 +632,7 @@ else
             "q_title": 问题标题,
             "q_description": 问题描述,
             "q_option_count": 选项数,
-            "q_options": 选项数据,
+            "q_options": 选项数据([选项1, ...]),
             "q_correct_answer": 正确答案,
             "q_score": 分数
         }，
