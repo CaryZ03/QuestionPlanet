@@ -2,6 +2,10 @@ import Vue from 'vue'
 import VueRouter from 'vue-router'
 import HomeView from '../views/HomeView.vue'
 
+const Login = () => import('../views/LoginView.vue');
+const Register = () => import('../views/RegisterView.vue');
+const CreateQuestionnaireView = () => import('../views/CreateView.vue');
+const UserInfoView = () => import('../views/UserInfoView.vue')
 Vue.use(VueRouter)
 
 const routes = [
@@ -19,20 +23,55 @@ const routes = [
     component: () => import(/* webpackChunkName: "about" */ '../views/AboutView.vue')
   },
   {
-    path: '/new',
+    path: '/new/:userID',
     name: 'New',
     // route level code-splitting
     // this generates a separate chunk (about.[hash].js) for this route
     // which is lazy-loaded when the route is visited.
-    component: () => import(/* webpackChunkName: "about" */ '../views/NewView.vue')
+    component: () => import(/* webpackChunkName: "about" */ '../views/NewView.vue'),
+    children:[
+      {
+        name:'questionnaire_create', //问卷管理
+        path:'questionnaire_create',
+        component: CreateQuestionnaireView
+      },
+      {
+        name:'questionnaire_bin',//垃圾箱
+        path:'questionnaire_bin',
+      },
+      {
+        name:'questionnaire_model',
+        path:'questionnaire_model',
+      },
+      {
+        name:'questionnaire_check',
+        path:'questionnaire_check',
+      }
+    ]
   },
   {
-    path: '/analyze',
-    name: 'Analyze',
+    path: '/login/',
+    name: 'Login',
     // route level code-splitting
     // this generates a separate chunk (about.[hash].js) for this route
     // which is lazy-loaded when the route is visited.
-    component: () => import(/* webpackChunkName: "about" */ '../views/Analyze.vue')
+    component:Login
+  },
+  {
+    path: '/register',
+    name: 'Register',
+    // route level code-splitting
+    // this generates a separate chunk (about.[hash].js) for this route
+    // which is lazy-loaded when the route is visited.
+    component:Register
+  },
+  {
+    path: '/userInfo',
+    name: 'UserInfo',
+    // route level code-splitting
+    // this generates a separate chunk (about.[hash].js) for this route
+    // which is lazy-loaded when the route is visited.
+    component:UserInfoView
   }
 ]
 

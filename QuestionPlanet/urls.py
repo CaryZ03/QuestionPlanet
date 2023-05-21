@@ -15,6 +15,9 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
+from django.conf import settings
+from django.conf.urls.static import static
+
 
 urlpatterns = [
     path('api/admin/', admin.site.urls),
@@ -22,3 +25,5 @@ urlpatterns = [
     path('api/questionnaire/', include(('questionnaire.urls', 'questionnaire'))),
     # path('api/data/', include(('data.urls', 'data')))
 ]
+# 在 urlpatterns 列表末尾添加以下配置
+urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

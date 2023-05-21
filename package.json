@@ -1,5 +1,5 @@
 {
   "dependencies": {
-    "echarts": "^5.4.2"
+    "vuex": "^3.6.2"
   }
 }

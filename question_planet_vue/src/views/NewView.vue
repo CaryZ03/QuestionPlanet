@@ -1,244 +1,322 @@
 <template>
-  <div class="row">
-    <!-- 工具栏 -->
-    <div class="col-md-3 d-none d-lg-block bg-light sidebar">
-      
-        
-        <!-- 单选题工具 -->
-        <div class="tool mb-2">
-          <div class="tool-body">
-            <h5 class="tool-title">单选题</h5>
-            <i class="el-icon-circle-check"></i>
-            <br>
-            <p class="tool-text">问卷中用户只能选中一个选项作为答案。</p>
-            <el-tooltip class="item" effect="dark" content="问卷中用户只能选中一个选项作为答案。" placement="bottom">
-              <el-button type="primary" class="btn btn-primary btn-sm" icon="el-icon-circle-plus"
-                              @click="addQuestion('single')" round>添加单选题</el-button>
-            </el-tooltip>
-          </div>
-        </div>
-
-        <!-- 多选题工具 -->
-        <div class="tool mb-2">
-          <div class="tool-body">
-            <h5 class="tool-title">多选题</h5>
-            <i class="el-icon-circle-check"></i><i class="el-icon-circle-check"></i>
-            <br>
-            <p class="tool-text">问卷中用户可以选中多个选项作为答案。</p>
-            <el-button type="primary" class="btn btn-primary btn-sm" icon="el-icon-circle-plus" @click="addQuestion('multiple')" round>添加多选题</el-button>
-    
-          </div>
-        </div>
-
-        <!-- 填空题工具 -->
-        <div class="tool mb-2">
-          <div class="tool-body">
-            <h5 class="tool-title">填空题</h5>
-            <i class="el-icon-edit-outline"></i>
-            <br>
-            <p class="tool-text">问卷中用户需要输入文本信息作为答案。</p>
-            <el-button type="primary" class="btn btn-primary btn-sm" icon="el-icon-circle-plus" @click="addQuestion('text')" round>添加填空题</el-button>
-          </div>
-        </div>
-
-        <!-- 评分题工具 -->
-        <div class="tool mb-2">
-          <div class="tool-body">
-            <h5 class="tool-title">评分题</h5>
-            <i class="el-icon-star-off"></i>
-            <br>
-            <p class="tool-text">问卷中用户需要对某个问题进行打分。</p>
-            <el-button type="primary" class="btn btn-primary btn-sm" icon="el-icon-circle-plus" @click="addQuestion('rating')" round>添加评分题</el-button>
-          </div>
-        </div>
-
-        <!-- 排序题工具 -->
-        <div class="tool mb-2">
-          <div class="tool-body">
-            <h5 class="tool-title">排序题</h5>
-            <i class="el-icon-s-data"></i>
-            <br>
-            <p class="tool-text">问卷中用户需要将一组选项按照自己的喜好进行排序。</p>
-            <el-button type="primary" class="btn btn-primary btn-sm" icon="el-icon-circle-plus" @click="addQuestion('sorting')" round>添加排序题</el-button>
-          </div>
-        </div>
-
-        <!-- 图片选择题工具 -->
-        <div class="tool mb-2">
-          <div class="tool-body">
-            <h5 class="tool-title">图片选择题</h5>
-            <i class="el-icon-picture-outline"></i>
-            <br>
-            <p class="tool-text">问卷中用户需要从多个图片选项中选择一个。</p>
-            <el-button type="primary" class="btn btn-primary btn-sm" icon="el-icon-circle-plus" @click="addQuestion('image')" round>添加图片选择题</el-button>
-          </div>
-        </div>
-
-        <!-- 分页器工具 -->
-        <!-- <div class="tool mb-2">
-          <div class="tool-body">
-            <h5 class="tool-title">分页器</h5>
-            <p class="tool-text">将问卷分成多个页面，每个页面包含若干个问题。</p>
-            <el-button type="primary" class="btn btn-primary btn-sm" round>添加分页器</el-button>
-          </div>
-        </div> -->
-
-        <!-- 进度条工具 -->
-        <div class="tool mb-2">
-          <div class="tool-body">
-            <h5 class="tool-title">进度条</h5>
-            <i class="el-icon-s-data"></i>
-            <br>
-            <p class="tool-text">显示当前用户填写问卷的进度。</p>
-            <el-button type="primary" class="btn btn-primary btn-sm" icon="el-icon-circle-plus" round>添加进度条</el-button>
-          </div>
-        </div>
   
-    </div>
-    <!-- 问题列表 -->
-    <div class="question-card" id="question-list">
-      <div>
-      <h2>{{ questionnaireName }}</h2>
-      </div>
 
-      <div v-for="(question, index) in questions" :key="index" class="card mb-2">
-        <el-container style="box-shadow: 0 2px 4px rgba(0, 0, 0, .12), 0 0 6px rgba(0, 0, 0, .04)">
+  <div >
+    <router-view  v-show="this.$store.state.is_creating"></router-view>
+    <el-container v-show="!this.$store.state.is_creating" style="height: 745px; border: 1px solid #eee">
+      <el-aside width="200px" style="background-color: rgb(238, 241, 246)">
+
+        <el-menu>
+          <el-submenu index="0">
+            <template slot="title"><i class="el-icon-s-data"></i>全部问卷</template>
+          </el-submenu>
+          <el-submenu index="1">
+            <template slot="title"><i class="el-icon-plus"></i>创建问卷</template>
+            <el-menu-item index="1-1" @click="pushView">从空白创建</el-menu-item>
+            <el-menu-item-group title="从模板创建">
+              <el-menu-item index="1-2">模板1</el-menu-item>
+              <el-menu-item index="1-3">模板2</el-menu-item>
+              <el-menu-item index="1-4">模板3</el-menu-item>
+            </el-menu-item-group>
+          </el-submenu>
+          <el-submenu index="2">
+            <template slot="title"><i class="el-icon-s-operation"></i>管理问卷</template>
+            <el-menu-item index="2-2">俺的问卷1</el-menu-item>
+            <el-menu-item index="2-3">俺的问卷2</el-menu-item>
+            <el-menu-item index="2-4">俺的问卷3</el-menu-item>
+          </el-submenu>
+          <el-submenu index="3">
+            <template slot="title"><i class="el-icon-pie-chart"></i>查看问卷</template>
+            <el-menu-item index="3-2">俺的问卷1</el-menu-item>
+            <el-menu-item index="3-3">俺的问卷2</el-menu-item>
+            <el-menu-item index="3-4">俺的问卷3</el-menu-item>
+          </el-submenu>
+          <el-submenu index="4">
+            <template slot="title"><i class="el-icon-delete"></i>回收站</template>
+            <el-menu-item index="4-2">俺的垃圾1</el-menu-item>
+            <el-menu-item index="4-3">俺的垃圾2</el-menu-item>
+            <el-menu-item index="4-4">俺的垃圾3</el-menu-item>
+          </el-submenu>
+        </el-menu>
+      </el-aside>
+
+      <el-container>
+        <el-header style="text-align: right; font-size: 12px">
+          <el-input style="width: 280px; left: 20px;" placeholder="查找问卷" suffix-icon="el-icon-search"
+            v-model="TODO_input1">
+          </el-input>
+          <span></span>
+        </el-header>
+
         <el-main>
-          <span>第{{ index + 1 }}题：{{ question.title }}&nbsp;&nbsp;&nbsp;&nbsp;</span>
-          <span v-if="question.type === 'single'" class="question-type">[单选题]</span>
-          <span v-if="question.type === 'multiple'" class="question-type">[多选题]</span>
-          <span v-if="question.type === 'text'" class="question-type">[填空题]</span>
-          <div style="line-height: 30px;">&emsp;</div>
-          
-          <el-table
-          :data="question.options"
-          style="width: 100%"
-          show-summary
-          :default-sort = "{prop: 'label', order: 'ascending'}"
-          v-if="question.type === 'single' || question.type === 'multiple'"
-          >
-            <el-table-column
-              prop="label"
-              label="选项"
-              sortable
-              width="500">
-            </el-table-column>
-            <el-table-column
-              prop="num"
-              label="小计"
-              sortable
-              width="140">
-            </el-table-column>
-            <el-table-column
-              label="比例"
-              width="100">
-              <template slot-scope="scope">
-              {{ calculatePercentage(scope.row.num, question.answerNum) }}
-              </template>
-            </el-table-column>
 
-          </el-table>
 
-          <div v-if="question.type === 'text'">
-            <div class="division"><span class="title">内容</span></div>
-            <el-input type="textarea" autosize placeholder="请输入内容" v-model="question.answer"></el-input>
-          </div>
+          <el-row class="single_questionnaire_box">
+            <div class="questionnaire_title">
+              <div class="pull-left">
+                <div class="questionnaire_title">hihi</div>
+              </div>
+              <div class="pull-right">
+                <div class="pull-left item-id">id:NULL</div>
+                <div class="pull-left item-running">status:NULL</div>
+                <div class="pull-left item-data">receive:0</div>
+                <div class="pull-left item-data">2020/02/02 00:22</div>
+              </div>
+            </div>
+            <el-divider></el-divider>
+            <div class="questionnaire_body">
+              <el-button round style="background-color:rgba(227, 227, 227, 0.1);;">设计问卷</el-button>
+              <el-button round style="background-color:rgba(227, 227, 227, 0.1);;">发送问卷</el-button>
+              <el-button round style="background-color:rgba(227, 227, 227, 0.1);;">分析问卷</el-button>
+            </div>
+
+          </el-row>
+
+          <el-row class="single_questionnaire_box">
+            <div class="questionnaire_title">
+              <div class="pull-left">
+                <div class="questionnaire_title">hihi</div>
+              </div>
+              <div class="pull-right">
+                <div class="pull-left item-id">id:NULL</div>
+                <div class="pull-left item-running">status:NULL</div>
+                <div class="pull-left item-data">receive:0</div>
+                <div class="pull-left item-data">2020/02/02 00:22</div>
+              </div>
+            </div>
+            <el-divider></el-divider>
+            <div class="questionnaire_body">
+              <el-button round style="background-color:rgba(227, 227, 227, 0.1);;">设计问卷</el-button>
+              <el-button round style="background-color:rgba(227, 227, 227, 0.1);;">发送问卷</el-button>
+              <el-button round style="background-color:rgba(227, 227, 227, 0.1);;">分析问卷</el-button>
+            </div>
+
+          </el-row>
+
+          <el-row class="single_questionnaire_box">
+            <div class="questionnaire_title">
+              <div class="pull-left">
+                <div class="questionnaire_title">hihi</div>
+              </div>
+              <div class="pull-right">
+                <div class="pull-left item-id">id:NULL</div>
+                <div class="pull-left item-running">status:NULL</div>
+                <div class="pull-left item-data">receive:0</div>
+                <div class="pull-left item-data">2020/02/02 00:22</div>
+              </div>
+            </div>
+            <el-divider></el-divider>
+            <div class="questionnaire_body">
+              <el-button round style="background-color:rgba(227, 227, 227, 0.1);;">设计问卷</el-button>
+              <el-button round style="background-color:rgba(227, 227, 227, 0.1);;">发送问卷</el-button>
+              <el-button round style="background-color:rgba(227, 227, 227, 0.1);;">分析问卷</el-button>
+            </div>
+
+          </el-row>
+
+          <el-row class="single_questionnaire_box">
+            <div class="questionnaire_title">
+              <div class="pull-left">
+                <div class="questionnaire_title">hihi</div>
+              </div>
+              <div class="pull-right">
+                <div class="pull-left item-id">id:NULL</div>
+                <div class="pull-left item-running">status:NULL</div>
+                <div class="pull-left item-data">receive:0</div>
+                <div class="pull-left item-data">2020/02/02 00:22</div>
+              </div>
+            </div>
+            <el-divider></el-divider>
+            <div class="questionnaire_body">
+              <el-button round style="background-color:rgba(227, 227, 227, 0.1);;">设计问卷</el-button>
+              <el-button round style="background-color:rgba(227, 227, 227, 0.1);;">发送问卷</el-button>
+              <el-button round style="background-color:rgba(227, 227, 227, 0.1);;">分析问卷</el-button>
+            </div>
+
+          </el-row>
 
         </el-main>
-        <el-footer>
-            <el-button type="primary" round v-on:click="change_to_bar(index)">柱状图</el-button>          
-            &emsp;&emsp;
-            <el-button type="primary" round v-on:click="change_to_line(index)">折线图</el-button>
-            &emsp;&emsp;
-            <el-button type="primary" round v-on:click="change_to_pie(index)">饼状图</el-button>
-            &emsp;&emsp;
-            <el-button type="primary" round v-on:click="change_to_ring(index)">圆环图</el-button>
-        </el-footer>
-        <div class="echart" :id="'chart-' + index" :style="myChartStyle"></div>
-  
-        </el-container>
 
-        <div style="line-height: 30px;">&emsp;</div>
-        
-
-      </div>
-    </div>
-
-
-    <!-- 问卷大纲区域 -->
-    <div class="outline-area">
-      <div class="outline-title">问卷大纲</div>
-      <div class="outline-list">
-        <!-- <ol>
-          <li size="medium" v-for="(question, index) in questions" :key="index">{{ question.title }}</li>
-        </ol> -->
-        <el-link class= "outline-item"  v-for="(question, index) in questions" :key="index"  @click.prevent="scrollToQuestion(index)">{{ index + 1 }}.{{ question.title }}</el-link>
-      </div>
-      
-    </div>
-  
-
+      </el-container>
+    </el-container>
   </div>
 </template>
+<!-- 
 
+
+  
+ -->
+<style scoped>
+div {
+  display: block;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+.main-wrapper .survey-wrapper .survey-list .item-top {
+  padding: 13px 24px 0;
+  font-size: 16px;
+  height: 22px;
+  line-height: 22px;
+  color: #262626;
+}
+
+.survey-items {
+  background: #fff;
+  border-radius: 2px;
+  margin-bottom: 20px;
+  box-shadow: 0 0 4px 0 #f0f0f0;
+  border: 1px solid #e6e6e6;
+}
+
+.questionnaire_box {
+  height: 500px;
+  margin: 0;
+  padding: 10;
+  border: 10;
+
+  max-height: 600px;
+}
+
+.single_questionnaire_box {
+  left: 1%;
+  width: 98%;
+
+  height: 90px;
+  border: 10px;
+  padding-left: 20px;
+  padding-right: 20px;
+  /* padding: 0px;0 */
+  margin-top: 10px;
+  box-shadow: rgb(240, 240, 240) 0px 0px 4px 0px;
+  border-radius: 10px;
+  /* background-color: aqua; */
+  /* border-bottom: 3px solid #000; */
+  font-family: "Helvetica Neue", Helvetica, Arial, "PingFang SC",
+    "Microsoft YaHei", "Microsoft YaHei UI", 微软雅黑, sans-serif;
+  z-index: 100;
+  position: relative;
+  border-radius: 4px;
+  box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
+
+  font-size: 12px;
+  line-height: normal;
+  text-align: left;
+  letter-spacing: normal;
+}
+
+.questionnaire_title {
+  height: 32px;
+  padding-top: 3px;
+  font-size: 16px;
+  line-height: 22px;
+  text-align: left;
+  letter-spacing: normal;
+  font-family: "Helvetica Neue", Helvetica, Arial,
+    "PingFang SC", "Microsoft YaHei", "Microsoft YaHei UI", 微软雅黑, sans-serif;
+}
+
+.questionnaire_body {
+  padding-top: 5px;
+  height: 80px;
+}
+
+.table {}
+
+.el-header {
+  background-color: #B3C0D1;
+  color: #333;
+  line-height: 60px;
+}
+
+.el-aside {
+  color: #333;
+}
+
+.pull-left {
+  float: left;
+  padding-left: 2px;
+  padding-right: 4px;
+}
+
+.pull-right {
+  float: right;
+  /* float: right !important;
+   */
+  /* 
+  line-height: 22px; */
+  font-size: 16px;
+  /* text-align: right;
+  letter-spacing: normal; */
+}
+
+.item-id {
+  text-decoration-color: black;
+}
+
+.item-data {
+  text-decoration-color: black;
+
+}
+
+.item-running {
+  text-decoration-color: #0095ff;
+}
+</style>
+
+<style>
+.el-row {
+  margin-bottom: 20px;
+
+  &:last-child {
+    margin-bottom: 0;
+  }
+}
+
+.el-col {
+  border-radius: 4px;
+}
+
+.bg-purple-dark {
+  background: #99a9bf;
+}
+
+.bg-purple {
+  background: #d3dce6;
+}
+
+.bg-purple-light {
+  background: #e5e9f2;
+}
+
+.grid-content {
+  border-radius: 4px;
+  min-height: 36px;
+}
+
+.row-bg {
+  padding: 10px 0;
+  background-color: #f9fafc;
+}
+</style>
 <script>
-import * as echarts from "echarts";
-// const vm = new Vue({
-//   el: '#question-list',
-//   data:{
-//     seen:true
-//   }
-// }
-// )
 
 export default {
   data() {
-    return {
-      questionnaireName: "问卷名称",
-      questions: [
-        {
-        type: "single",
-        isEdit: true,
-        isMandatory: true,
-        isBar: true,
-        isLine: false,
-        isPie: false,
-        isRing: false,
-        title: "问题名称1",
-        options: [
-          { label: "选项1", checked: false, num: 15 },
-          { label: "选项2", checked: false, num: 20 },
-          { label: "选项3", checked: false, num: 13 },
-          { label: "选项4", checked: false, num: 12 },
-          { label: "选项5", checked: false, num: 1 },
-          { label: "选项6", checked: false, num: 24 },
-        ],
-        selectedOption: null,
-        answer: "",
-        answerNum: 85, // 回答本问题总人数
-        },
-        {
-        type: "single",
-        isEdit: true,
-        isMandatory: true,
-        title: "问题名称2",
-        options: [
-          { label: "选项1", checked: false, num: 15 },
-          { label: "选项2", checked: false, num: 20 },
-          { label: "选项3", checked: false, num: 13 },
-          { label: "选项4", checked: false, num: 12 },
-          { label: "选项5", checked: false, num: 1 },
-          { label: "选项6", checked: false, num: 24 },
-          { label: "选项7", checked: false, num: 10 },
-          { label: "选项8", checked: false, num: 10 },
-        ],
-        selectedOption: null,
-        answer: "",
-        answerNum: 105, // 回答本问题总人数
-        },
-      ],
-      myChartStyle: { float: "left", width: "100%", height: "400px" }
+    const item = {
+      stDate: '2023-5-16',
+      name: 'Loar',
+      type: '考试卷',
+      edDate: '2023-5-16'
     };
+    return {
+      tableData: Array(20).fill(item),
+      userID: this.$store.state.curUserID
+    }
   },
   mounted() {
     this.drawCharts();
@@ -252,282 +330,13 @@ export default {
     },
   },
   methods: {
-    drawCharts() {
-    this.questions.forEach((question, index) => {
-      const chartId = 'chart-' + index;
-      const chartContainer = document.getElementById(chartId);
+    pushView() {
+      this.$store.state.is_creating = true,
+        this.$router.push({
+          name: 'questionnaire_create'
+        }),
 
-      // 使用 ECharts 初始化图表
-      const myChart = echarts.init(chartContainer);
-
-      if (question.isBar) {
-        this.drawBarChart(myChart, question);
-      } else if (question.isLine) {
-        this.drawLineChart(myChart, question);
-      } else if (question.isPie) {
-        this.drawPieChart(myChart, question);
-      } else if (question.isRing) {
-        this.drawRingChart(myChart, question);
-      }
-    });
-  },
-  drawBarChart(chart, question) {
-    const option = {
-        // 配置项
-          xAxis: {
-          data: question.options.map(option => option.label)
-        },
-        yAxis: {},
-        series: [
-          {
-            type: "bar", //形状为柱状图
-            data: question.options.map(option => option.num)
-          }
-        ]
-        };
-
-    chart.setOption(option);
-
-    window.addEventListener('resize', () => {
-      chart.resize();
-    });
-  },
-  drawLineChart(chart, question) {
-    const option = {
-        // 配置项
-          xAxis: {
-          data: question.options.map(option => option.label)
-        },
-        yAxis: {},
-        series: [
-          {
-            type: "line", //形状为折线图
-            data: question.options.map(option => option.num)
-          }
-        ]
-        };
-
-    chart.setOption(option);
-
-    window.addEventListener('resize', () => {
-      chart.resize();
-    });
-  },
-  drawPieChart(chart, question) {
-    const option = {
-        // 配置项
-        series: [
-          {
-            type: "pie", //形状为饼状图
-            data: question.options.map(option => ({
-              name: option.label,
-              value: option.num
-            }))
-          }
-        ]
-        };
-
-    chart.setOption(option);
-
-    window.addEventListener('resize', () => {
-      chart.resize();
-    });
-  },
-  drawRingChart(chart, question) {
-    const option = {
-        // 配置项
-        series: [
-          {
-            type: "pie", //形状为饼状图
-            radius: ['50%', '70%'],
-            data: question.options.map(option => ({
-              name: option.label,
-              value: option.num
-            }))
-          }
-        ]
-        };
-
-    chart.setOption(option);
-
-    window.addEventListener('resize', () => {
-      chart.resize();
-    });
-  },
-
-  //绘制柱形图
-    change_to_bar(index) {
-      this.questions[index].isLine = false;
-      this.questions[index].isPie = false;
-      this.questions[index].isRing = false;
-      this.questions[index].isBar = true;
-    },
-
-    change_to_line(index) {
-      this.questions[index].isPie = false;
-      this.questions[index].isRing = false;
-      this.questions[index].isBar = false;
-      this.questions[index].isLine = true;
-    },
-  
-    change_to_pie(index) {
-      this.questions[index].isLine = false;
-      this.questions[index].isPie = true;
-      this.questions[index].isRing = false;
-      this.questions[index].isBar = false;
-    },
-
-    change_to_Ring(index) {
-      this.questions[index].isLine = false;
-      this.questions[index].isPie = false;
-      this.questions[index].isRing = true;
-      this.questions[index].isBar = false;
-    },
-
-    // 添加问题
-    addQuestion(type) {
-      let question = {
-        type: type,
-        isEdit: true,
-        isMandatory: true,
-        title: "问题名称",
-        options: [],
-        selectedOption: null,
-        answer: "",
-        answerNum: 85, // 回答本问题总人数
-        stars: [false, false, false, false, false],
-        images: [
-          {src: "https://via.placeholder.com/150x150?text=Image+1"},
-          {src: "https://via.placeholder.com/150x150?text=Image+2"},
-          {src: "https://via.placeholder.com/150x150?text=Image+3"},
-          {src: "https://via.placeholder.com/150x150?text=Image+4"},
-          {src: "https://via.placeholder.com/150x150?text=Image+5"},
-        ],
-      
-      };
-      if (type === "single" || type === "multiple") {
-        question.options = [
-          { label: "选项1", checked: false, num: 15 },
-          { label: "选项2", checked: false, num: 20 },
-          { label: "选项3", checked: false, num: 25 },
-          { label: "选项4", checked: false, num: 25 },
-        ];
-      } else if (type === "rating") {
-        question.stars = [false, false, false, false, false];
-      }
-      // 为题目卡片动态生成唯一 ID
-      question.id = 'question-' + this.questions.length;
-      this.questions.push(question);
-    },
-
-    // 选择题添加选项
-    addNode(index) {
-      this.questions[index].options.push({label: "选项", checked: false});
-    },
-    //删除样本div
-    deleteNode(index, i) {
-      this.questions[index].options.splice(i, 1);  //删除index为i,位置的数组元素
-    },
-    // 题目上移
-    upNode(i) {
-      if(i <= 0) return
-
-          [this.questions[i-1],this.questions[i]] = [this.questions[i],this.questions[i-1]]
-
-          this.$forceUpdate()
-    },
-    //题目下移
-    downNode(i) {
-      if(i >= this.questions.length - 1) return
-
-      [this.questions[i+1],this.questions[i]] = [this.questions[i],this.questions[i+1]]
-
-          this.$forceUpdate()
-    },
-    
-
-    //退出编辑模式
-    change_to_save_mode(index) {
-      this.questions[index].isEdit = false;
-    },
-
-    //退出编辑模式
-    change_to_edit_mode(index) {
-      this.questions[index].isEdit = true;
-    },
-
-    // 删除问题
-    removeQuestion(index) {
-      this.questions.splice(index, 1);
-    },
-
-    // 计算比例
-    calculatePercentage(num, total) {
-    return ((num / total) * 100).toFixed(2) + '%';
-    },
-    
-
-
-    // 评分题选择星星
-    selectStar(question, starIndex) {
-      for (let i = 0; i < question.stars.length; i++) {
-        if (i <= starIndex) {
-          question.stars.splice(i, 1, true);
-        } else {
-          question.stars.splice(i, 1, false);
-        }
-      }
-    },
-    
-    // 排序题拖动事件
-    dragStart(event, question, option) {
-      event.preventDefault();
-      event.stopPropagation();
-      event.dataTransfer.setData("text/plain", "");
-      event.target.parentElement.classList.add("dragging");
-      this.dragOption = option;
-      this.dragQuestion = question;
-    },
-    dragEnd(event, question, option) {
-      event.preventDefault();
-      event.stopPropagation();
-      event.target.parentElement.classList.remove("dragging");
-      let newIndex = question.options.indexOf(option);
-      let oldIndex = question.options.indexOf(this.dragOption);
-      if (newIndex > oldIndex) {
-        question.options.splice(newIndex + 1, 0, this.dragOption);
-      } else {
-        question.options.splice(newIndex, 0, this.dragOption);
-      }
-      question.options.splice(oldIndex, 1);
-      this.dragOption = null;
-      this.dragQuestion = null;
-    },
-
-    // 图片选择题选择图片
-    selectImage(question, index) {
-      question.images.forEach((image, imageIndex) => {
-        if (index === imageIndex) {
-          image.selected = true;
-        } else {
-          image.selected = false;
-        }
-      });
-    },
-
-    
-    scrollToQuestion(index) {
-      // 获取锚点值
-      const hash = '#question-' + (index + 1);
-
-      // 查找对应的问题卡片元素
-      const questionCard = document.querySelector(hash);
-      if (!questionCard) {
-        return;
-      }
-
-      // 滚动到可视区域
-      questionCard.scrollIntoView({ behavior: "smooth" });
+        alert(this.$store.state.is_creating)
     }
 
 
