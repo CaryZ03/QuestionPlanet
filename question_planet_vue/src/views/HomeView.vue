@@ -9,7 +9,6 @@
               <router-link v-if="this.$store.state.isLogin" to="/new"><el-button round>创建问卷</el-button></router-link>
               <router-link v-else to="/login"><el-button round>创建问卷</el-button></router-link>
               <br>
-
             </el-row>
           </div>
 
@@ -79,6 +78,11 @@ export default ({
 }
 </style>
 <style scoped>
+<<<<<<< Updated upstream
+=======
+
+
+>>>>>>> Stashed changes
 .el-header,
 .el-footer {
   background-color: #B3C0D1;
