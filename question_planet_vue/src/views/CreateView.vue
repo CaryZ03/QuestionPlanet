@@ -1,106 +1,113 @@
 <template>
     <div class="row">
         <!-- 工具栏 -->
-        <div class="col-md-3 d-none d-lg-block bg-light sidebar">
-
-
-            <!-- 单选题工具 -->
-            <div class="tool mb-2">
+        <el-collapse v-model="activeNames" @change="handleChange"  class="col-md-3 d-none d-lg-block bg-light sidebar">
+            <el-collapse-item  name="1" class="tool " >
+                <template slot="title">
+                  <i class="el-icon-circle-check"></i>单选题
+                </template> 
                 <div class="tool-body">
-                    <h5 class="tool-title">单选题</h5>
-                    <i class="el-icon-circle-check"></i>
-                    <br>
-                    <p class="tool-text">问卷中用户只能选中一个选项作为答案。</p>
+                    <!-- <h5 class="tool-title"><i class="el-icon-circle-check"></i>单选题</h5>            -->
+                    <!-- <p class="tool-text">问卷中用户只能选中一个选项作为答案。</p> -->
+                    <el-tooltip class="item" effect="dark" content="问卷中用户只能选中一个选项作为答案。" placement="bottom">
+                        <el-button type="primary" class="btn btn-primary btn-sm" icon="el-icon-circle-plus"
+                            @click="addQuestion('single')" round>添加单选题</el-button>
+                    </el-tooltip>
+                    <el-tooltip class="item" effect="dark" content="问卷中用户只能选中一个选项作为答案。" placement="bottom">
+                        <el-button type="primary" class="btn btn-primary btn-sm" icon="el-icon-circle-plus"
+                            @click="addQuestion('single')" round>添加单选题</el-button>
+                    </el-tooltip>
+                    <el-tooltip class="item" effect="dark" content="问卷中用户只能选中一个选项作为答案。" placement="bottom">
+                        <el-button type="primary" class="btn btn-primary btn-sm" icon="el-icon-circle-plus"
+                            @click="addQuestion('single')" round>添加单选题</el-button>
+                    </el-tooltip>
                     <el-tooltip class="item" effect="dark" content="问卷中用户只能选中一个选项作为答案。" placement="bottom">
                         <el-button type="primary" class="btn btn-primary btn-sm" icon="el-icon-circle-plus"
                             @click="addQuestion('single')" round>添加单选题</el-button>
                     </el-tooltip>
                 </div>
-            </div>
+            </el-collapse-item>
 
             <!-- 多选题工具 -->
-            <div class="tool mb-2">
+            <el-collapse-item  name="2" class="tool mb-2">
+              <template slot="title">
+                <i class="el-icon-circle-check"></i><i class="el-icon-circle-check"></i>多选题
+                </template> 
                 <div class="tool-body">
-                    <h5 class="tool-title">多选题</h5>
-                    <i class="el-icon-circle-check"></i><i class="el-icon-circle-check"></i>
-                    <br>
-                    <p class="tool-text">问卷中用户可以选中多个选项作为答案。</p>
+                    <!-- <h5 class="tool-title"><i class="el-icon-circle-check"></i><i class="el-icon-circle-check"></i>多选题</h5> -->
+                    <!-- <p class="tool-text">问卷中用户可以选中多个选项作为答案。</p> -->
                     <el-button type="primary" class="btn btn-primary btn-sm" icon="el-icon-circle-plus"
                         @click="addQuestion('multiple')" round>添加多选题</el-button>
 
                 </div>
-            </div>
+            </el-collapse-item>
 
             <!-- 填空题工具 -->
-            <div class="tool mb-2">
-                <div class="tool-body">
-                    <h5 class="tool-title">填空题</h5>
-                    <i class="el-icon-edit-outline"></i>
-                    <br>
-                    <p class="tool-text">问卷中用户需要输入文本信息作为答案。</p>
+            <el-collapse-item  name="3" class="tool mb-2">
+              <template slot="title">
+                <i class="el-icon-edit-outline"></i>填空题
+                </template>   
+              <div class="tool-body">
+                    <!-- <h5 class="tool-title"><i class="el-icon-edit-outline"></i>填空题</h5> -->
+                    <!-- <p class="tool-text">问卷中用户需要输入文本信息作为答案。</p> -->
                     <el-button type="primary" class="btn btn-primary btn-sm" icon="el-icon-circle-plus"
                         @click="addQuestion('text')" round>添加填空题</el-button>
                 </div>
-            </div>
+            </el-collapse-item>
 
             <!-- 评分题工具 -->
-            <div class="tool mb-2">
+            <el-collapse-item  name="4" class="tool mb-2">
+              <template slot="title">
+                <i class="el-icon-star-off"></i>评分题
+                </template>   
                 <div class="tool-body">
-                    <h5 class="tool-title">评分题</h5>
-                    <i class="el-icon-star-off"></i>
-                    <br>
-                    <p class="tool-text">问卷中用户需要对某个问题进行打分。</p>
+                    <!-- <h5 class="tool-title"><i class="el-icon-star-off"></i>评分题</h5> -->
+                    <!-- <p class="tool-text">问卷中用户需要对某个问题进行打分。</p> -->
                     <el-button type="primary" class="btn btn-primary btn-sm" icon="el-icon-circle-plus"
                         @click="addQuestion('rating')" round>添加评分题</el-button>
                 </div>
-            </div>
+            </el-collapse-item>
 
             <!-- 排序题工具 -->
-            <div class="tool mb-2">
+            <el-collapse-item  name="5" class="tool mb-2">
+              <template slot="title">
+                <i class="el-icon-s-data"></i>排序题
+              </template>
                 <div class="tool-body">
-                    <h5 class="tool-title">排序题</h5>
-                    <i class="el-icon-s-data"></i>
-                    <br>
-                    <p class="tool-text">问卷中用户需要将一组选项按照自己的喜好进行排序。</p>
+                    <!-- <h5 class="tool-title"><i class="el-icon-s-data"></i>排序题</h5> -->
+                    <!-- <p class="tool-text">问卷中用户需要将一组选项按照自己的喜好进行排序。</p> -->
                     <el-button type="primary" class="btn btn-primary btn-sm" icon="el-icon-circle-plus"
                         @click="addQuestion('sorting')" round>添加排序题</el-button>
                 </div>
-            </div>
+            </el-collapse-item>
 
             <!-- 图片选择题工具 -->
-            <div class="tool mb-2">
-                <div class="tool-body">
-                    <h5 class="tool-title">图片选择题</h5>
-                    <i class="el-icon-picture-outline"></i>
-                    <br>
-                    <p class="tool-text">问卷中用户需要从多个图片选项中选择一个。</p>
+            <el-collapse-item name="6" class="tool mb-2">
+              <template slot="title">
+                <i class="el-icon-picture-outline"></i>图片选择题
+              </template>  
+              <div class="tool-body">
+                    <!-- <h5 class="tool-title"><i class="el-icon-picture-outline"></i>图片选择题</h5> -->
+                    <!-- <p class="tool-text">问卷中用户需要从多个图片选项中选择一个。</p> -->
                     <el-button type="primary" class="btn btn-primary btn-sm" icon="el-icon-circle-plus"
                         @click="addQuestion('image')" round>添加图片选择题</el-button>
                 </div>
-            </div>
-
-            <!-- 分页器工具 -->
-            <!-- <div class="tool mb-2">
-            <div class="tool-body">
-              <h5 class="tool-title">分页器</h5>
-              <p class="tool-text">将问卷分成多个页面，每个页面包含若干个问题。</p>
-              <el-button type="primary" class="btn btn-primary btn-sm" round>添加分页器</el-button>
-            </div>
-          </div> -->
+            </el-collapse-item>
 
             <!-- 进度条工具 -->
-            <div class="tool mb-2">
-                <div class="tool-body">
-                    <h5 class="tool-title">进度条</h5>
-                    <i class="el-icon-s-data"></i>
-                    <br>
-                    <p class="tool-text">显示当前用户填写问卷的进度。</p>
+            <el-collapse-item name="7" class="tool mb-2">
+              <template slot="title">
+                <i class="el-icon-s-data"></i>进度条
+              </template>  
+              <div class="tool-body">
+                    <!-- <h5 class="tool-title"><i class="el-icon-s-data"></i>进度条</h5> -->
+                    <!-- <p class="tool-text">显示当前用户填写问卷的进度。</p> -->
                     <el-button type="primary" class="btn btn-primary btn-sm" icon="el-icon-circle-plus"
                         round>添加进度条</el-button>
                 </div>
-            </div>
-
-        </div>
+            </el-collapse-item>
+    
+    </el-collapse>
 
         <!-- 问题列表 -->
         <div class="question-card" id="question-list">
@@ -248,6 +255,7 @@ export default {
     data() {
         return {
             questions: [],
+            activeNames: ['1','2','3','4','5','6','7']
         };
     },
     methods: {
@@ -424,7 +432,8 @@ export default {
     padding: 1rem;
     width: 30%;
     overflow-y: scroll;
-    background-color: #ccd2d8;
+    background-color: #d4dbe0;
+
     /* color: #409EFF; */
 
     /* display: flex;
@@ -434,10 +443,10 @@ export default {
     flex-direction: row;
     flex-wrap: wrap; */
 
-    display: flex;
+    /* display: flex;
     justify-content: space-between;
     flex-direction: row;
-    flex-wrap: wrap;
+    flex-wrap: wrap; */
 
 }
 
@@ -467,7 +476,7 @@ export default {
     height: calc(100% - 6rem);
     z-index: 100;
     padding: 1rem;
-    width: 77%;
+    width: 90%;
     overflow-y: scroll;
     background-color: #ffffff;
     /* background-color: #aebac5; */
@@ -506,14 +515,17 @@ export default {
     border: 1px solid #dee2e6 !important;
     border-radius: 0.25rem !important;
     margin: 0.5rem;
-    width: 45%;
+    width: 95%;
     background-color: #ffffff;
     /* height: 10rem; */
 }
 
 .tool-body {
     padding: 0.5rem !important;
-
+    display: flex;
+    justify-content: space-between;
+    flex-direction: row;
+    flex-wrap: wrap;
 }
 
 .tool-title {
@@ -570,6 +582,8 @@ export default {
 .btn-primary {
     background-color: #007bff !important;
     border-color: #007bff !important;
+    width: 30%;
+    margin: 1%;
 }
 
 .btn-primary:hover {
