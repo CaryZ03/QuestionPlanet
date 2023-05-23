@@ -23,11 +23,16 @@
             </div>
 
             <div id="ctl00_ContentPlaceHolder1_divEmail" class="items">
-                <b>邮件地址</b><span id="ctl00_ContentPlaceHolder1_lblEmail">未设置</span><span class="fr"><span
-                        id="ctl00_ContentPlaceHolder1_lbAccountStatus">设置后可用邮件地址登录</span>&nbsp;&nbsp;<a
+                <b>邮件地址</b>
+                <span id="ctl00_ContentPlaceHolder1_lblEmail">未设置</span>
+                <span class="fr">
+                    <span
+                        id="ctl00_ContentPlaceHolder1_lbAccountStatus">设置后可用邮件地址登录</span>&nbsp;&nbsp;
+                        <a
                         id="ctl00_ContentPlaceHolder1_lkChangEmail" title="点击更改" class="fr index_iconfont changeIcon"
                         onclick="var d=new Date();var url='/register/changeemail.aspx?t='+d.valueOf();PDF_launch(url,420,250,null,'验证邮件地址');"
-                        href="javascript:void(0);"></a></span>
+                        href="javascript:void(0);"></a>
+                </span>
 
             </div>
             <div id="ctl00_ContentPlaceHolder1_divPhone" class="items">
@@ -70,7 +75,7 @@ export default {
 }
 </script>
 
-<style>
+<style scoped>
 body {
     background: #eee;
     /* This is just a helper in case the element has a transparent background or white colors. */
@@ -173,16 +178,24 @@ screen {
 }
 
 .user-register-box {
+    
     text-align: left;
     width: 484px;
+    position: fixed !important;
+    top: 20rem !important;
+    left: 20rem !important;
+    margin-left: 20rem;
 }
 
 .title {
+    position: fixed;
     color: #323232;
     font-size: 18px;
     font-weight: 700;
     line-height: 26px;
     margin-bottom: 16px;
+
+    left: 20rem;
 }
 
 .content {
@@ -192,6 +205,7 @@ screen {
     font-size: 13px;
     height: 234px;
     padding: 20px 30px;
+    left: 20px;
 }
 
 .content .items {

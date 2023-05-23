@@ -16,6 +16,7 @@
           <li v-show="!this.$store.state.isLogin"> <router-link active-class="" to="/register">Register</router-link></li>
 
           <li v-if="this.$store.state.isLogin"><router-link active-class="" to="/userInfo">个人信息</router-link></li>
+          <li ><router-link active-class="" to="/userInfo">个人信息test</router-link></li>
         </ul>
         <router-view />
       </span>
