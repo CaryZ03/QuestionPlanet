@@ -3,7 +3,7 @@ name: Deploy to Server
 on:
   push:
     branches:
-      - main  # 根据你的分支名称进行配置
+      - dev
 
 jobs:
   deploy:
@@ -20,9 +20,8 @@ jobs:
 
       - name: Build and deploy
         run: |
-          # 在这里执行你构建和部署的命令
-          # 例如：使用Gunicorn启动WSGI服务器
-          gunicorn myapp.wsgi:application --bind 0.0.0.0:8000
+          uwsgi --http :5000 --wsgi-file QuestionPlanet.wsgi
+          systemctl restart nginx
 
       - name: Deploy to server
         uses: appleboy/scp-action@master
@@ -31,4 +30,4 @@ jobs:
           username: ${{ secrets.SERVER_USERNAME }}
           key: ${{ secrets.SERVER_KEY }}
           source: ./
-          target: /home/caryz/question_planet
+          target: /home/caryz/QuestionPlanet
