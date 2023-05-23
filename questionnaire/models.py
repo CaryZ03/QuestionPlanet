@@ -25,6 +25,7 @@ class Question(Model):
         ('grade', "打分")
     )
     q_type = CharField(max_length=20, choices=question_types, default='single')
+    q_manditory = BooleanField(default=False)
     q_title = TextField()
     q_description = TextField()
     q_option_count = IntegerField()
@@ -41,7 +42,7 @@ class AnswerSheet(Model):
     as_createTime = DateTimeField(auto_now_add=True)
     as_answers = ManyToManyField(Answer)
     as_score = IntegerField()
-    as_temporary_save = JSONField(default='')
+    as_temporary_save = JSONField(default=None)
     as_submitted = BooleanField(default=False)
 
 

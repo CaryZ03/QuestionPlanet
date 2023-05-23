@@ -3,7 +3,7 @@ from .views import *
 
 urlpatterns = [
     # 填写问卷
-    path('fill_questionnaire', fill_questionnaire),
+    path('fill/<int:qn_id>', fill_questionnaire),
     path('save_answers', save_answers),
     path('submit_answers', submit_answers),
     # 编辑问卷

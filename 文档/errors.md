@@ -200,7 +200,7 @@ class Admin(Model):
 
 ```json
 {
-    "id": id
+    "uid": uid
 }
 ```
 
@@ -223,7 +223,7 @@ class Admin(Model):
 
 ```json
 {
-    "id": id
+    "uid": uid
 }
 ```
 
@@ -246,7 +246,7 @@ class Admin(Model):
 
 ```json
 {
-    "id": id
+    "uid": uid
 }
 ```
 
@@ -276,7 +276,7 @@ class Admin(Model):
 
 ```json
 {
-    "id": id
+    "uid": uid
 }
 ```
 
@@ -304,7 +304,7 @@ class Admin(Model):
 
 ```json
 {
-    "id": id,
+    "uid": uid,
     "username": username,
     "password1": password1,
     "password2": password2,
@@ -339,7 +339,7 @@ class Admin(Model):
 
 ```json
 {
-    "id": id,
+    "uid": uid,
     "username": username,
     "password1": password1,
     "password2": password2,
@@ -374,7 +374,7 @@ class Admin(Model):
 
 ```json
 {
-    "id": id,
+    "uid": uid,
     "type": type
 }
 ```
@@ -594,7 +594,7 @@ else
 
 ```json
 {
-    "id": 用户id
+    "uid": 用户id
 }
 ```
 
@@ -620,7 +620,7 @@ else
 
 ```json
 {
-    "id": 用户id,
+    "uid": 用户id,
     "qn_id": 问卷id,
     "qn_title": 问卷标题,
     "qn_description": 问卷描述,
@@ -632,7 +632,7 @@ else
             "q_title": 问题标题,
             "q_description": 问题描述,
             "q_option_count": 选项数,
-            "q_options": 选项数据,
+            "q_options": 选项数据([选项1, ...]),
             "q_correct_answer": 正确答案,
             "q_score": 分数
         }，
@@ -662,7 +662,7 @@ else
 
 ```json
 {
-    "id": 用户id,
+    "uid": 用户id,
     "qn_id": 问卷id
 }
 ```
@@ -688,7 +688,7 @@ else
 
 ```json
 {
-    "id": 用户id,
+    "uid": 用户id,
     "qn_id": 问卷id,
     "status": 目标状态(unpublished, published, closed, banned)
 }
