@@ -44,6 +44,8 @@
           <!-- 按钮盒子 -->
           <div class="btn-box">
             <button @click="login">登录</button>
+            <button @click="test">test</button>
+
             <!-- 绑定点击事件 -->
             <p @click="register"><router-link to="/register">没有账号?去注册</router-link></p> <br>
           </div>
@@ -56,17 +58,32 @@
 </template>
 
 <script>
+import axios from 'axios'
 export default {
   name: 'register',
   data() {
     return {
+      login:[
+
+      ],
       loginAccount: '',
-      loginCode: ''
+      loginCode: '',
+      user:{}
     }
   },
   methods: {
     login() {
-      //todo
+      //
+      axios.get('http://localhost:3000/user?username='+this.loginAccount)
+      .then(response => {
+        this.user = response.data[0]
+      })
+      .catch(error => {
+        console.log(error);
+        alert("账户不存在");
+        return;
+      }),
+
       this.$store.dispatch('login', this.loginAccount, this.loginCode),
       console.log(this.$store.state.curUserID),
       //todo先检查一波
@@ -80,8 +97,23 @@ export default {
     },
     register() {
       alert("register todo")
-    }
-  }
+    },
+    test(){
+      console.log(this.$api)
+      this.$api.userInfo.getUserInfo(this.loginAccount).then((response) => {
+        console.log(response.data)
+      }).catch(error => {
+        alert("未登录的用户")
+      })
+    },
+    getUserInfo() {
+      axios.get('http://localhost:3000/user?username='+this.loginAccount,this.user)
+      .catch(error => {
+        console.log("??"+error)
+      }),
+      console.log("!!!"+this.user)
+    },
+  },
 }
 </script>
 <style scoped>

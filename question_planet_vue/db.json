@@ -1,0 +1,16 @@
+{
+  "user": [
+    {
+      "username": 21373219,
+      "password1": "1password1",
+      "password2": "1password2",
+      "email": "1email"
+    },
+    {
+      "username": 21373272,
+      "password1": "2password1",
+      "password2": "2password2",
+      "email": "2email"
+    }
+  ]
+}

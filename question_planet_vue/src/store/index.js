@@ -9,6 +9,7 @@ export default new Vuex.Store({
     curUserID:'',
     my_naire_num:0,
     my_bin_num:0,
+    is_creating:false,
   },
   getters: {
   },
