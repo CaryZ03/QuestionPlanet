@@ -179,7 +179,7 @@ def reset_password(request):
 
 
 @csrf_exempt
-# @login_required
+@login_required
 @require_http_methods(['POST'])
 def logout(request):
     request.session.flush()
