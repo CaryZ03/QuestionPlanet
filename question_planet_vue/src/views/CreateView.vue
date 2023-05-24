@@ -111,6 +111,16 @@
 
         <!-- 问题列表 -->
         <div class="question-card" id="question-list">
+            <el-container class="card mb-2" style="box-shadow: 0 2px 4px rgba(0, 0, 0, .12), 0 0 6px rgba(0, 0, 0, .04)">
+                    <el-main>
+                        <span class="red_star">*&nbsp;</span>
+                        <span class="title">问卷标题</span>
+                        <el-input placeholder="请输入问卷标题" v-model="qn_title" clearable></el-input>
+                    </el-main>
+                </el-container>
+
+                <div style="line-height: 30px;">&emsp;</div>
+
             <div v-for="(question, index) in questions" :key="index" class="card mb-2" v-bind:id="question.id">
                 <el-container style="box-shadow: 0 2px 4px rgba(0, 0, 0, .12), 0 0 6px rgba(0, 0, 0, .04)">
                     <el-main v-if="question.isEdit">
@@ -155,8 +165,10 @@
 
                         <div v-else-if="question.type === 'text'">
                             <div class="division"><span class="title">内容</span></div>
-                            <el-input type="textarea" autosize placeholder="请输入内容" v-model="question.answer"></el-input>
+                            <el-input type="textarea" autosize placeholder="请输入内容" v-model="question.a_content"></el-input>
                         </div>
+
+
 
                         <div style="line-height: 30px;">&emsp;</div>
                         <div class="division"><span class="title">设置</span></div>
@@ -184,9 +196,10 @@
                         <div v-if="question.type === 'single' || question.type === 'multiple'">
                             <div class="division"><span class="title">选项</span></div>
                             <div v-if="question.type === 'single'">
-                                <el-radio-group v-model="question.selectedOption">
+                                <el-radio-group v-model="question.a_content">
                                     <el-radio v-for="(option, index_option) in question.options" :label="index_option"
                                         :key="index_option">{{ option.label }}</el-radio>
+                                    
                                 </el-radio-group>
                             </div>
 
@@ -200,7 +213,7 @@
 
                         <div v-else-if="question.type === 'text'">
                             <div class="division"><span class="title">内容</span></div>
-                            <el-input type="textarea" autosize placeholder="请输入内容" v-model="question.answer"></el-input>
+                            <el-input type="textarea" autosize placeholder="请输入内容" v-model="question.a_content"></el-input>
                         </div>
 
                     </el-main>
@@ -220,6 +233,8 @@
                 <div style="line-height: 30px;">&emsp;</div>
 
             </div>
+            <el-button type="success" style="margin: 0 0 0 -66px" round v-on:click="save_handler()">保存问卷</el-button>
+            <el-button type="primary" round >提交问卷</el-button>
         </div>
 
 
@@ -241,7 +256,7 @@
 </template>
   
 <script>
-
+import axios from 'axios';
 // const vm = new Vue({
 //   el: '#question-list',
 //   data:{
@@ -254,6 +269,12 @@ export default {
     name: 'createQuestionnaire',
     data() {
         return {
+            uid: this.$store.state.curUserID,
+            qn_id: "",
+            qn_title: "",
+            qn_description: "",
+            qn_end_time: "",
+            qn_refillable: "",
             questions: [],
             activeNames: ['1','2','3','4','5','6','7']
         };
@@ -267,17 +288,11 @@ export default {
                 isMandatory: true,
                 title: "",
                 options: [],
-                selectedOption: null,
-                answer: "",
+                q_description: "",
+                a_content: "",
+                right_answer: "",
+                score: "",
                 stars: [false, false, false, false, false],
-                images: [
-                    { src: "https://via.placeholder.com/150x150?text=Image+1" },
-                    { src: "https://via.placeholder.com/150x150?text=Image+2" },
-                    { src: "https://via.placeholder.com/150x150?text=Image+3" },
-                    { src: "https://via.placeholder.com/150x150?text=Image+4" },
-                    { src: "https://via.placeholder.com/150x150?text=Image+5" },
-                ],
-
             };
             if (type === "single" || type === "multiple") {
                 question.options = [
@@ -291,7 +306,69 @@ export default {
             question.id = 'question-' + (this.questions.length + 1);
             this.questions.push(question);
         },
+        
+        //保存试卷
+        saveQuestionnaire(){
+            const selectedQuestions = this.questions.map(question => {
+            // 选择要包含在 JSON 数据中的属性
+            return {
+                q_type: question.type,
+                q_mandatory: question.isMandatory,
+                q_title: question.title,
+                q_description: question.q_description,
+                q_option_count: question.options.length,
+                q_options: question.options,
+                q_correct_answer: question.right_answer,
+                q_score: question.score,
+            };
+            });
+            const dataObject = {
+                uid: this.uid,
+                qn_id: this.qn_id,
+                qn_title: this.qn_title,
+                qn_description: this.qn_description,
+                qn_end_time: this.qn_end_time,
+                qn_refillable: this.qn_refillable,
+                questions_data: selectedQuestions,
+            };
+            const jsonString = JSON.stringify(dataObject);
+            console.log(jsonString);
+            axios({
+                method: 'post',
+                url: 'http://127.0.0.1:4523/m2/2762233-0-cbe98cc5/83357835',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                params: {
+                    uid: 1
+                },
+                data: jsonString
+            })
+            .then(function (response) {
+                console.log(response);
+            })
+            .catch(function (error) {
+                console.log(error);
+            });
+            /*
+            const filename = 'data.json';
 
+            const blob = new Blob([jsonString], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = filename;
+            link.click();
+            URL.revokeObjectURL(url);*/
+
+        },
+
+        save_tips() {
+        this.$alert('问卷保存成功！', '保存问卷', {
+          confirmButtonText: '确定',
+        });
+      },
         // 选择题添加选项
         addNode(index) {
             this.questions[index].options.push({ label: "选项", checked: false });
@@ -412,7 +489,15 @@ export default {
 
     },
 
-
+    computed:{
+        save_handler()
+        {
+            return () => {
+            this.saveQuestionnaire();
+            this.save_tips();
+            }
+        },
+    },
 
 
 

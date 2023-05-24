@@ -1,121 +1,27 @@
 <template>
     <div class="row">
-      <!-- 工具栏 -->
-      <div class="col-md-3 d-none d-lg-block bg-light sidebar">
-        
-          
-          <!-- 单选题工具 -->
-          <div class="tool mb-2">
-            <div class="tool-body">
-              <h5 class="tool-title">单选题</h5>
-              <i class="el-icon-circle-check"></i>
-              <br>
-              <p class="tool-text">问卷中用户只能选中一个选项作为答案。</p>
-              <el-tooltip class="item" effect="dark" content="问卷中用户只能选中一个选项作为答案。" placement="bottom">
-                <el-button type="primary" class="btn btn-primary btn-sm" icon="el-icon-circle-plus"
-                                @click="addQuestion('single')" round>添加单选题</el-button>
-              </el-tooltip>
-            </div>
-          </div>
-  
-          <!-- 多选题工具 -->
-          <div class="tool mb-2">
-            <div class="tool-body">
-              <h5 class="tool-title">多选题</h5>
-              <i class="el-icon-circle-check"></i><i class="el-icon-circle-check"></i>
-              <br>
-              <p class="tool-text">问卷中用户可以选中多个选项作为答案。</p>
-              <el-button type="primary" class="btn btn-primary btn-sm" icon="el-icon-circle-plus" @click="addQuestion('multiple')" round>添加多选题</el-button>
       
-            </div>
-          </div>
-  
-          <!-- 填空题工具 -->
-          <div class="tool mb-2">
-            <div class="tool-body">
-              <h5 class="tool-title">填空题</h5>
-              <i class="el-icon-edit-outline"></i>
-              <br>
-              <p class="tool-text">问卷中用户需要输入文本信息作为答案。</p>
-              <el-button type="primary" class="btn btn-primary btn-sm" icon="el-icon-circle-plus" @click="addQuestion('text')" round>添加填空题</el-button>
-            </div>
-          </div>
-  
-          <!-- 评分题工具 -->
-          <div class="tool mb-2">
-            <div class="tool-body">
-              <h5 class="tool-title">评分题</h5>
-              <i class="el-icon-star-off"></i>
-              <br>
-              <p class="tool-text">问卷中用户需要对某个问题进行打分。</p>
-              <el-button type="primary" class="btn btn-primary btn-sm" icon="el-icon-circle-plus" @click="addQuestion('rating')" round>添加评分题</el-button>
-            </div>
-          </div>
-  
-          <!-- 排序题工具 -->
-          <div class="tool mb-2">
-            <div class="tool-body">
-              <h5 class="tool-title">排序题</h5>
-              <i class="el-icon-s-data"></i>
-              <br>
-              <p class="tool-text">问卷中用户需要将一组选项按照自己的喜好进行排序。</p>
-              <el-button type="primary" class="btn btn-primary btn-sm" icon="el-icon-circle-plus" @click="addQuestion('sorting')" round>添加排序题</el-button>
-            </div>
-          </div>
-  
-          <!-- 图片选择题工具 -->
-          <div class="tool mb-2">
-            <div class="tool-body">
-              <h5 class="tool-title">图片选择题</h5>
-              <i class="el-icon-picture-outline"></i>
-              <br>
-              <p class="tool-text">问卷中用户需要从多个图片选项中选择一个。</p>
-              <el-button type="primary" class="btn btn-primary btn-sm" icon="el-icon-circle-plus" @click="addQuestion('image')" round>添加图片选择题</el-button>
-            </div>
-          </div>
-  
-          <!-- 分页器工具 -->
-          <!-- <div class="tool mb-2">
-            <div class="tool-body">
-              <h5 class="tool-title">分页器</h5>
-              <p class="tool-text">将问卷分成多个页面，每个页面包含若干个问题。</p>
-              <el-button type="primary" class="btn btn-primary btn-sm" round>添加分页器</el-button>
-            </div>
-          </div> -->
-  
-          <!-- 进度条工具 -->
-          <div class="tool mb-2">
-            <div class="tool-body">
-              <h5 class="tool-title">进度条</h5>
-              <i class="el-icon-s-data"></i>
-              <br>
-              <p class="tool-text">显示当前用户填写问卷的进度。</p>
-              <el-button type="primary" class="btn btn-primary btn-sm" icon="el-icon-circle-plus" round>添加进度条</el-button>
-            </div>
-          </div>
-    
-      </div>
       <!-- 问题列表 -->
       <div class="question-card" id="question-list">
         <div>
-        <h2>{{ questionnaireName }}</h2>
+        <h2 style="margin: 0 0 0 -73px">{{ qn_title }}</h2>
         </div>
 
         <div v-for="(question, index) in questions" :key="index" class="card mb-2">
           <el-container style="box-shadow: 0 2px 4px rgba(0, 0, 0, .12), 0 0 6px rgba(0, 0, 0, .04)">
           <el-main>
-            <span>第{{ index + 1 }}题：{{ question.title }}&nbsp;&nbsp;&nbsp;&nbsp;</span>
-            <span v-if="question.type === 'single'" class="question-type">[单选题]</span>
-            <span v-if="question.type === 'multiple'" class="question-type">[多选题]</span>
-            <span v-if="question.type === 'text'" class="question-type">[填空题]</span>
+            <span>第{{ index + 1 }}题：{{ question.q_title }}&nbsp;&nbsp;&nbsp;&nbsp;</span>
+            <span v-if="question.q_type === 'single'" class="question-type">[单选题]</span>
+            <span v-if="question.q_type === 'multiple'" class="question-type">[多选题]</span>
+            <span v-if="question.q_type === 'text'" class="question-type">[填空题]</span>
             <div style="line-height: 30px;">&emsp;</div>
             
             <el-table
-            :data="question.options"
+            :data="question.q_options"
             style="width: 100%"
             show-summary
             :default-sort = "{prop: 'label', order: 'ascending'}"
-            v-if="question.type === 'single' || question.type === 'multiple'"
+            v-if="question.q_type === 'single' || question.q_type === 'multiple'"
             >
               <el-table-column
                 prop="label"
@@ -133,15 +39,15 @@
                 label="比例"
                 width="100">
                 <template slot-scope="scope">
-                {{ calculatePercentage(scope.row.num, question.answerNum) }}
+                {{ calculatePercentage(scope.row.num, question.q_answer_num) }}
                 </template>
               </el-table-column>
 
             </el-table>
   
-            <div v-if="question.type === 'text'">
+            <div v-if="question.q_type === 'text'">
               <div class="division"><span class="title">内容</span></div>
-              <el-input type="textarea" autosize placeholder="请输入内容" v-model="question.answer"></el-input>
+              <el-input type="textarea" autosize placeholder="请输入内容" v-model="question.a_content"></el-input>
             </div>
   
           </el-main>
@@ -168,19 +74,6 @@
   
         </div>
       </div>
-  
-  
-      <!-- 问卷大纲区域 -->
-      <div class="outline-area">
-        <div class="outline-title">问卷大纲</div>
-        <div class="outline-list">
-          <!-- <ol>
-            <li size="medium" v-for="(question, index) in questions" :key="index">{{ question.title }}</li>
-          </ol> -->
-          <el-link class= "outline-item"  v-for="(question, index) in questions" :key="index"  @click.prevent="scrollToQuestion(index)">{{ index + 1 }}.{{ question.title }}</el-link>
-        </div>
-        
-      </div>
     
   
     </div>
@@ -188,6 +81,7 @@
   
   <script>
   import * as echarts from "echarts";
+  import axios from 'axios';
   // const vm = new Vue({
   //   el: '#question-list',
   //   data:{
@@ -196,10 +90,12 @@
   // }
   // )
   
+  
+
   export default {
     data() {
       return {
-        questionnaireName: "问卷名称",
+        qn_title: "这是一个问卷名称",
         questions: [
           {
           type: "single",
@@ -245,6 +141,13 @@
         myChartStyle: { float: "left", width: "100%", height: "400px" }
       };
     },
+    created() {
+        this.load_qn();
+        this.drawBarCharts();
+        this.drawLineCharts();
+        this.drawPieCharts();
+        this.drawRingCharts();
+    },
     mounted() {
       this.drawBarCharts();
       this.drawLineCharts();
@@ -263,6 +166,27 @@
       },
     },
     methods: {
+      load_qn()
+        {   
+            var _this = this;
+            axios({
+                method: 'get',
+                url: 'http://127.0.0.1:4523/m2/2618081-0-default/83421811',
+                params: {
+                    uid: 1
+                },
+            })
+            .then(function (response) {
+            console.log(response);
+            console.log(response.data);
+            console.log(response.data.qn_title);
+            _this.qn_title = response.data.qn_title;
+            _this.questions = response.data.questions_data;
+            })
+            .catch(function (error) {
+            console.log(error);
+            });
+        },
       drawBarCharts() {
       this.questions.forEach((question, index) => {
         const chartId = 'barChart-' + index;
@@ -275,13 +199,13 @@
         const option = {
           // 配置项
             xAxis: {
-            data: question.options.map(option => option.label)
+            data: question.q_options.map(option => option.label)
           },
           yAxis: {},
           series: [
             {
               type: "bar", //形状为柱状图
-              data: question.options.map(option => option.num)
+              data: question.q_options.map(option => option.num)
             }
           ]
           };
@@ -305,13 +229,13 @@
         const option = {
           // 配置项
             xAxis: {
-            data: question.options.map(option => option.label)
+            data: question.q_options.map(option => option.label)
           },
           yAxis: {},
           series: [
             {
               type: "line", //形状为折线图
-              data: question.options.map(option => option.num)
+              data: question.q_options.map(option => option.num)
             }
           ]
           };
@@ -337,7 +261,7 @@
           series: [
             {
               type: "pie", //形状为饼状图
-              data: question.options.map(option => ({
+              data: question.q_options.map(option => ({
                 name: option.label,
                 value: option.num
               }))
@@ -367,7 +291,7 @@
             {
               type: "pie", //形状为饼状图
               radius: ['50%', '70%'],
-              data: question.options.map(option => ({
+              data: question.q_options.map(option => ({
                 name: option.label,
                 value: option.num
               }))
@@ -411,42 +335,6 @@
         this.questions[index].isBar = false;
       },
 
-      // 添加问题
-      addQuestion(type) {
-        let question = {
-          type: type,
-          isEdit: true,
-          isMandatory: true,
-          title: "问题名称",
-          options: [],
-          selectedOption: null,
-          answer: "",
-          answerNum: 85, // 回答本问题总人数
-          stars: [false, false, false, false, false],
-          images: [
-            {src: "https://via.placeholder.com/150x150?text=Image+1"},
-            {src: "https://via.placeholder.com/150x150?text=Image+2"},
-            {src: "https://via.placeholder.com/150x150?text=Image+3"},
-            {src: "https://via.placeholder.com/150x150?text=Image+4"},
-            {src: "https://via.placeholder.com/150x150?text=Image+5"},
-          ],
-        
-        };
-        if (type === "single" || type === "multiple") {
-          question.options = [
-            { label: "选项1", checked: false, num: 15 },
-            { label: "选项2", checked: false, num: 20 },
-            { label: "选项3", checked: false, num: 25 },
-            { label: "选项4", checked: false, num: 25 },
-          ];
-        } else if (type === "rating") {
-          question.stars = [false, false, false, false, false];
-        }
-        // 为题目卡片动态生成唯一 ID
-        question.id = 'question-' + this.questions.length;
-        this.questions.push(question);
-      },
-  
       // 选择题添加选项
       addNode(index) {
         this.questions[index].options.push({label: "选项", checked: false});
