@@ -5,7 +5,7 @@ from datetime import datetime
 from django.http import JsonResponse, HttpResponse, HttpResponseBadRequest
 from questionnaire.models import *
 from user.models import *
-from django.views.decorators.http import require_GET
+from django.views.decorators.http import require_GET, require_http_methods
 from django.views.decorators.csrf import csrf_exempt
 import pandas as pd
 import matplotlib.pyplot as plt
@@ -18,6 +18,7 @@ from django.db import transaction
 import csv
 
 
+<<<<<<< Updated upstream
 @csrf_exempt
 def create_questionnaire(request):
     if request.method == 'POST':
@@ -113,6 +114,39 @@ def answer_questionnaire(request):
             return JsonResponse({'code': -1, 'message': 'invalid answer data.'})
     else:
         return JsonResponse({'code': -1, 'message': 'only support POST method.'})
+=======
+def check_identity(view_func):
+    def wrapper(request, *args, **kwargs):
+        body = request.body.decode('utf-8')
+        data = json.loads(body)
+        if 'qn_id' in data:
+            qn_id = request.body.get('qn_id')
+            user_id = request.body.get('uid')
+            if not Questionnaire.objects.filter(qn_id=qn_id).exists():
+                return JsonResponse({'errno': 3001, 'msg': "问卷不存在"})
+            if not User.objects.filter(user_id=user_id).exists():
+                return JsonResponse({'errno': 3003, 'msg': "用户不存在"})
+            user = User.objects.get(user_id=user_id)
+            questionnaire = Questionnaire.objects.get(qn_id=qn_id)
+            if questionnaire not in user.user_created_questionnaires.all():
+                return JsonResponse({'errno': 3004, 'msg': '用户没有权限进行该操作'})
+        elif 'q_id' in data:
+            q_id = request.body.get('q_id')
+            user_id = request.body.get('uid')
+            if not Question.objects.filter(q_id=q_id).exists():
+                return JsonResponse({'errno': 3002, 'msg': "问题不存在"})
+            if not User.objects.filter(user_id=user_id).exists():
+                return JsonResponse({'errno': 3003, 'msg': "用户不存在"})
+            user = User.objects.get(user_id=user_id)
+            question = Question.objects.get(q_id=q_id)
+            questionnaire = question.q_questionnaire
+            if questionnaire not in user.user_created_questionnaires.all():
+                return JsonResponse({'errno': 3004, 'msg': '用户没有权限进行该操作'})
+        else:
+            return view_func(request, *args, **kwargs)
+
+    return wrapper
+>>>>>>> Stashed changes
 
 
 def calculate_score(answer_sheet):
@@ -122,12 +156,18 @@ def calculate_score(answer_sheet):
     return total_score
 
 
-def questionnaire_export(request, qn_id):
+@csrf_exempt
+@check_identity
+@require_http_methods(['GET'])
+def questionnaire_export(request):
+    qn_id = request.body.get('qn_id')
     questionnaire = Questionnaire.objects.get(qn_id=qn_id)
     questions_count = Question.objects.filter(q_questionnaire=questionnaire).count()
     answer_sheet_count = AnswerSheet.objects.filter(as_questionnaire=questionnaire).count()
-    score_avg = Answer.objects.filter(a_question__q_questionnaire=questionnaire).aggregate(Avg('a_score'))['a_score__avg']
-    score_stddev = Answer.objects.filter(a_question__q_questionnaire=questionnaire).aggregate(StdDev('a_score'))['a_score__stddev']
+    score_avg = Answer.objects.filter(a_question__q_questionnaire=questionnaire).aggregate(Avg('a_score'))[
+        'a_score__avg']
+    score_stddev = Answer.objects.filter(a_question__q_questionnaire=questionnaire).aggregate(StdDev('a_score'))[
+        'a_score__stddev']
     single_count = Question.objects.filter(q_questionnaire=questionnaire, q_type='single').count()
     multiple_count = Question.objects.filter(q_questionnaire=questionnaire, q_type='multiple').count()
     judge_count = Question.objects.filter(q_questionnaire=questionnaire, q_type='judge').count()
@@ -149,10 +189,14 @@ def questionnaire_export(request, qn_id):
         'essay_count': essay_count,
         'grade_count': grade_count
     }
-    return JsonResponse(result)
+    return JsonResponse({'errno': 0, 'msg': '信息导出成功', 'result': result})
 
 
-def questionnaire_export_file(request, qn_id):
+@csrf_exempt
+@check_identity
+@require_http_methods(['GET'])
+def questionnaire_export_file(request):
+    qn_id = request.body.get('qn_id')
     questionnaire = Questionnaire.objects.get(qn_id=qn_id)
     questions_count = Question.objects.filter(q_questionnaire=questionnaire).count()
     answer_sheet_count = AnswerSheet.objects.filter(as_questionnaire=questionnaire).count()
@@ -185,13 +229,18 @@ def questionnaire_export_file(request, qn_id):
     return response
 
 
-@require_GET
-def questionnaire_analysis(request, qn_id):
+@csrf_exempt
+@check_identity
+@require_http_methods('GET')
+def questionnaire_analysis(request):
+    qn_id = request.body.get('qn_id')
     questionnaire = Questionnaire.objects.get(qn_id=qn_id)
     questions_count = Question.objects.filter(q_questionnaire=questionnaire).count()
     answer_sheet_count = AnswerSheet.objects.filter(as_questionnaire=questionnaire).count()
-    score_avg = Answer.objects.filter(a_question__q_questionnaire=questionnaire).aggregate(Avg('a_score'))['a_score__avg']
-    score_stddev = Answer.objects.filter(a_question__q_questionnaire=questionnaire).aggregate(StdDev('a_score'))['a_score__stddev']
+    score_avg = Answer.objects.filter(a_question__q_questionnaire=questionnaire).aggregate(Avg('a_score'))[
+        'a_score__avg']
+    score_stddev = Answer.objects.filter(a_question__q_questionnaire=questionnaire).aggregate(StdDev('a_score'))[
+        'a_score__stddev']
     single_count = Question.objects.filter(q_questionnaire=questionnaire, q_type='single').count()
     multiple_count = Question.objects.filter(q_questionnaire=questionnaire, q_type='multiple').count()
     judge_count = Question.objects.filter(q_questionnaire=questionnaire, q_type='judge').count()
@@ -200,12 +249,18 @@ def questionnaire_analysis(request, qn_id):
     grade_count = Question.objects.filter(q_questionnaire=questionnaire, q_type='grade').count()
 
     # 统计单选、多选和判断题的选项统计
-    single_choice_answers = Answer.objects.filter(a_question__q_questionnaire=questionnaire, a_question__q_type='single').values('a_content').annotate(Count('a_content')).order_by('-a_content__count')
-    multiple_choice_answers = Answer.objects.filter(a_question__q_questionnaire=questionnaire, a_question__q_type='multiple').values('a_content').annotate(Count('a_content')).order_by('-a_content__count')
-    judge_answers = Answer.objects.filter(a_question__q_questionnaire=questionnaire, a_question__q_type='judge').values('a_content').annotate(Count('a_content')).order_by('-a_content__count')
+    single_choice_answers = Answer.objects.filter(a_question__q_questionnaire=questionnaire,
+                                                  a_question__q_type='single').values('a_content').annotate(
+        Count('a_content')).order_by('-a_content__count')
+    multiple_choice_answers = Answer.objects.filter(a_question__q_questionnaire=questionnaire,
+                                                    a_question__q_type='multiple').values('a_content').annotate(
+        Count('a_content')).order_by('-a_content__count')
+    judge_answers = Answer.objects.filter(a_question__q_questionnaire=questionnaire, a_question__q_type='judge').values(
+        'a_content').annotate(Count('a_content')).order_by('-a_content__count')
 
     # 统计填空题的出现频率最高的前三个词
-    fill_answers = Answer.objects.filter(a_question__q_questionnaire=questionnaire, a_question__q_type='fill').exclude(a_content='').values_list('a_content', flat=True)
+    fill_answers = Answer.objects.filter(a_question__q_questionnaire=questionnaire, a_question__q_type='fill').exclude(
+        a_content='').values_list('a_content', flat=True)
     fill_words = ' '.join(fill_answers).split()
     fill_top_words = dict(Counter(fill_words).most_common(3))
 
@@ -228,12 +283,14 @@ def questionnaire_analysis(request, qn_id):
         'essay_count': essay_count,
         'grade_count': grade_count
     }
-    return JsonResponse(result)
+    return JsonResponse({'errno': 0, 'msg': '问卷分析成功', 'result': result})
 
 
-@require_GET
+@csrf_exempt
+@check_identity
+@require_http_methods(['GET'])
 def get_questions_by_questionnaire(request):
-    qn_id = request.GET.get('qn_id')
+    qn_id = request.body.get('qn_id')
     if not qn_id:
         return JsonResponse({'error': 'No qn_id provided'})
 
@@ -251,12 +308,14 @@ def get_questions_by_questionnaire(request):
         'questions': list(questions.values())
     }
 
-    return JsonResponse(response_data)
+    return JsonResponse({'errno': 0, 'msg': '数据筛选成功', 'response_data': response_data})
 
 
-@require_GET
+@csrf_exempt
+@check_identity
+@require_http_methods(['GET'])
 def get_answers_by_question(request):
-    q_id = request.GET.get('q_id')
+    q_id = request.body.get('q_id')
     if not q_id:
         return JsonResponse({'error': 'No q_id provided'})
 
@@ -274,34 +333,34 @@ def get_answers_by_question(request):
         'answers': list(answers.values())
     }
 
-    return JsonResponse(response_data)
+    return JsonResponse({'errno': 0, 'msg': '数据筛选成功', 'response_data': response_data})
 
 
 @csrf_exempt
 def delete_answer(request):
-    if request.method == 'POST':
-        a_id = request.POST.get('a_id')
-        try:
-            answer = Answer.objects.get(a_id=a_id)
-        except Answer.DoesNotExist:
-            return JsonResponse({'error': f'Answer with ID {a_id} does not exist.'})
-        data = {
-            'a_id': answer.a_id,
-            'a_user': answer.a_user.user_id if answer.a_user else None,
-            'a_question': answer.a_question.q_id if answer.a_question else None,
-            'a_createTime': answer.a_createTime,
-            'a_content': answer.a_content,
-            'a_score': answer.a_score,
-            'a_comment': answer.a_comment,
-        }
-        answer.delete()
-        return JsonResponse(data)
-    else:
-        return JsonResponse({'error': 'Invalid request method. Expected POST.'})
+    a_id = request.body.get('a_id')
+    try:
+        answer = Answer.objects.get(a_id=a_id)
+    except Answer.DoesNotExist:
+        return JsonResponse({'error': f'Answer with ID {a_id} does not exist.'})
+    data = {
+        'a_id': answer.a_id,
+        'a_user': answer.a_user.user_id if answer.a_user else None,
+        'a_question': answer.a_question.q_id if answer.a_question else None,
+        'a_createTime': answer.a_createTime,
+        'a_content': answer.a_content,
+        'a_score': answer.a_score,
+        'a_comment': answer.a_comment,
+    }
+    answer.delete()
+    return JsonResponse({'errno': 0, 'msg': '数据删除成功', 'deleted_data': data})
 
 
-@require_GET
-def generate_chart(request, qn_id):
+@csrf_exempt
+@check_identity
+@require_http_methods(['GET'])
+def generate_chart(request):
+    qn_id = request.body.get('qn_id')
     questionnaires = Question.objects.filter(qn_id=qn_id).prefetch_related('q_questions')
     questions = questionnaires.first().q_questions.all()
 
@@ -326,7 +385,8 @@ def generate_chart(request, qn_id):
         ax1.set_title('Bar Chart')
 
         # Generate pie chart
-        content_counts_df.plot(kind='pie', y='count', labels=content_counts_df['a_content'], autopct='%1.1f%%', startangle=90, ax=ax2)
+        content_counts_df.plot(kind='pie', y='count', labels=content_counts_df['a_content'], autopct='%1.1f%%',
+                               startangle=90, ax=ax2)
         ax2.set_xlabel('Answer Content')
         ax2.set_ylabel('')
         ax2.set_title('Pie Chart')
@@ -373,8 +433,8 @@ def import_questionnaire(request):
             q_option_count = int(lines[3].strip())
             q_options = []
             for i in range(q_option_count):
-                q_options.append(lines[4+i].strip())
-            q_correct_answer = lines[4+q_option_count].strip()
+                q_options.append(lines[4 + i].strip())
+            q_correct_answer = lines[4 + q_option_count].strip()
 
         elif q_type == '__judge__':
             q_option_count = 2
@@ -411,5 +471,3 @@ def import_questionnaire(request):
         question.save()
 
     return HttpResponse('Questionnaire imported successfully')
-
-
