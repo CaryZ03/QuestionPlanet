@@ -15,4 +15,5 @@ urlpatterns = [
     path('change_profile_admin', change_profile_admin),
     path('check_questionnaire_list', check_questionnaire_list),
     path('change_user_status', change_user_status),
+    path('deploy_test', deploy_test),
 ]
