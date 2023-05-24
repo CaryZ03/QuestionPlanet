@@ -119,31 +119,41 @@ def check_identity(view_func):
     def wrapper(request, *args, **kwargs):
         body = request.body.decode('utf-8')
         data = json.loads(body)
-        if 'qn_id' in data:
-            qn_id = request.body.get('qn_id')
-            user_id = request.body.get('uid')
-            if not Questionnaire.objects.filter(qn_id=qn_id).exists():
-                return JsonResponse({'errno': 3001, 'msg': "问卷不存在"})
+        if not request.session.items():
+            return JsonResponse({'errno': 3001, 'msg': "未登录"})
+        elif request.session['id'] != data.get('uid'):
+            return JsonResponse({'errno': 3002, 'msg': "用户不一致"})
+        elif request.session['role'] != 'admin':
+            user_id = data.get('uid')
             if not User.objects.filter(user_id=user_id).exists():
                 return JsonResponse({'errno': 3003, 'msg': "用户不存在"})
             user = User.objects.get(user_id=user_id)
-            questionnaire = Questionnaire.objects.get(qn_id=qn_id)
-            if questionnaire not in user.user_created_questionnaires.all():
-                return JsonResponse({'errno': 3004, 'msg': '用户没有权限进行该操作'})
-        elif 'q_id' in data:
-            q_id = request.body.get('q_id')
-            user_id = request.body.get('uid')
-            if not Question.objects.filter(q_id=q_id).exists():
-                return JsonResponse({'errno': 3002, 'msg': "问题不存在"})
-            if not User.objects.filter(user_id=user_id).exists():
-                return JsonResponse({'errno': 3003, 'msg': "用户不存在"})
-            user = User.objects.get(user_id=user_id)
-            question = Question.objects.get(q_id=q_id)
-            questionnaire = question.q_questionnaire
-            if questionnaire not in user.user_created_questionnaires.all():
-                return JsonResponse({'errno': 3004, 'msg': '用户没有权限进行该操作'})
-        else:
-            return view_func(request, *args, **kwargs)
+            if 'qn_id' in data:
+                qn_id = data.get('qn_id')
+                if not Questionnaire.objects.filter(qn_id=qn_id).exists():
+                    return JsonResponse({'errno': 3004, 'msg': "问卷不存在"})
+                questionnaire = Questionnaire.objects.get(qn_id=qn_id)
+                if questionnaire not in user.user_created_questionnaires.all():
+                    return JsonResponse({'errno': 3007, 'msg': '用户没有权限进行该操作'})
+            elif 'q_id' in data:
+                q_id = data.get('q_id')
+                if not Question.objects.filter(q_id=q_id).exists():
+                    return JsonResponse({'errno': 3005, 'msg': "问题不存在"})
+                question = Question.objects.get(q_id=q_id)
+                questionnaire = question.q_questionnaire
+                if questionnaire not in user.user_created_questionnaires.all():
+                    return JsonResponse({'errno': 3007, 'msg': '用户没有权限进行该操作'})
+            elif 'a_id' in data:
+                a_id = data.get('a_id')
+                if not Answer.objects.filter(a_id=a_id).exists():
+                    return JsonResponse({'errno': 3006, 'msg': "问题不存在"})
+                answer = Answer.objects.get(a_id=a_id)
+                question = answer.a_question
+                questionnaire = question.q_questionnaire
+                if questionnaire not in user.user_created_questionnaires.all():
+                    return JsonResponse({'errno': 3007, 'msg': '用户没有权限进行该操作'})
+
+        return view_func(request, *args, **kwargs)
 
     return wrapper
 >>>>>>> Stashed changes
@@ -160,7 +170,7 @@ def calculate_score(answer_sheet):
 @check_identity
 @require_http_methods(['GET'])
 def questionnaire_export(request):
-    qn_id = request.body.get('qn_id')
+    qn_id = json.loads(request.body.decode('utf-8')).get('qn_id')
     questionnaire = Questionnaire.objects.get(qn_id=qn_id)
     questions_count = Question.objects.filter(q_questionnaire=questionnaire).count()
     answer_sheet_count = AnswerSheet.objects.filter(as_questionnaire=questionnaire).count()
@@ -196,7 +206,7 @@ def questionnaire_export(request):
 @check_identity
 @require_http_methods(['GET'])
 def questionnaire_export_file(request):
-    qn_id = request.body.get('qn_id')
+    qn_id = json.loads(request.body.decode('utf-8')).get('qn_id')
     questionnaire = Questionnaire.objects.get(qn_id=qn_id)
     questions_count = Question.objects.filter(q_questionnaire=questionnaire).count()
     answer_sheet_count = AnswerSheet.objects.filter(as_questionnaire=questionnaire).count()
@@ -233,7 +243,7 @@ def questionnaire_export_file(request):
 @check_identity
 @require_http_methods('GET')
 def questionnaire_analysis(request):
-    qn_id = request.body.get('qn_id')
+    qn_id = json.loads(request.body.decode('utf-8')).get('qn_id')
     questionnaire = Questionnaire.objects.get(qn_id=qn_id)
     questions_count = Question.objects.filter(q_questionnaire=questionnaire).count()
     answer_sheet_count = AnswerSheet.objects.filter(as_questionnaire=questionnaire).count()
@@ -290,7 +300,7 @@ def questionnaire_analysis(request):
 @check_identity
 @require_http_methods(['GET'])
 def get_questions_by_questionnaire(request):
-    qn_id = request.body.get('qn_id')
+    qn_id = json.loads(request.body.decode('utf-8')).get('qn_id')
     if not qn_id:
         return JsonResponse({'error': 'No qn_id provided'})
 
@@ -315,7 +325,7 @@ def get_questions_by_questionnaire(request):
 @check_identity
 @require_http_methods(['GET'])
 def get_answers_by_question(request):
-    q_id = request.body.get('q_id')
+    q_id = json.loads(request.body.decode('utf-8')).get('q_id')
     if not q_id:
         return JsonResponse({'error': 'No q_id provided'})
 
@@ -337,8 +347,10 @@ def get_answers_by_question(request):
 
 
 @csrf_exempt
+@check_identity
+@require_http_methods(['POST'])
 def delete_answer(request):
-    a_id = request.body.get('a_id')
+    a_id = json.loads(request.body.decode('utf-8')).get('a_id')
     try:
         answer = Answer.objects.get(a_id=a_id)
     except Answer.DoesNotExist:
@@ -360,7 +372,7 @@ def delete_answer(request):
 @check_identity
 @require_http_methods(['GET'])
 def generate_chart(request):
-    qn_id = request.body.get('qn_id')
+    qn_id = json.loads(request.body.decode('utf-8')).get('qn_id')
     questionnaires = Question.objects.filter(qn_id=qn_id).prefetch_related('q_questions')
     questions = questionnaires.first().q_questions.all()
 
@@ -405,6 +417,7 @@ def generate_chart(request):
     return response
 
 
+@csrf_exempt
 @transaction.atomic
 def import_questionnaire(request):
     file = request.FILES['file']  # 获取上传的文件
