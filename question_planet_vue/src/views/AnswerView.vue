@@ -1,114 +1,11 @@
 <template>
     <div class="row">
-        <!-- 工具栏 -->
-        <div class="col-md-3 d-none d-lg-block bg-light sidebar">
-
-
-            <!-- 单选题工具 -->
-            <div class="tool mb-2">
-                <div class="tool-body">
-                    <h5 class="tool-title">单选题</h5>
-                    <i class="el-icon-circle-check"></i>
-                    <br>
-                    <p class="tool-text">问卷中用户只能选中一个选项作为答案。</p>
-                    <el-tooltip class="item" effect="dark" content="问卷中用户只能选中一个选项作为答案。" placement="bottom">
-                        <el-button type="primary" class="btn btn-primary btn-sm" icon="el-icon-circle-plus"
-                            @click="addQuestion('single')" round>添加单选题</el-button>
-                    </el-tooltip>
-                </div>
-            </div>
-
-            <!-- 多选题工具 -->
-            <div class="tool mb-2">
-                <div class="tool-body">
-                    <h5 class="tool-title">多选题</h5>
-                    <i class="el-icon-circle-check"></i><i class="el-icon-circle-check"></i>
-                    <br>
-                    <p class="tool-text">问卷中用户可以选中多个选项作为答案。</p>
-                    <el-button type="primary" class="btn btn-primary btn-sm" icon="el-icon-circle-plus"
-                        @click="addQuestion('multiple')" round>添加多选题</el-button>
-
-                </div>
-            </div>
-
-            <!-- 填空题工具 -->
-            <div class="tool mb-2">
-                <div class="tool-body">
-                    <h5 class="tool-title">填空题</h5>
-                    <i class="el-icon-edit-outline"></i>
-                    <br>
-                    <p class="tool-text">问卷中用户需要输入文本信息作为答案。</p>
-                    <el-button type="primary" class="btn btn-primary btn-sm" icon="el-icon-circle-plus"
-                        @click="addQuestion('text')" round>添加填空题</el-button>
-                </div>
-            </div>
-
-            <!-- 评分题工具 -->
-            <div class="tool mb-2">
-                <div class="tool-body">
-                    <h5 class="tool-title">评分题</h5>
-                    <i class="el-icon-star-off"></i>
-                    <br>
-                    <p class="tool-text">问卷中用户需要对某个问题进行打分。</p>
-                    <el-button type="primary" class="btn btn-primary btn-sm" icon="el-icon-circle-plus"
-                        @click="addQuestion('rating')" round>添加评分题</el-button>
-                </div>
-            </div>
-
-            <!-- 排序题工具 -->
-            <div class="tool mb-2">
-                <div class="tool-body">
-                    <h5 class="tool-title">排序题</h5>
-                    <i class="el-icon-s-data"></i>
-                    <br>
-                    <p class="tool-text">问卷中用户需要将一组选项按照自己的喜好进行排序。</p>
-                    <el-button type="primary" class="btn btn-primary btn-sm" icon="el-icon-circle-plus"
-                        @click="addQuestion('sorting')" round>添加排序题</el-button>
-                </div>
-            </div>
-
-            <!-- 图片选择题工具 -->
-            <div class="tool mb-2">
-                <div class="tool-body">
-                    <h5 class="tool-title">图片选择题</h5>
-                    <i class="el-icon-picture-outline"></i>
-                    <br>
-                    <p class="tool-text">问卷中用户需要从多个图片选项中选择一个。</p>
-                    <el-button type="primary" class="btn btn-primary btn-sm" icon="el-icon-circle-plus"
-                        @click="addQuestion('image')" round>添加图片选择题</el-button>
-                </div>
-            </div>
-
-            <!-- 分页器工具 -->
-            <!-- <div class="tool mb-2">
-            <div class="tool-body">
-              <h5 class="tool-title">分页器</h5>
-              <p class="tool-text">将问卷分成多个页面，每个页面包含若干个问题。</p>
-              <el-button type="primary" class="btn btn-primary btn-sm" round>添加分页器</el-button>
-            </div>
-          </div> -->
-
-            <!-- 进度条工具 -->
-            <div class="tool mb-2">
-                <div class="tool-body">
-                    <h5 class="tool-title">进度条</h5>
-                    <i class="el-icon-s-data"></i>
-                    <br>
-                    <p class="tool-text">显示当前用户填写问卷的进度。</p>
-                    <el-button type="primary" class="btn btn-primary btn-sm" icon="el-icon-circle-plus"
-                        round>添加进度条</el-button>
-                </div>
-            </div>
-
-        </div>
 
         <!-- 问题列表 -->
-        <div class="question-card" id="question-list">
+        <div class="question-card" id="question-list" style="margin: 0 0 0 -62px">
             <el-container class="card mb-2" style="box-shadow: 0 2px 4px rgba(0, 0, 0, .12), 0 0 6px rgba(0, 0, 0, .04)">
                     <el-main>
-                        <span class="red_star">*&nbsp;</span>
-                        <span class="title">问卷标题</span>
-                        <el-input placeholder="请输入问卷标题" v-model="qn_title" clearable></el-input>
+                        <span>问卷标题：{{ this.qn_title }}</span>
                     </el-main>
                 </el-container>
 
@@ -116,133 +13,51 @@
 
             <div v-for="(question, index) in questions" :key="index" class="card mb-2" v-bind:id="question.id">
                 <el-container style="box-shadow: 0 2px 4px rgba(0, 0, 0, .12), 0 0 6px rgba(0, 0, 0, .04)">
-                    <el-main v-if="question.isEdit">
-                        <span class="red_star" v-if="question.isMandatory">*&nbsp;</span>
+                    <el-main>
+                        <span class="red_star" v-if="question.q_mandatory">*&nbsp;</span>
                         <span class="red_star" v-else></span>
+                        <span v-if="question.q_type === 'single'">{{ index + 1 }}.单选题</span>
+                        <span v-if="question.q_type === 'multiple'">{{ index + 1 }}.多选题</span>
+                        <span v-if="question.q_type === 'text'">{{ index + 1 }}.填空题</span>
+                        <div style="line-height: 30px;">&emsp;</div>
+                        <div>题目：{{ question.q_title }}</div>
 
-                        <span v-if="question.type === 'single'">{{ index + 1 }}.单选题</span>
-                        <span v-if="question.type === 'multiple'">{{ index + 1 }}.多选题</span>
-                        <span v-if="question.type === 'text'">{{ index + 1 }}.填空题</span>
                         <div style="line-height: 30px;">&emsp;</div>
 
-                        <div class="title">标题</div>
-                        <el-input placeholder="请输入标题" v-model="question.title" clearable></el-input>
-                        <div style="line-height: 30px;">&emsp;</div>
-
-                        <div v-if="question.type === 'single' || question.type === 'multiple'">
+                        <div v-if="question.q_type === 'single' || question.q_type === 'multiple'">
                             <div class="division"><span class="title">选项</span></div>
-                            <div class="single_choice_ques" v-for="(item, index_item) in question.options"
-                                :key="index_item">
-                                <el-row>
-                                    <el-col :span="3">
-                                        <div><el-button type="danger" icon="el-icon-minus" circle size="small"
-                                                v-on:click="deleteNode(index, index_item)"></el-button></div>
-                                    </el-col>
-                                    <el-col :span="21">
-                                        <div><el-input placeholder="请输入题目内容" v-model="item.label" clearable></el-input>
-                                        </div>
-                                    </el-col>
-                                </el-row>
-                            </div>
-
-                            <el-row>
-                                <el-col :span="3">
-                                    <div><el-button type="primary" icon="el-icon-plus" circle size="small"
-                                            v-on:click="addNode(index)"></el-button></div>
-                                </el-col>
-                                <el-col :span="21">
-                                    <div style="line-height: 200%; color: #0099ff;">添加选项</div>
-                                </el-col>
-                            </el-row>
-                        </div>
-
-                        <div v-else-if="question.type === 'text'">
-                            <div class="division"><span class="title">内容</span></div>
-                            <el-input type="textarea" autosize placeholder="请输入内容" v-model="question.a_content"></el-input>
-                        </div>
-
-
-
-                        <div style="line-height: 30px;">&emsp;</div>
-                        <div class="division"><span class="title">设置</span></div>
-
-                        <el-row>
-                            <el-col :span="21">
-                                <div style="line-height: 200%; color: #000;">此题目必须回答</div>
-                            </el-col>
-                            <el-col :span="3"><el-switch v-model="question.isMandatory" active-color="#0099ff"
-                                    inactive-color="#c2bdbd"></el-switch></el-col>
-                        </el-row>
-                    </el-main>
-
-                    <el-main v-else>
-                        <span class="red_star" v-if="question.isMandatory">*&nbsp;</span>
-                        <span class="red_star" v-else></span>
-                        <span v-if="question.type === 'single'">{{ index + 1 }}.单选题</span>
-                        <span v-if="question.type === 'multiple'">{{ index + 1 }}.多选题</span>
-                        <span v-if="question.type === 'text'">{{ index + 1 }}.填空题</span>
-                        <div style="line-height: 30px;">&emsp;</div>
-                        <div>题目：{{ question.title }}</div>
-
-                        <div style="line-height: 30px;">&emsp;</div>
-
-                        <div v-if="question.type === 'single' || question.type === 'multiple'">
-                            <div class="division"><span class="title">选项</span></div>
-                            <div v-if="question.type === 'single'">
+                            <div v-if="question.q_type === 'single'">
                                 <el-radio-group v-model="question.a_content">
-                                    <el-radio v-for="(option, index_option) in question.options" :label="index_option"
+                                    <el-radio v-for="(option, index_option) in question.q_options" :label="index_option"
                                         :key="index_option">{{ option.label }}</el-radio>
                                     
                                 </el-radio-group>
                             </div>
 
-                            <div v-if="question.type === 'multiple'">
-                                <div v-for="(option, index_option) in question.options" :key="index_option">
+                            <div v-if="question.q_type === 'multiple'">
+                                <div v-for="(option, index_option) in question.q_options" :key="index_option">
                                     <el-checkbox :label="index_option" v-model="option.checked">{{ option.label
                                     }}</el-checkbox>
                                 </div>
                             </div>
                         </div>
 
-                        <div v-else-if="question.type === 'text'">
+                        <div v-else-if="question.q_type === 'text'">
                             <div class="division"><span class="title">内容</span></div>
                             <el-input type="textarea" autosize placeholder="请输入内容" v-model="question.a_content"></el-input>
                         </div>
 
                     </el-main>
-                    <el-footer>
-                        <el-button icon="el-icon-folder-checked" circle v-on:click="change_to_save_mode(index)"
-                            v-if="question.isEdit"></el-button>
-                        <el-button icon="el-icon-edit" circle v-on:click="change_to_edit_mode(index)" v-else></el-button>
-                        &emsp;&emsp;&emsp;&emsp;
-                        <el-button icon="el-icon-delete" circle v-on:click="removeQuestion(index)"></el-button>
-                        &emsp;&emsp;&emsp;&emsp;
-                        <el-button icon="el-icon-top" circle v-on:click="upNode(index)"></el-button>
-                        &emsp;&emsp;&emsp;&emsp;
-                        <el-button icon="el-icon-bottom" circle v-on:click="downNode(index)"></el-button>
-                    </el-footer>
                 </el-container>
 
                 <div style="line-height: 30px;">&emsp;</div>
 
             </div>
-            <el-button type="success" style="margin: 0 0 0 -66px" round v-on:click="save_handler()">保存问卷</el-button>
-            <el-button type="primary" round >提交问卷</el-button>
+            <el-button type="success" style="margin: 0 0 0 -66px" round v-on:click="save_handler()">保存回答</el-button>
+            <el-button type="primary" round >提交回答</el-button>
         </div>
 
 
-        <!-- 问卷大纲区域 -->
-        <div class="outline-area">
-            <div class="outline-title">问卷大纲</div>
-            <div class="outline-list">
-                <!-- <ol>
-            <li size="medium" v-for="(question, index) in questions" :key="index">{{ question.title }}</li>
-          </ol> -->
-                <el-link class="outline-item" v-for="(question, index) in questions" :key="index"
-                    @click.prevent="scrollToQuestion(question, index)">{{ index + 1 }}.{{ question.title }}</el-link>
-            </div>
-
-        </div>
 
         <router-view></router-view>
     </div>
@@ -264,14 +79,39 @@ export default {
         return {
             uid: this.$store.state.curUserID,
             qn_id: "",
-            qn_title: "",
+            qn_title: "这是问卷标题",
             qn_description: "",
             qn_end_time: "",
             qn_refillable: "",
             questions: [],
         };
     },
+    created() {
+        this.load_qn();
+    },
     methods: {
+        load_qn()
+        {   
+            var _this = this;
+            axios({
+                method: 'get',
+                url: 'http://127.0.0.1:4523/m2/2618081-0-default/83421811',
+                params: {
+                    uid: 1
+                },
+            })
+            .then(function (response) {
+            console.log(response);
+            console.log(response.data);
+            console.log(response.data.qn_title);
+            _this.qn_title = response.data.qn_title;
+            _this.questions = response.data.questions_data;
+            })
+            .catch(function (error) {
+            console.log(error);
+            });
+        },
+
         // 添加问题
         addQuestion(type) {
             let question = {
@@ -325,23 +165,6 @@ export default {
             };
             const jsonString = JSON.stringify(dataObject);
             console.log(jsonString);
-            axios({
-                method: 'post',
-                url: 'http://127.0.0.1:4523/m2/2762233-0-cbe98cc5/83357835',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                params: {
-                    uid: 1
-                },
-                data: jsonString
-            })
-            .then(function (response) {
-                console.log(response);
-            })
-            .catch(function (error) {
-                console.log(error);
-            });
             /*
             const filename = 'data.json';
 
