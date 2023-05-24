@@ -44,7 +44,7 @@ def login_required(view_func):
     def wrapper(request, *args, **kwargs):
         if not request.session.items():
             return JsonResponse({'errno': 1001, 'msg': "未登录"})
-        elif request.session['id'] != json.loads(request.body).get('id'):
+        elif request.session['id'] != json.loads(request.body).get('uid'):
             return JsonResponse({'errno': 1003, 'msg': "用户不一致"})
         else:
             return view_func(request, *args, **kwargs)
@@ -64,7 +64,7 @@ def admin_required(view_func):
     def wrapper(request, *args, **kwargs):
         if not request.session.items():
             return JsonResponse({'errno': 1001, 'msg': "未登录"})
-        elif request.session['id'] != json.loads(request.body).get('id'):
+        elif request.session['id'] != json.loads(request.body).get('uid'):
             return JsonResponse({'errno': 1003, 'msg': "用户不一致"})
         elif request.session['role'] != 'admin':
             return JsonResponse({'errno': 1004, 'msg': "需要管理员权限"})

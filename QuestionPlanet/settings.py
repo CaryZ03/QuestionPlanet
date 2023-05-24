@@ -25,7 +25,7 @@ SECRET_KEY = 'django-insecure-_r^pamw0*(jl98t$r^bm!8mrm-j=l(j!+6h^2%tm^t2lu&$ijr
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['182.92.102.246', '182.92.102.246:1145']
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
@@ -50,6 +50,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
 ]
 
 ROOT_URLCONF = 'QuestionPlanet.urls'
@@ -133,3 +134,5 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 MEDIA_ROOT = '/media/'
 
 MEDIA_URL = '/media/'
+
+CORS_ORIGIN_ALLOW_ALL = True

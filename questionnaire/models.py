@@ -12,6 +12,17 @@ class Answer(Model):
     a_score = DecimalField(max_digits=6, decimal_places=2, default=0)
     a_comment = TextField()
 
+    def to_json(self):
+        info = {
+            "a_id": self.a_id,
+            "a_answersheet": self.a_answersheet,
+            "a_question": self.a_question,
+            "a_content": self.a_content,
+            "a_score": self.a_score,
+            "a_comment": self.a_comment
+        }
+        return json.dumps(info)
+
 
 class Question(Model):
     q_id = AutoField(primary_key=True)
