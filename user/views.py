@@ -306,3 +306,10 @@ def change_user_status(request):
         user.status = status
         user.save()
         return JsonResponse({'errno': 0, 'msg': "用户状态更改成功", 'status': status})
+
+
+@csrf_exempt
+@require_http_methods(['POST'])
+def deploy_test(request):
+    data_json = json.loads(request.body)
+    return JsonResponse({'errno': 0, 'ver': "1", 'data': data_json})
