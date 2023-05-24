@@ -23,7 +23,7 @@ urlpatterns = [
     path('api/admin/', admin.site.urls),
     path('api/user/', include(('user.urls', 'user'))),
     path('api/questionnaire/', include(('questionnaire.urls', 'questionnaire'))),
-    # path('api/data/', include(('data.urls', 'data')))
+    path('api/data/', include(('data.urls', 'data'))),
 ]
 # 在 urlpatterns 列表末尾添加以下配置
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
