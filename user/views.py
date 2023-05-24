@@ -277,7 +277,7 @@ def change_profile_admin(request):
 @require_http_methods(['GET'])
 def check_questionnaire_list(request):
     uid = request.session['id']
-    qntype = request.body.get('type')
+    qntype = json.loads(request.body).get('type')
     user = User.objects.get(user_id=uid)
     if qntype == 'created':
         questionnaires = user.user_created_questionnaires.all()
@@ -295,8 +295,9 @@ def check_questionnaire_list(request):
 @admin_required
 @require_http_methods(['POST'])
 def change_user_status(request):
-    username = request.body.get('username')
-    status = request.body.get('status')
+    data_json = json.loads(request.body)
+    username = data_json.get('username')
+    status = data_json.get('status')
     if not User.objects.filter(username=username).exists():
         return JsonResponse({'errno': 1131, 'msg': "用户不存在"})
     else:
