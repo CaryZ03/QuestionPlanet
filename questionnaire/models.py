@@ -5,7 +5,7 @@ from user.models import *
 
 
 class Answer(Model):
-    a_id = IntegerField(primary_key=True)
+    a_id = AutoField(primary_key=True)
     a_answersheet = ForeignKey('Answersheet', on_delete=CASCADE, null=True)
     a_question = ForeignKey('Question', on_delete=CASCADE, null=True)
     a_content = TextField()
@@ -14,7 +14,7 @@ class Answer(Model):
 
 
 class Question(Model):
-    q_id = IntegerField(primary_key=True)
+    q_id = AutoField(primary_key=True)
     q_questionnaire = ForeignKey('Questionnaire', on_delete=CASCADE, null=True)
     question_types = (
         ('single', "单选"),
@@ -36,7 +36,7 @@ class Question(Model):
 
 
 class AnswerSheet(Model):
-    as_id = IntegerField(primary_key=True)
+    as_id = AutoField(primary_key=True)
     as_filler = ForeignKey('user.Filler', on_delete=CASCADE, null=True)
     as_questionnaire = ForeignKey('Questionnaire', on_delete=CASCADE, null=True)
     as_createTime = DateTimeField(auto_now_add=True)
@@ -47,7 +47,7 @@ class AnswerSheet(Model):
 
 
 class Questionnaire(Model):
-    qn_id = IntegerField(primary_key=True)
+    qn_id = AutoField(primary_key=True)
     qn_title = TextField()
     qn_description = TextField()
     qn_creator = ForeignKey('user.User', on_delete=SET_NULL, null=True)

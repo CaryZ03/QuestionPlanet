@@ -5,17 +5,17 @@ from questionnaire.models import *
 
 
 class Filler(Model):
-    filler_id = IntegerField(primary_key=True)
+    filler_id = AutoField(primary_key=True)
     filler_ip = CharField(max_length=30)
     filler_is_user = BooleanField(default=False)
     filler_uid = ForeignKey('User', on_delete=SET_NULL, null=True)
 
 
 class User(Model):
-    user_id = IntegerField(primary_key=True)
+    user_id = AutoField(primary_key=True)
     user_name = CharField(max_length=100)
     user_password = CharField(max_length=20)
-    user_email = CharField(max_length=50, default='')
+    user_email = EmailField(max_length=50, default=None, blank=True, null=True)
     status_choices = (
         ('free', "未封禁"),
         ('banned', "封禁")
@@ -36,7 +36,7 @@ class User(Model):
 
 
 class Admin(Model):
-    admin_id = IntegerField(primary_key=True)
+    admin_id = AutoField(primary_key=True)
     admin_name = CharField(max_length=100)
     admin_password = CharField(max_length=20)
 
