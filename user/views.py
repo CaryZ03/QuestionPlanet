@@ -44,7 +44,8 @@ def login_required(view_func):
     def wrapper(request, *args, **kwargs):
         if not request.session.items():
             return JsonResponse({'errno': 1001, 'msg': "未登录"})
-        elif request.session['id'] != json.loads(request.body).get('uid'):
+        elif request.session.get('id') != json.loads(request.body).get('uid'):
+            print(request.session)
             return JsonResponse({'errno': 1003, 'msg': "用户不一致"})
         else:
             return view_func(request, *args, **kwargs)
@@ -64,9 +65,9 @@ def admin_required(view_func):
     def wrapper(request, *args, **kwargs):
         if not request.session.items():
             return JsonResponse({'errno': 1001, 'msg': "未登录"})
-        elif request.session['id'] != json.loads(request.body).get('uid'):
+        elif request.session.get('id') != json.loads(request.body).get('uid'):
             return JsonResponse({'errno': 1003, 'msg': "用户不一致"})
-        elif request.session['role'] != 'admin':
+        elif request.session.get('role') != 'admin':
             return JsonResponse({'errno': 1004, 'msg': "需要管理员权限"})
         else:
             return view_func(request, *args, **kwargs)
@@ -79,9 +80,9 @@ def admin_required(view_func):
 def user_register(request):
     from questionnaire.views import get_client_ip
     data_json = json.loads(request.body)
-    username = data_json['username']
-    password1 = data_json['password1']
-    password2 = data_json['password2']
+    username = data_json.get('username')
+    password1 = data_json.get('password1')
+    password2 = data_json.get('password2')
     email = data_json.get('email')
     if not bool(re.match("^[A-Za-z0-9][A-Za-z0-9_]{2,20}$", str(username))):
         return JsonResponse({'errno': 1011, 'msg': "用户名不合法"})
@@ -105,8 +106,8 @@ def user_register(request):
 @require_http_methods(['POST'])
 def user_login(request):
     data_json = json.loads(request.body)
-    username = data_json['username']
-    password = data_json['password']
+    username = data_json.get('username')
+    password = data_json.get('password')
     if User.objects.filter(user_name=username).exists():
         user = User.objects.get(user_name=username)
         if user.user_password == password:
@@ -124,10 +125,10 @@ def user_login(request):
 @require_http_methods(['POST'])
 def admin_login(request):
     data_json = json.loads(request.body)
-    adminname = data_json['adminname']
-    password = data_json['password']
-    if Admin.objects.filter(admin_name=adminname).exists():
-        admin = Admin.objects.get(admin_name=adminname)
+    admin_name = data_json.get('admin_name')
+    password = data_json.get('password')
+    if Admin.objects.filter(admin_name=admin_name).exists():
+        admin = Admin.objects.get(admin_name=admin_name)
         if admin.admin_password == password:
             request.session['id'] = admin.admin_id
             request.session['role'] = 'admin'
@@ -143,7 +144,7 @@ def admin_login(request):
 @require_http_methods(['POST'])
 def send_verification_code(request):
     data_json = json.loads(request.body)
-    username = data_json['username']
+    username = data_json.get('username')
     if User.objects.filter(user_name=username).exists():
         user = User.objects.get(user_name=username)
         email = user.user_email
@@ -161,9 +162,9 @@ def send_verification_code(request):
 @require_http_methods(['POST'])
 def reset_password(request):
     data_json = json.loads(request.body)
-    username = data_json['username']
-    password1 = data_json['password1']
-    password2 = data_json['password2']
+    username = data_json.get('username')
+    password1 = data_json.get('password1')
+    password2 = data_json.get('password2')
     if User.objects.filter(user_name=username).exists():
         user = User.objects.get(user_name=username)
         if password1 != password2:
@@ -190,7 +191,7 @@ def logout(request):
 @login_required
 @require_http_methods(['POST'])
 def cancel_account(request):
-    uid = request.session['id']
+    uid = request.session.get('id')
     user = User.objects.get(user_id=uid)
     user.delete()
     return JsonResponse({'errno': 0, 'msg': "注销成功"})
@@ -201,7 +202,7 @@ def cancel_account(request):
 @require_http_methods(['GET'])
 def check_profile(request):
     data_json = json.loads(request.body)
-    uid = data_json['id']
+    uid = data_json.get('uid')
     user = User.objects.get(user_id=uid)
     user_info = user.to_json()
     return JsonResponse({'errno': 0, 'msg': '返回用户信息成功', 'user_info': user_info})
@@ -212,7 +213,7 @@ def check_profile(request):
 @require_http_methods(['GET'])
 def check_profile_admin(request):
     data_json = json.loads(request.body)
-    adid = data_json['id']
+    adid = data_json.get('uid')
     admin = Admin.objects.get(admin_id=adid)
     admin_info = admin.to_json()
     return JsonResponse({'errno': 0, 'msg': '返回管理员信息成功', 'admin_info': admin_info})
@@ -223,10 +224,10 @@ def check_profile_admin(request):
 @require_http_methods(['POST'])
 def change_profile(request):
     data_json = json.loads(request.body)
-    uid = request.session.get('id')
-    username = data_json['username']
-    password1 = data_json['password1']
-    password2 = data_json['password2']
+    uid = request.session.get('uid')
+    username = data_json.get('username')
+    password1 = data_json.get('password1')
+    password2 = data_json.get('password2')
     mail = data_json.get('email')
     if not bool(re.match("^[A-Za-z0-9][A-Za-z0-9_]{2,20}$", str(username))):
         return JsonResponse({'errno': 1101, 'msg': "用户名不合法"})
@@ -250,10 +251,10 @@ def change_profile(request):
 @require_http_methods(['POST'])
 def change_profile_admin(request):
     data_json = json.loads(request.body)
-    uid = data_json['id']
-    username = data_json['username']
-    password1 = data_json['password1']
-    password2 = data_json['password2']
+    uid = data_json.get('uid')
+    username = data_json.get('username')
+    password1 = data_json.get('password1')
+    password2 = data_json.get('password2')
     mail = data_json.get('email', '')
     if not bool(re.match("^[A-Za-z0-9][A-Za-z0-9_]{2,20}$", str(username))):
         return JsonResponse({'errno': 1111, 'msg': "用户名不合法"})
@@ -276,7 +277,7 @@ def change_profile_admin(request):
 @login_required
 @require_http_methods(['GET'])
 def check_questionnaire_list(request):
-    uid = request.session['id']
+    uid = request.session.get('uid')
     qntype = json.loads(request.body).get('type')
     user = User.objects.get(user_id=uid)
     if qntype == 'created':

@@ -36,7 +36,7 @@ def get_client_ip(request):
 @questionnaire_exists
 @require_http_methods(['POST'])
 def fill_questionnaire(request, qn_id):
-    uid = request.session.get('uid')
+    uid = request.session.get('id')
     if not uid:
         filler_ip = get_client_ip(request)
         if Filler.objects.filter(filler_ip=filler_ip).exists():
@@ -114,7 +114,8 @@ def submit_answers(request):
 @login_required
 @require_http_methods(['POST'])
 def create_questionnaire(request):
-    user_id = request.session.get('uid')
+    user_id = request.session.get('id')
+    print(user_id)
     user = User.objects.get(user_id=user_id)
     qn = Questionnaire.objects.create()
     qn.qn_creator = user
