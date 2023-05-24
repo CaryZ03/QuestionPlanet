@@ -311,5 +311,4 @@ def change_user_status(request):
 @csrf_exempt
 @require_http_methods(['POST'])
 def deploy_test(request):
-    data_json = json.loads(request.body)
-    return JsonResponse({'errno': 0, 'ver': "1", 'data': data_json})
+    return JsonResponse({'errno': 0, 'ver': "1"})
