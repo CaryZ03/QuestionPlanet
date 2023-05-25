@@ -148,7 +148,7 @@ def save_questionnaire(request):
 
     # 创建问题并加入问卷中
     for i in range(len(question_list)):
-        q_data = json.loads(question_list[i])
+        q_data = question_list[i]
         question = Question.objects.create(
             q_questionnaire=qn,
             q_position=i,
@@ -157,7 +157,7 @@ def save_questionnaire(request):
             q_title=q_data.get('q_title'),
             q_description=q_data.get('q_description'),
             q_option_count=q_data.get('q_option_count'),
-            q_options=q_data.get('q_options'),
+            q_options=json.dumps(q_data.get('q_options')),
             q_correct_answer=q_data.get('q_correct_answer'),
             q_score=q_data.get('q_score'),
         )
