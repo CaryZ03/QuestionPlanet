@@ -13,9 +13,9 @@ from user.views import login_required, not_login_required, admin_required
 
 def questionnaire_exists(view_func):
     def wrapper(request, *args, **kwargs):
-        qnid = request.body.get('qnid')
-        if not Questionnaire.objects.filter(qn_id=qnid).exists():
-            return JsonResponse({'errno': 2001, 'msg': "问卷不存在"})
+        qn_id = json.loads(request.body).get('qn_id')
+        if not Questionnaire.objects.filter(qn_id=qn_id).exists():
+            return JsonResponse({'errno': 2001, 'qn_id': qn_id, 'msg': "问卷不存在"})
         else:
             return view_func(request, *args, **kwargs)
     return wrapper
@@ -130,12 +130,13 @@ def create_questionnaire(request):
 @require_http_methods(['POST'])
 def save_questionnaire(request):
     # 从请求中获取问卷信息和问题数据
-    qn_id = request.POST.get('qn_id')
-    qn_title = request.POST.get('qn_title')
-    qn_description = request.POST.get('qn_description')
-    qn_end_time = request.POST.get('qn_end_time')
-    qn_refillable = request.POST.get('qn_refillable')
-    question_data = request.POST.get('question_data')
+    data_json = json.loads(request.body)
+    qn_id = data_json.get('qn_id')
+    qn_title = data_json.get('qn_title')
+    qn_description = data_json.get('qn_description')
+    qn_end_time = data_json.get('qn_end_time')
+    qn_refillable = data_json.get('qn_refillable')
+    question_list = data_json.get('question_list')
 
     # 创建问卷
     qn = Questionnaire.objects.get(qn_id=qn_id)
@@ -146,7 +147,6 @@ def save_questionnaire(request):
     qn.qn_refillable = qn_refillable
 
     # 创建问题并加入问卷中
-    question_list = json.loads(question_data)
     for i in range(len(question_list)):
         q_data = question_list[i]
         question = Question.objects.create(
@@ -157,7 +157,7 @@ def save_questionnaire(request):
             q_title=q_data.get('q_title'),
             q_description=q_data.get('q_description'),
             q_option_count=q_data.get('q_option_count'),
-            q_options=q_data.get('q_options'),
+            q_options=json.dumps(q_data.get('q_options')),
             q_correct_answer=q_data.get('q_correct_answer'),
             q_score=q_data.get('q_score'),
         )

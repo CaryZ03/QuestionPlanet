@@ -27,6 +27,7 @@ class Answer(Model):
 class Question(Model):
     q_id = AutoField(primary_key=True)
     q_questionnaire = ForeignKey('Questionnaire', on_delete=CASCADE, null=True)
+    q_position = IntegerField(default=0)
     question_types = (
         ('single', "单选"),
         ('multiple', "多选"),
