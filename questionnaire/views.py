@@ -36,7 +36,7 @@ def get_client_ip(request):
 @questionnaire_exists
 @require_http_methods(['POST'])
 def fill_questionnaire(request, qn_id):
-    uid = request.session.get('id')
+    uid = json.loads(request.body).get('uid')
     if not uid:
         filler_ip = get_client_ip(request)
         if Filler.objects.filter(filler_ip=filler_ip).exists():
@@ -114,7 +114,7 @@ def submit_answers(request):
 @login_required
 @require_http_methods(['POST'])
 def create_questionnaire(request):
-    user_id = request.session.get('id')
+    user_id = json.loads(request.body).get('uid')
     print(user_id)
     user = User.objects.get(user_id=user_id)
     qn = Questionnaire.objects.create()
@@ -174,7 +174,7 @@ def save_questionnaire(request):
 @questionnaire_exists
 @require_http_methods(['POST'])
 def delete_questionnaire(request):
-    qnid = request.body.get('qnid')
+    qnid = json.loads(request.body).get('qnid')
     qn = Questionnaire.objects.get(qn_id=qnid)
     qn.delete()
     return JsonResponse({'errno': 0, 'msg': "问卷删除成功"})
@@ -185,8 +185,9 @@ def delete_questionnaire(request):
 @questionnaire_exists
 @require_http_methods(['POST'])
 def change_questionnaire_status(request):
-    qnid = request.body.get('qnid')
-    status = request.body.get('status')
+    data_json = json.loads(request.body)
+    qnid = data_json.get('qnid')
+    status = data_json.get('status')
     qn = Questionnaire.objects.get(qn_id=qnid)
     qn.status = status
     qn.save()

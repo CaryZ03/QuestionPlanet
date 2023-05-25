@@ -3,7 +3,8 @@ from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_http_methods
 from django.http.response import JsonResponse
-from django.contrib.sessions.backends.db import SessionStore
+from django.contrib.sessions.models import Session
+from django.utils import timezone
 import json
 
 from user.models import User, Admin, Filler
@@ -41,42 +42,69 @@ def send_email_verification(email, code):
         server.sendmail(sender, receiver, msg.as_string())
 
 
+def get_session(session_id):
+    # 查询会话对象
+    session = Session.objects.get(session_key=session_id)
+
+    # 检查会话是否已过期
+    if session.expire_date < timezone.now():
+        # 会话已过期，可以选择删除该会话
+        session.delete()
+        return None
+
+    # 返回与会话关联的request.session对象
+    return session.get_decoded()
+
+
 def login_required(view_func):
     def wrapper(request, *args, **kwargs):
-        if not request.session.items():
+        session_id = request.COOKIES.get('session_id')
+        if session_id:
+            # 根据session_id获取相应的会话数据
+            session_data = get_session(session_id)
+            # 处理会话数据
+            if session_data is None:
+                return JsonResponse({'errno': 1002, 'msg': "登录信息已过期"})
+            elif session_data.get('id') != json.loads(request.body).get('uid'):
+                return JsonResponse({'errno': 1003, 'msg': "用户不一致"})
+            else:
+                return view_func(request, *args, **kwargs)
+        else:
             return JsonResponse({'errno': 1001, 'msg': "未登录"})
-        elif request.session.get('id') != json.loads(request.body).get('uid'):
-            print(request.session)
-            return JsonResponse({'errno': 1003, 'msg': "用户不一致"})
-        else:
-            return view_func(request, *args, **kwargs)
     return wrapper
 
 
-def not_login_required(view_func):
-    def wrapper(request, *args, **kwargs):
-        if not request.session.items():
-            return view_func(request, *args, **kwargs)
-        else:
-            return JsonResponse({'errno': 1002, 'msg': "已登录"})
-    return wrapper
+# def not_login_required(view_func):
+#     def wrapper(request, *args, **kwargs):
+#         if not request.session.items():
+#             return view_func(request, *args, **kwargs)
+#         else:
+#             return JsonResponse({'errno': 1002, 'msg': "已登录"})
+#     return wrapper
 
 
 def admin_required(view_func):
     def wrapper(request, *args, **kwargs):
-        if not request.session.items():
-            return JsonResponse({'errno': 1001, 'msg': "未登录"})
-        elif request.session.get('id') != json.loads(request.body).get('uid'):
-            return JsonResponse({'errno': 1003, 'msg': "用户不一致"})
-        elif request.session.get('role') != 'admin':
-            return JsonResponse({'errno': 1004, 'msg': "需要管理员权限"})
+        session_id = request.COOKIES.get('session_id')
+        if session_id:
+            # 根据session_id获取相应的会话数据
+            session_data = get_session(session_id)
+            # 处理会话数据
+            if session_data is None:
+                return JsonResponse({'errno': 1002, 'msg': "登录信息已过期"})
+            elif session_data.get('id') != json.loads(request.body).get('uid'):
+                return JsonResponse({'errno': 1003, 'msg': "用户不一致"})
+            elif session_data.get('role') != 'admin':
+                return JsonResponse({'errno': 1004, 'msg': "需要管理员权限"})
+            else:
+                return view_func(request, *args, **kwargs)
         else:
-            return view_func(request, *args, **kwargs)
+            return JsonResponse({'errno': 1001, 'msg': "未登录"})
     return wrapper
 
 
 @csrf_exempt
-@not_login_required
+# @not_login_required
 @require_http_methods(['POST'])
 def user_register(request):
     from questionnaire.views import get_client_ip
@@ -103,7 +131,7 @@ def user_register(request):
 
 
 @csrf_exempt
-@not_login_required
+# @not_login_required
 @require_http_methods(['POST'])
 def user_login(request):
     data_json = json.loads(request.body)
@@ -114,8 +142,10 @@ def user_login(request):
         if user.user_password == password:
             request.session['id'] = user.user_id
             request.session['role'] = 'user'
+            request.session.save()
+            session_id = request.session.session_key
             response = JsonResponse({'errno': 0, 'msg': "登录成功", 'uid': user.user_id})
-            response.set_cookie('session', request.session.session_key)
+            response.set_cookie('session_id', session_id)
             return response
         else:
             return JsonResponse({'errno': 1022, 'msg': "密码错误"})
@@ -124,7 +154,7 @@ def user_login(request):
 
 
 @csrf_exempt
-@not_login_required
+# @not_login_required
 @require_http_methods(['POST'])
 def admin_login(request):
     data_json = json.loads(request.body)
@@ -135,7 +165,11 @@ def admin_login(request):
         if admin.admin_password == password:
             request.session['id'] = admin.admin_id
             request.session['role'] = 'admin'
-            return JsonResponse({'errno': 0, 'msg': "管理员登录成功", 'adid': admin.admin_id})
+            request.session.save()
+            session_id = request.session.session_key
+            response = JsonResponse({'errno': 0, 'msg': "管理员登录成功", 'adid': admin.admin_id})
+            response.set_cookie('session_id', session_id)
+            return response
         else:
             return JsonResponse({'errno': 1032, 'msg': "密码错误"})
     else:
@@ -143,7 +177,7 @@ def admin_login(request):
 
 
 @csrf_exempt
-@not_login_required
+# @not_login_required
 @require_http_methods(['POST'])
 def send_verification_code(request):
     data_json = json.loads(request.body)
@@ -161,7 +195,7 @@ def send_verification_code(request):
 
 
 @csrf_exempt
-@not_login_required
+# @not_login_required
 @require_http_methods(['POST'])
 def reset_password(request):
     data_json = json.loads(request.body)
@@ -194,7 +228,7 @@ def logout(request):
 @login_required
 @require_http_methods(['POST'])
 def cancel_account(request):
-    uid = request.session.get('id')
+    uid = json.loads(request.body).get('id')
     user = User.objects.get(user_id=uid)
     user.delete()
     return JsonResponse({'errno': 0, 'msg': "注销成功"})
@@ -227,7 +261,7 @@ def check_profile_admin(request):
 @require_http_methods(['POST'])
 def change_profile(request):
     data_json = json.loads(request.body)
-    uid = request.session.get('uid')
+    uid = json.loads(request.body).get('id')
     username = data_json.get('username')
     password1 = data_json.get('password1')
     password2 = data_json.get('password2')
@@ -280,7 +314,7 @@ def change_profile_admin(request):
 @login_required
 @require_http_methods(['GET'])
 def check_questionnaire_list(request):
-    uid = request.session.get('uid')
+    uid = json.loads(request.body).get('id')
     qntype = json.loads(request.body).get('type')
     user = User.objects.get(user_id=uid)
     if qntype == 'created':
