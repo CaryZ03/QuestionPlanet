@@ -669,7 +669,50 @@ else
 
 ### 错误码：无
 
-## 206 delete_questionnaire
+## 206 check_questionnaire
+
+### 描述：查看问卷
+
+### 请求类型：GET
+
+### 输入数据：
+
+```json
+{
+    "uid": 用户id,
+    "qn_id": 问卷id
+}
+```
+
+### 返回数据：
+
+```json
+{
+    "uid": 用户id,
+    "qn_id": 问卷id,
+    "qn_title": 问卷标题,
+    "qn_description": 问卷描述,
+    "qn_end_time": 问卷截止时间,
+    "qn_refillable": 是否可重填,
+    "question_list": [
+        {
+            "q_type": 问题类型,
+            "q_manditory": 是否必填,
+            "q_title": 问题标题,
+            "q_description": 问题描述,
+            "q_option_count": 选项数,
+            "q_options": 选项数据([选项1, ...]),
+            "q_correct_answer": 正确答案,
+            "q_score": 分数
+        }，
+        ...
+    ]
+}
+```
+
+### 错误码：无
+
+## 207 delete_questionnaire
 
 ### 描述：删除问卷
 
@@ -695,7 +738,7 @@ else
 
 ### 错误码：无
 
-## 207 change_questionnaire_status
+## 208 change_questionnaire_status
 
 ### 描述：更改问卷状态（打开、关闭、封禁、解封）
 
