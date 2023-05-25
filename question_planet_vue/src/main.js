@@ -7,6 +7,11 @@ import axios from 'axios'
 import ElementUI from 'element-ui';
 import 'element-ui/lib/theme-chalk/index.css';
 import api from './api';
+import Cookies from 'js-cookie'
+
+const token = Cookies.get('token')
+axios.defaults.headers.common['Authorization'] = `Bearer ${token}`
+axios.defaults.withCredentials = true;
 
 Vue.prototype.$api = api;
 

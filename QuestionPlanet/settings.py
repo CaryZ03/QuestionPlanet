@@ -136,8 +136,13 @@ MEDIA_ROOT = '/media/'
 
 MEDIA_URL = '/media/'
 
-CORS_ORIGIN_ALLOW_ALL = True
+CORS_ORIGIN_ALLOW_ALL = False
 
 CORS_ALLOW_CREDENTIALS = True
+
+CORS_ALLOWED_ORIGINS = [
+    'http://localhost:8080',
+    # 添加其他允许的域名
+]
 
 SESSION_ENGINE = 'django.contrib.sessions.backends.db'  # 使用数据库存储会话

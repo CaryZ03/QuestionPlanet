@@ -1,32 +1,33 @@
 <template>
-  <div class="css_pro-edited-element-0 inherited-styles-for-exported-element">
+  <div class="background">
+    <div class="css_pro-edited-element-0 inherited-styles-for-exported-element">
     
-    <!-- 用户头像 -->
-    <div class="user-info">
-        <div class="avatar-wrapper">
+        <!-- 用户头像 -->
+        <div class="user-info" id="content">
+          <div class="avatar-wrapper" >
             <img :src="avatarUrl" alt="Avatar"  style="height: auto; object-fit: contain; width: 120px;">
             <input type="file" @change="handleAvatarUpload">
-        </div>
-         <div class="user-data">
+          </div>
+          <div class="user-data" >
             <h2>{{userName}}</h2>
             <!-- <p>{{address}}</p>
             <p>{{phone}}</p> -->
              <!-- <button @click="editUserInfo">编辑</button> -->
             <el-card class="box-card">{{ sign }}</el-card> 
             <el-button type="text" icon="el-icon-edit"  @click="changeSign" class="fr"></el-button>
+          </div>
         </div>
-    </div>
   
 
-  <!-- 注册信息 -->
-  <div class="title"> 注册信息 </div>
-  <div class="content" style="height: 328px;">
+        <!-- 注册信息 -->
+        <div class="title"> 注册信息 </div>
+        <div class="content" style="height: 328px;" id="content">
     <div class="items">
       <div style="float: left;"><b>用户名</b><span id="ctl00_ContentPlaceHolder1_lblLoginName" style="margin-right: 10px;">{{userName}}</span></div>
       <div style="clear: both;"></div>
     </div>
     <div class="items">
-        <b>账号ID</b><span id="ctl00_ContentPlaceHolder1_lblUserId">44253413</span>
+        <b>账号ID</b><span id="ctl00_ContentPlaceHolder1_lblUserId">{{userId}}</span>
     </div>
 
     <!-- <div id="ctl00_ContentPlaceHolder1_divAccount" class="items">
@@ -79,18 +80,35 @@
     </div>
     <div class="items" style="margin-top: 10px;"></div>
     <div style="clear: both;"></div>
-  </div>
+        </div>
 
-  
-</div>
+    </div>
+
+    <corperation></corperation>
+  </div>
 
 
 </template>
 
 <script>
 import { dataTool } from 'echarts';
+import UserInfo from '@/components/UserInfo.vue';
 export default {
     methods:{
+
+        uploadData(data){
+          this.$api.userInfo.postUserInfo_ChangeUserInfo(data).then((response) => {
+        console.log(response.data)
+        if (response.data.errno == 0) {
+          console.log("上传用户信息成功")
+        }
+      }).catch(error => {
+        alert("上传用户信息失败")
+        console.log(error)
+      })
+        },
+
+
         bindAddress() {
         this.$prompt('请输入邮箱', '提示', {
           confirmButtonText: '确定',
@@ -104,6 +122,16 @@ export default {
           });
           this.addressIsBind = true;
           this.address = value;
+
+          const tmp = {
+              "id":this.userId,
+              "username": this.userName,
+              "password1":this.userKey,
+              "password2": this.userKey,
+              "email": this.address
+          }
+          this.uploadData(tmp);
+        
         }).catch(() => {
           this.$message({
             type: 'info',
@@ -124,6 +152,15 @@ export default {
           });
           this.address = null;
           this.addressIsBind = false;
+
+          const tmp = {
+              "id":this.userId,
+              "username": this.userName,
+              "password1":this.userKey,
+              "password2": this.userKey,
+              "email": this.address
+          }
+          this.uploadData(tmp);
         }).catch(() => {
           this.$message({
             type: 'info',
@@ -215,17 +252,51 @@ export default {
             userKey:114514,
             sign: '还没有签名捏',
 
-            userName: '张三',
+            userName: this.$store.state.curUsername,
+            userId: this.$store.state.curUserID,
             avatarUrl: 'https://gimg2.baidu.com/image_search/src=http%3A%2F%2Fc-ssl.duitang.com%2Fuploads%2Fitem%2F202005%2F10%2F20200510010150_2zSAt.thumb.1000_0.jpeg&refer=http%3A%2F%2Fc-ssl.duitang.com&app=2002&size=f9999,10000&q=a80&n=0&g=0n&fmt=auto?sec=1687439195&t=d763d2921c0bd1ae6f6629ed0afcdd65'
         };
+    },
+
+
+    components:{
+      corperation: UserInfo,
+    },
+
+    created:function(){
+      
+      const tmpUser = {
+        "uid": this.$store.state.curUserID
+      }
+      this.$api.userInfo.postUserInfo_GetUserInfo(tmpUser).then((response) => {
+        console.log(response.data)
+        if (response.data.errno == 0) {
+          console.log("获取用户信息成功")
+          this.userId = response.user_id;
+          this.userName = response.user_name;
+          this.userKey  = response.user_password;
+          this.address  = response.user_email;
+          if( this.address != null)
+            this.addressIsBind = true;
+        }
+      }).catch(error => {
+        alert("获取用户信息失败")
+        console.log(error)
+      })
+
     }
     
 }
 </script>
 
 <style scoped>
+
+#content{
+  opacity: 80%;
+}
+
     body {
-  background: #eee;
+  background: #c02f2f ;
   /* This is just a helper in case the element has a transparent background or white colors. */
 }
 
@@ -299,7 +370,7 @@ a {
 }
 
 .title {
-  color: #eeeeee;
+  color: #eaeaea;
   font-size: 18px;
   font-weight: 700;
   line-height: 26px;
@@ -315,8 +386,10 @@ a {
   height: 234px;
   padding: 20px 30px;
 
-  width: 40%;
+  width: 90%;
   box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
+
+  /* opacity: 70%; */
 }
 
 a:active {
@@ -377,9 +450,9 @@ a:active {
 
 .css_pro-edited-element-0 {
 
-    position: fixed !important;
+  /* position: fixed !important;
   bottom: 79px !important;
-  top: 87px !important;
+  top: 87px !important; */
 
   -webkit-tap-highlight-color: transparent !important;
   color: #262626 !important;
@@ -387,15 +460,19 @@ a:active {
   font-family: "Helvetica Neue", Helvetica, Arial, "PingFang SC", "Microsoft YaHei", "Hiragino Sans GB", "Heiti SC", "WenQuanYi Micro Hei", sans-serif !important;
   font-size: 12px !important;
   list-style: none !important;
-  
-  margin: 0 !important;
-  padding: 0 0 0 15% !important;
   text-align: left !important;
-  width: 100% !important;
 
-  background-color: #f7f7f7;
-  background-image: url("../assets/waoku.jpg" ) ;
+  /* margin: 0 !important;
+  padding: 0 0 0 15% !important;
+  width: 80% !important; */
 
+  width: 40%;
+padding: 0 0 0 3.2%;
+margin: 0 -31px 0 168px;
+
+  /* background-color: #f7f7f7; */
+  /* background-image: url("../assets/waoku.jpg" ) ; */
+  /* background-image: linear-gradient(to right, rgb(199, 210, 254), rgb(254, 202, 202), rgb(254, 243, 199)); */
 }
 
 .css_pro-edited-element-0, .css_pro-edited-element-0::before {
@@ -422,8 +499,9 @@ html {
   height: 30%;
   
 
-  width: 40%;
+  width: 90%;
   box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
+  /* opacity: 70%; */
 }
 
 .avatar-wrapper {
@@ -487,6 +565,13 @@ margin: 0 0 14px;
 padding: 1px 20px 0px;
 }
 
-
+body .background{
+  background-image: linear-gradient(220.55deg, #FFED46 0%, #FF7EC7 100%);
+  background:url("../assets/1680584594127.png.png");
+  width: 100%;
+  height: 100%;
+position:fixed;
+background-size:100% 100%;
+}
 
 </style>

@@ -23,12 +23,12 @@ const routes = [
     component: () => import(/* webpackChunkName: "about" */ '../views/AboutView.vue')
   },
   {
-    path: '/new/:userID',
-    name: 'New',
+    path: '/manage/:userID',
+    name: 'Manager',
     // route level code-splitting
     // this generates a separate chunk (about.[hash].js) for this route
     // which is lazy-loaded when the route is visited.
-    component: () => import(/* webpackChunkName: "about" */ '../views/NewView.vue'),
+    component: () => import(/* webpackChunkName: "about" */ '../views/ManageView.vue'),
     children:[
       {
         name:'questionnaire_create', //问卷管理

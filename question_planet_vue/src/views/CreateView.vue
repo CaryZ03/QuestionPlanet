@@ -10,19 +10,19 @@
                     <!-- <h5 class="tool-title"><i class="el-icon-circle-check"></i>单选题</h5>            -->
                     <!-- <p class="tool-text">问卷中用户只能选中一个选项作为答案。</p> -->
                     <el-tooltip class="item" effect="dark" content="问卷中用户只能选中一个选项作为答案。" placement="bottom">
-                        <el-button type="primary" class="btn btn-primary btn-sm" icon="el-icon-circle-plus"
+                        <el-button type="primary" class="btn btn-primary btn-sm" icon="el-icon-circle-plus" size="small"
                             @click="addQuestion('single')" round>添加单选题</el-button>
                     </el-tooltip>
                     <el-tooltip class="item" effect="dark" content="问卷中用户只能选中一个选项作为答案。" placement="bottom">
-                        <el-button type="primary" class="btn btn-primary btn-sm" icon="el-icon-circle-plus"
+                        <el-button type="primary" class="btn btn-primary btn-sm" icon="el-icon-circle-plus" size="small"
                             @click="addQuestion('single')" round>添加单选题</el-button>
                     </el-tooltip>
                     <el-tooltip class="item" effect="dark" content="问卷中用户只能选中一个选项作为答案。" placement="bottom">
-                        <el-button type="primary" class="btn btn-primary btn-sm" icon="el-icon-circle-plus"
+                        <el-button type="primary" class="btn btn-primary btn-sm" icon="el-icon-circle-plus" size="small"
                             @click="addQuestion('single')" round>添加单选题</el-button>
                     </el-tooltip>
                     <el-tooltip class="item" effect="dark" content="问卷中用户只能选中一个选项作为答案。" placement="bottom">
-                        <el-button type="primary" class="btn btn-primary btn-sm" icon="el-icon-circle-plus"
+                        <el-button type="primary" class="btn btn-primary btn-sm" icon="el-icon-circle-plus" size="small"
                             @click="addQuestion('single')" round>添加单选题</el-button>
                     </el-tooltip>
                 </div>
@@ -36,7 +36,7 @@
                 <div class="tool-body">
                     <!-- <h5 class="tool-title"><i class="el-icon-circle-check"></i><i class="el-icon-circle-check"></i>多选题</h5> -->
                     <!-- <p class="tool-text">问卷中用户可以选中多个选项作为答案。</p> -->
-                    <el-button type="primary" class="btn btn-primary btn-sm" icon="el-icon-circle-plus"
+                    <el-button type="primary" class="btn btn-primary btn-sm" icon="el-icon-circle-plus" size="small"
                         @click="addQuestion('multiple')" round>添加多选题</el-button>
 
                 </div>
@@ -50,7 +50,7 @@
               <div class="tool-body">
                     <!-- <h5 class="tool-title"><i class="el-icon-edit-outline"></i>填空题</h5> -->
                     <!-- <p class="tool-text">问卷中用户需要输入文本信息作为答案。</p> -->
-                    <el-button type="primary" class="btn btn-primary btn-sm" icon="el-icon-circle-plus"
+                    <el-button type="primary" class="btn btn-primary btn-sm" icon="el-icon-circle-plus" size="small"
                         @click="addQuestion('text')" round>添加填空题</el-button>
                 </div>
             </el-collapse-item>
@@ -63,7 +63,7 @@
                 <div class="tool-body">
                     <!-- <h5 class="tool-title"><i class="el-icon-star-off"></i>评分题</h5> -->
                     <!-- <p class="tool-text">问卷中用户需要对某个问题进行打分。</p> -->
-                    <el-button type="primary" class="btn btn-primary btn-sm" icon="el-icon-circle-plus"
+                    <el-button type="primary" class="btn btn-primary btn-sm" icon="el-icon-circle-plus" size="small"
                         @click="addQuestion('rating')" round>添加评分题</el-button>
                 </div>
             </el-collapse-item>
@@ -76,7 +76,7 @@
                 <div class="tool-body">
                     <!-- <h5 class="tool-title"><i class="el-icon-s-data"></i>排序题</h5> -->
                     <!-- <p class="tool-text">问卷中用户需要将一组选项按照自己的喜好进行排序。</p> -->
-                    <el-button type="primary" class="btn btn-primary btn-sm" icon="el-icon-circle-plus"
+                    <el-button type="primary" class="btn btn-primary btn-sm" icon="el-icon-circle-plus" size="small"
                         @click="addQuestion('sorting')" round>添加排序题</el-button>
                 </div>
             </el-collapse-item>
@@ -89,7 +89,7 @@
               <div class="tool-body">
                     <!-- <h5 class="tool-title"><i class="el-icon-picture-outline"></i>图片选择题</h5> -->
                     <!-- <p class="tool-text">问卷中用户需要从多个图片选项中选择一个。</p> -->
-                    <el-button type="primary" class="btn btn-primary btn-sm" icon="el-icon-circle-plus"
+                    <el-button type="primary" class="btn btn-primary btn-sm" icon="el-icon-circle-plus" size="small"
                         @click="addQuestion('image')" round>添加图片选择题</el-button>
                 </div>
             </el-collapse-item>
@@ -102,7 +102,7 @@
               <div class="tool-body">
                     <!-- <h5 class="tool-title"><i class="el-icon-s-data"></i>进度条</h5> -->
                     <!-- <p class="tool-text">显示当前用户填写问卷的进度。</p> -->
-                    <el-button type="primary" class="btn btn-primary btn-sm" icon="el-icon-circle-plus"
+                    <el-button type="primary" class="btn btn-primary btn-sm" icon="el-icon-circle-plus" size="small"
                         round>添加进度条</el-button>
                 </div>
             </el-collapse-item>
@@ -116,6 +116,21 @@
                         <span class="red_star">*&nbsp;</span>
                         <span class="title">问卷标题</span>
                         <el-input placeholder="请输入问卷标题" v-model="qn_title" clearable></el-input>
+                    </el-main>
+                </el-container>
+                <div style="line-height: 30px;">&emsp;</div>
+
+            <el-container class="card mb-2" style="box-shadow: 0 2px 4px rgba(0, 0, 0, .12), 0 0 6px rgba(0, 0, 0, .04)">
+                    <el-main>
+                        <span class="red_star">*&nbsp;</span>
+                        <span class="title">问卷截止填写时间</span>
+                        <br>
+                        <el-date-picker
+                            v-model="qn_end_time"
+                            type="datetime"
+                            placeholder="选择日期时间"
+                            format="yyyy-MM-dd HH:mm:ss">
+                            </el-date-picker>
                     </el-main>
                 </el-container>
 
@@ -234,7 +249,8 @@
 
             </div>
             <el-button type="success" style="margin: 0 0 0 -66px" round v-on:click="save_handler()">保存问卷</el-button>
-            <el-button type="primary" round >提交问卷</el-button>
+            <el-button type="primary" round v-on:click="commitQuestionnaire()">提交问卷</el-button>
+            
         </div>
 
 
@@ -273,8 +289,8 @@ export default {
             qn_id: "",
             qn_title: "",
             qn_description: "",
-            qn_end_time: "",
-            qn_refillable: "",
+            qn_end_time: '',
+            qn_refillable: true,
             questions: [],
             activeNames: ['1','2','3','4','5','6','7']
         };
@@ -296,8 +312,8 @@ export default {
             };
             if (type === "single" || type === "multiple") {
                 question.options = [
-                    { label: "选项1", checked: false },
-                    { label: "选项2", checked: false },
+                    { label: "选项1", checked: false ,num: 0},
+                    { label: "选项2", checked: false ,num: 0},
                 ];
             } else if (type === "rating") {
                 question.stars = [false, false, false, false, false];
@@ -307,6 +323,12 @@ export default {
             this.questions.push(question);
         },
         
+        commitQuestionnaire(){
+            this.saveQuestionnaire();
+            this.$router.push({
+                path: "/new/" + this.$store.state.curUserID
+            })
+        },
         //保存试卷
         saveQuestionnaire(){
             const selectedQuestions = this.questions.map(question => {
@@ -317,33 +339,40 @@ export default {
                 q_title: question.title,
                 q_description: question.q_description,
                 q_option_count: question.options.length,
-                q_options: question.options,
+                q_options: JSON.stringify(question.options),
                 q_correct_answer: question.right_answer,
                 q_score: question.score,
             };
             });
-            const dataObject = {
-                uid: this.uid,
-                qn_id: this.qn_id,
+            const isoString = this.qn_end_time;
+            const date = new Date(isoString);
+
+            const options = { year: 'numeric', month: '2-digit', day: '2-digit' };
+            const dateString = date.toLocaleDateString('en-US', options).replace(/\//g, '-');
+            const timeString = date.toLocaleTimeString('en-US', {hour12:false});
+
+            const formattedDate = `${dateString} ${timeString}`;
+
+            const dataObject = { 
+                uid: this.$store.state.curUserID,
+                qn_id: 3,
                 qn_title: this.qn_title,
                 qn_description: this.qn_description,
-                qn_end_time: this.qn_end_time,
+                qn_end_time: formattedDate,
                 qn_refillable: this.qn_refillable,
                 questions_data: selectedQuestions,
             };
             const jsonString = JSON.stringify(dataObject);
             console.log(jsonString);
-            axios({
-                method: 'post',
-                url: 'http://127.0.0.1:4523/m2/2762233-0-cbe98cc5/83357835',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                params: {
-                    uid: 1
-                },
-                data: jsonString
-            })
+            // axios({
+            //     method: 'post',
+            //     url: '/questionnaire/save_questionnaire',
+            //     headers: {
+            //         'Content-Type': 'application/json'
+            //     },
+            //     data: jsonString
+            // })
+            this.$api.questionnaire.postQuestionnaire_Save(jsonString)
             .then(function (response) {
                 console.log(response);
             })
@@ -550,6 +579,7 @@ export default {
     justify-content: space-between;
     flex-direction: row;
     flex-wrap: wrap; */
+    box-shadow: rgba(0, 0, 0, 0.02) 0 1px 3px 0, rgba(27, 31, 35, 0.15) 0 0 0 1px;
 }
 
 .outline-list {
@@ -571,6 +601,7 @@ export default {
     justify-content: space-between;
     flex-direction: row;
     flex-wrap: wrap; */
+    box-shadow: rgba(0, 0, 0, 0.02) 0 1px 3px 0, rgba(27, 31, 35, 0.15) 0 0 0 1px;
 }
 
 .outline-title {
@@ -578,7 +609,8 @@ export default {
     background-color: white;
     left: 10%;
     width: 90%;
-
+    box-shadow: rgba(0, 0, 0, 0.02) 0 1px 3px 0, rgba(27, 31, 35, 0.15) 0 0 0 1px;
+    font-size: 14px;
 }
 
 .outline-item {
@@ -633,6 +665,7 @@ export default {
     padding: 1rem;
     width: 44%;
     overflow-y: scroll;
+    
 }
 
 .card {

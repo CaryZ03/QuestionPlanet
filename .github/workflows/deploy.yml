@@ -24,7 +24,9 @@ jobs:
             cd /home/caryz/QuestionPlanet
             git pull
             pip install -r requirements.txt
-            killall -9 uwsgi && uwsgi --ini uwsgi.ini
-            wait $!
+            pid=$(cat uwsgi.pid)
+            kill -15 $pid
+            uwsgi --ini uwsgi.ini
             sudo nginx -s reload
+            
 
