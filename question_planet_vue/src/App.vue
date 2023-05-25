@@ -6,7 +6,7 @@
           <li><router-link active-class="" to="/">主页</router-link> </li>
           <li><router-link active-class="" to="/about">关于</router-link></li>
           <li v-if="this.$store.state.isLogin"><router-link active-class=""
-              :to="'/new/' + this.$store.state.curUserID">管理问卷</router-link></li>
+              :to="'/manage/' + this.$store.state.curUserID">管理问卷</router-link></li>
           <li v-else><router-link active-class="" to="/login">创建问卷</router-link></li>
           
           <!-- <StepSlideVue></StepSlideVue>
@@ -18,6 +18,7 @@
           <li v-show="!this.$store.state.isLogin"> <router-link active-class="" to="/register" id="login">Register</router-link></li> -->
 
           <el-button size="medium" id="login" round><router-link active-class="" to="/login" id="login">Login</router-link></el-button>
+
           <el-button size="medium" id="login" round><router-link active-class="" to="/register" id="login">Register</router-link></el-button>
         </ul>
         <router-view />
