@@ -317,13 +317,11 @@ export default {
     }
   },
   mounted() {
-    this.drawCharts();
   },
   watch: {
   questions: {
     deep: true,
     handler() {
-      this.drawCharts();
     },
     },
   },
