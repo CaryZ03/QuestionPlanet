@@ -13,7 +13,7 @@ from user.views import login_required, not_login_required, admin_required
 
 def questionnaire_exists(view_func):
     def wrapper(request, *args, **kwargs):
-        qnid = request.body.get('qnid')
+        qnid = json.loads(request.body).get('qnid')
         if not Questionnaire.objects.filter(qn_id=qnid).exists():
             return JsonResponse({'errno': 2001, 'msg': "问卷不存在"})
         else:
