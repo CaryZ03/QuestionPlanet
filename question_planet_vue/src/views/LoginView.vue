@@ -38,19 +38,17 @@
           </div>
           <!-- 输入框盒子 -->
           <div class="input-box">
-            <input type="text" v-model="loginAccount" placeholder="用户名">
-            <input type="password" v-model="loginCode" placeholder="密码">
+            <input type="text" v-model="user.username" placeholder="用户名">
+            <input type="password" v-model="user.password" placeholder="密码">
           </div>
           <!-- 按钮盒子 -->
           <div class="btn-box">
             <button @click="login">登录</button>
-            <button @click="test">test</button>
-
             <!-- 绑定点击事件 -->
-            <p @click="register"><router-link to="/register">没有账号?去注册</router-link></p> <br>
+            <p><router-link to="/register">没有账号?去注册</router-link></p> <br>
           </div>
           <br>
-          <p @click="register"><router-link to="/register">忘记密码？</router-link></p> <br>
+          <p><router-link to="/register">忘记密码？</router-link></p> <br>
         </div>
       </div>
     </div>
@@ -58,32 +56,24 @@
 </template>
 
 <script>
-import axios from 'axios'
 export default {
-  name: 'register',
   data() {
     return {
-      login:[
-
-      ],
+<<<<<<< Updated upstream
       loginAccount: '',
-      loginCode: '',
-      user:{}
+      loginCode: ''
+=======
+      user: {
+        username: '',
+        password: ''
+      },
+>>>>>>> Stashed changes
     }
   },
   methods: {
     login() {
-      //
-      axios.get('http://localhost:3000/user?username='+this.loginAccount)
-      .then(response => {
-        this.user = response.data[0]
-      })
-      .catch(error => {
-        console.log(error);
-        alert("账户不存在");
-        return;
-      }),
-
+<<<<<<< Updated upstream
+      //todo
       this.$store.dispatch('login', this.loginAccount, this.loginCode),
       console.log(this.$store.state.curUserID),
       //todo先检查一波
@@ -97,23 +87,35 @@ export default {
     },
     register() {
       alert("register todo")
-    },
-    test(){
-      console.log(this.$api)
-      this.$api.userInfo.getUserInfo(this.loginAccount).then((response) => {
-        console.log(response.data)
+    }
+  }
+=======
+      const data = JSON.stringify(this.user)
+      console.log(data)
+
+      this.$api.userInfo.postUserInfo_UserLogin(data).then((response) => {
+        if (response.data['errno'] === 0) {
+          console.log(response.data)
+          console.log(response.data.uid)
+          this.$store.state.curUserID = response.data['uid']
+          this.$store.state.curUsername = this.user.username
+          this.$store.state.isLogin = true
+
+          this.$router.push({
+          path: "/new/" + this.$store.state.curUserID
+        })
+        }
+        else{
+          console.log("发生了奇怪的问题")
+        }
       }).catch(error => {
-        alert("未登录的用户")
+        console.log(error)
+
+
       })
     },
-    getUserInfo() {
-      axios.get('http://localhost:3000/user?username='+this.loginAccount,this.user)
-      .catch(error => {
-        console.log("??"+error)
-      }),
-      console.log("!!!"+this.user)
-    },
   },
+>>>>>>> Stashed changes
 }
 </script>
 <style scoped>
