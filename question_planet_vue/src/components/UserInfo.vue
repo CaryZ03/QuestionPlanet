@@ -166,7 +166,7 @@ a:active {
 }
 
 .title {
-  color: #323232;
+  color: #eeeeee;
   font-size: 18px;
   font-weight: 700;
   line-height: 26px;
@@ -181,6 +181,7 @@ a:active {
   font-size: 13px;
   height: 234px;
   padding: 20px 30px;
+  opacity: 80%;
 }
 
 .user-company-box {
@@ -190,7 +191,8 @@ a:active {
 
   padding: 7px 35px 27px 20px;
 margin: 59px 105px 0 -39px;
-background-image: linear-gradient(to right, rgb(199, 210, 254), rgb(254, 202, 202), rgb(254, 243, 199));
+
+/* background-image: linear-gradient(to right, rgb(199, 210, 254), rgb(254, 202, 202), rgb(254, 243, 199)); */
 }
 
 .content .items {
