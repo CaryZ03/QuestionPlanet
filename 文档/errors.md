@@ -4,17 +4,18 @@
 
 ```python
 class Filler(Model):
-    filler_id = IntegerField(primary_key=True)
+    filler_id = AutoField(primary_key=True)
     filler_ip = CharField(max_length=30)
     filler_is_user = BooleanField(default=False)
-    filler_uid = ForeignKey('User', on_delete=SET_NULL, null=True)
+    filler_user = ForeignKey('User', on_delete=SET_NULL, null=True)
 
 
 class User(Model):
-    user_id = IntegerField(primary_key=True)
+    user_id = AutoField(primary_key=True)
     user_name = CharField(max_length=100)
     user_password = CharField(max_length=20)
-    user_email = CharField(max_length=50, default='')
+    user_email = EmailField(max_length=50, default=None, blank=True, null=True)
+    user_tel = TextField(null=True)
     status_choices = (
         ('free', "未封禁"),
         ('banned', "封禁")
@@ -25,7 +26,7 @@ class User(Model):
 
 
 class Admin(Model):
-    admin_id = IntegerField(primary_key=True)
+    admin_id = AutoField(primary_key=True)
     admin_name = CharField(max_length=100)
     admin_password = CharField(max_length=20)
 ```
@@ -51,7 +52,8 @@ class Admin(Model):
     "username": username,
     "password1": password1,
     "password2": password2,
-    "email": email*
+    "email": email*,
+    "tel": tel*
 }
 ```
 
@@ -61,7 +63,7 @@ class Admin(Model):
 {
     "errno": 0,
     "msg": "注册成功",
-    "username": user_name
+    "uid": 用户id
 }
 ```
 
@@ -96,6 +98,9 @@ class Admin(Model):
     "msg": "登录成功",
     "uid": user_id
 }
+cookie:{
+    "session_id": session_id
+}
 ```
 
 ### 错误码：
@@ -123,7 +128,10 @@ class Admin(Model):
 {
     "errno": 0,
     "msg": "管理员登录成功",
-    'adid': admin_id
+    'admin_id': admin_id
+}
+cookie:{
+    "session_id": session_id
 }
 ```
 
@@ -308,7 +316,8 @@ class Admin(Model):
     "username": username,
     "password1": password1,
     "password2": password2,
-    "email": email*
+    "email": email*,
+    "tel": tel*
 }
 ```
 
@@ -343,7 +352,8 @@ class Admin(Model):
     "username": username,
     "password1": password1,
     "password2": password2,
-    "email": email*
+    "email": email*,
+    "tel": tel*
 }
 ```
 
@@ -358,15 +368,15 @@ class Admin(Model):
 
 ### 错误码：
 
-1081：用户名不合法
+1111：用户名不合法
 
-1082：用户名已存在
+1112：用户名已存在
 
-1083：两次输入的密码相同
+1113：两次输入的密码相同
 
-1084：密码不合法
+1114：密码不合法
 
-## 112 check_questionnaires
+## 112 check_questionnaire_list
 
 ### 请求类型：GET
 
@@ -375,7 +385,7 @@ class Admin(Model):
 ```json
 {
     "uid": uid,
-    "type": type
+    "type": type("created", "filled")
 }
 ```
 
@@ -437,17 +447,18 @@ class Admin(Model):
 
 ```python
 class Answer(Model):
-    a_id = IntegerField(primary_key=True)
+    a_id = AutoField(primary_key=True)
     a_answersheet = ForeignKey('Answersheet', on_delete=CASCADE, null=True)
     a_question = ForeignKey('Question', on_delete=CASCADE, null=True)
-    a_content = TextField()
+    a_content = TextField(null=True)
     a_score = DecimalField(max_digits=6, decimal_places=2, default=0)
-    a_comment = TextField()
+    a_comment = TextField(null=True)
 
 
 class Question(Model):
-    q_id = IntegerField(primary_key=True)
+    q_id = AutoField(primary_key=True)
     q_questionnaire = ForeignKey('Questionnaire', on_delete=CASCADE, null=True)
+    q_position = IntegerField(default=0)
     question_types = (
         ('single', "单选"),
         ('multiple', "多选"),
@@ -457,32 +468,34 @@ class Question(Model):
         ('grade', "打分")
     )
     q_type = CharField(max_length=20, choices=question_types, default='single')
-    q_title = TextField()
-    q_description = TextField()
-    q_option_count = IntegerField()
-    q_options = JSONField()
-    q_correct_answer = TextField()
+    q_manditory = BooleanField(default=False)
+    q_title = TextField(null=True)
+    q_description = TextField(null=True)
+    q_option_count = IntegerField(default=1)
+    q_options = JSONField(null=True)
+    q_correct_answer = TextField(null=True)
     q_score = DecimalField(max_digits=6, decimal_places=2, default=0.0)
     q_answers = ManyToManyField(Answer)
 
 
 class AnswerSheet(Model):
-    as_id = IntegerField(primary_key=True)
+    as_id = AutoField(primary_key=True)
     as_filler = ForeignKey('user.Filler', on_delete=CASCADE, null=True)
     as_questionnaire = ForeignKey('Questionnaire', on_delete=CASCADE, null=True)
     as_createTime = DateTimeField(auto_now_add=True)
     as_answers = ManyToManyField(Answer)
-    as_score = IntegerField()
-    as_temporary_save = JSONField(default='')
+    as_score = IntegerField(default=0)
+    as_temporary_save = JSONField(default=None, null=True)
     as_submitted = BooleanField(default=False)
 
 
 class Questionnaire(Model):
-    qn_id = IntegerField(primary_key=True)
-    qn_title = TextField()
-    qn_description = TextField()
+    qn_id = AutoField(primary_key=True)
+    qn_title = TextField(null=True)
+    qn_description = TextField(null=True)
+    qn_creator = ForeignKey('user.User', on_delete=SET_NULL, null=True)
     qn_createTime = DateTimeField(auto_now_add=True)
-    qn_endTime = DateTimeField(default=None)
+    qn_endTime = DateTimeField(default=None, null=True)
     status_choices = (
         ('unpublished', "未发布"),
         ('published', "已发布"),
@@ -509,6 +522,7 @@ class Questionnaire(Model):
 
 ```json
 {
+    "uid": uid*,
     "qn_id": 问卷id
 }
 ```
@@ -536,6 +550,7 @@ class Questionnaire(Model):
 
 ```json
 {
+    "qn_id": qn_id,
     "as_id": 答卷id,
     "answer_data": 答卷内容
 }
@@ -568,6 +583,7 @@ else
 
 ```json
 {
+    "qn_id": qn_id,
     "as_id": 答卷id,
     "answer_data": 答卷内容
 }
@@ -626,9 +642,10 @@ else
     "qn_description": 问卷描述,
     "qn_end_time": 问卷截止时间,
     "qn_refillable": 是否可重填,
-    "question_data": [
+    "question_list": [
         {
             "q_type": 问题类型,
+            "q_manditory": 是否必填,
             "q_title": 问题标题,
             "q_description": 问题描述,
             "q_option_count": 选项数,
@@ -652,7 +669,50 @@ else
 
 ### 错误码：无
 
-## 206 delete_questionnaire
+## 206 check_questionnaire
+
+### 描述：查看问卷
+
+### 请求类型：GET
+
+### 输入数据：
+
+```json
+{
+    "uid": 用户id,
+    "qn_id": 问卷id
+}
+```
+
+### 返回数据：
+
+```json
+{
+    "uid": 用户id,
+    "qn_id": 问卷id,
+    "qn_title": 问卷标题,
+    "qn_description": 问卷描述,
+    "qn_end_time": 问卷截止时间,
+    "qn_refillable": 是否可重填,
+    "question_list": [
+        {
+            "q_type": 问题类型,
+            "q_manditory": 是否必填,
+            "q_title": 问题标题,
+            "q_description": 问题描述,
+            "q_option_count": 选项数,
+            "q_options": 选项数据([选项1, ...]),
+            "q_correct_answer": 正确答案,
+            "q_score": 分数
+        }，
+        ...
+    ]
+}
+```
+
+### 错误码：无
+
+## 207 delete_questionnaire
 
 ### 描述：删除问卷
 
@@ -678,7 +738,7 @@ else
 
 ### 错误码：无
 
-## 207 change_questionnaire_status
+## 208 change_questionnaire_status
 
 ### 描述：更改问卷状态（打开、关闭、封禁、解封）
 
@@ -690,7 +750,7 @@ else
 {
     "uid": 用户id,
     "qn_id": 问卷id,
-    "status": 目标状态(unpublished, published, closed, banned)
+    "status": 目标状态('unpublished', 'published', 'closed', 'banned')
 }
 ```
 

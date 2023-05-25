@@ -16,6 +16,7 @@ class User(Model):
     user_name = CharField(max_length=100)
     user_password = CharField(max_length=20)
     user_email = EmailField(max_length=50, default=None, blank=True, null=True)
+    user_tel = TextField(null=True)
     status_choices = (
         ('free', "未封禁"),
         ('banned', "封禁")
@@ -30,6 +31,7 @@ class User(Model):
             "user_name": self.user_name,
             "user_password": self.user_password,
             "user_email": self.user_email,
+            "user_tel": self.user_tel,
             "user_status": self.user_status
         }
         return json.dumps(info)

@@ -11,12 +11,14 @@
           
           <!-- <StepSlideVue></StepSlideVue>
        -->
-
-          <li v-show="!this.$store.state.isLogin"><router-link active-class="" to="/login">Login</router-link></li>
-          <li v-show="!this.$store.state.isLogin"> <router-link active-class="" to="/register">Register</router-link></li>
-
           <li v-if="this.$store.state.isLogin"><router-link active-class="" to="/userInfo">个人信息</router-link></li>
           <li ><router-link active-class="" to="/userInfo">个人信息test</router-link></li>
+
+          <!-- <li v-show="!this.$store.state.isLogin"><router-link active-class="" to="/login" id="login">Login</router-link></li>
+          <li v-show="!this.$store.state.isLogin"> <router-link active-class="" to="/register" id="login">Register</router-link></li> -->
+
+          <el-button size="medium" id="login" round><router-link active-class="" to="/login" id="login">Login</router-link></el-button>
+          <el-button size="medium" id="login" round><router-link active-class="" to="/register" id="login">Register</router-link></el-button>
         </ul>
         <router-view />
       </span>
@@ -57,7 +59,12 @@ export default {
 
 
 
-<style>
+<style >
+#login{
+  float: right !important;
+  margin: 5px 10px 0;
+}
+
 * {
   margin: 0;
   padding: 0;
