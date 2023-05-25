@@ -143,13 +143,58 @@
     </el-container>
   </div>
 </template>
-<!-- 
+
+<script>
+
+export default {
+  data() {
+    const item = {
+      stDate: '2023-5-16',
+      name: 'Loar',
+      type: '考试卷',
+      edDate: '2023-5-16'
+    };
+    return {
+      searchText: '',
+      tableData: Array(20).fill(item),
+      userID: this.$store.state.curUserID
+    }
+  },
+  mounted() {
+    this.getManagerQuestionnaireList();
+  },
+  watch: {
+    questions: {
+      deep: true,
+      handler() {
+      },
+    },
+  },
+  methods: {
+    pushView() {
+      this.$store.state.is_creating = true,
+        this.$router.push({
+          name: 'questionnaire_create'
+        }),
+
+        alert(this.$store.state.is_creating)
+    },
+    getManagerQuestionnaireList() {
+      const data = {
+        "uid": this.$store.state.curUserID,
+        "type": "created"
+      }
+      this.$api.userInfo.getUserInfo_GetQList(data).then((res) => {
+        console.log(res.data)
+      })
+
+    },
+  },
+};
+</script>
 
 
-  
- -->
 <style scoped>
-
 
 /* Curl Bottom Right */
 .hvr-curl-bottom-right {
@@ -361,55 +406,6 @@ div {
   background-color: #f9fafc;
 }
 </style>
-<script>
-
-export default {
-  data() {
-
-    const item = {
-      stDate: '2023-5-16',
-      name: 'Loar',
-      type: '考试卷',
-      edDate: '2023-5-16'
-    };
-    return {
-      searchText: '',
-      tableData: Array(20).fill(item),
-      userID: this.$store.state.curUserID
-    }
-  },
-  mounted() {
-    this.getManagerQuestionnaireList();
-  },
-  watch: {
-    questions: {
-      deep: true,
-      handler() {
-      },
-    },
-  },
-  methods: {
-    pushView() {
-      this.$store.state.is_creating = true,
-        this.$router.push({
-          name: 'questionnaire_create'
-        }),
-
-        alert(this.$store.state.is_creating)
-    },
-    getManagerQuestionnaireList() {
-      const data = {
-        "uid": this.$store.state.curUserID,
-        "type": "created"
-      }
-      this.$api.userInfo.getUserInfo_GetQList(data).then((res) => {
-        console.log(res.data)
-      })
-
-    },
-  },
-};
-</script>
 
 <style scoped>
 /* 样式代码 */
