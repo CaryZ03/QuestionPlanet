@@ -128,7 +128,7 @@ def user_register(request):
         filler_ip = get_client_ip(request)
         new_filler = Filler.objects.create(filler_ip=filler_ip, filler_is_user=True, filler_user=new_user)
         new_filler.save()
-        return JsonResponse({'errno': 0, 'msg': "注册成功", 'username': new_user.user_name})
+        return JsonResponse({'errno': 0, 'msg': "注册成功", 'uid': new_user.user_id})
 
 
 @csrf_exempt
@@ -168,7 +168,7 @@ def admin_login(request):
             request.session['role'] = 'admin'
             request.session.save()
             session_id = request.session.session_key
-            response = JsonResponse({'errno': 0, 'msg': "管理员登录成功", 'adid': admin.admin_id})
+            response = JsonResponse({'errno': 0, 'msg': "管理员登录成功", 'admin_id': admin.admin_id})
             response.set_cookie('session_id', session_id)
             return response
         else:
@@ -251,8 +251,8 @@ def check_profile(request):
 @require_http_methods(['GET'])
 def check_profile_admin(request):
     data_json = json.loads(request.body)
-    adid = data_json.get('uid')
-    admin = Admin.objects.get(admin_id=adid)
+    admin_id = data_json.get('uid')
+    admin = Admin.objects.get(admin_id=admin_id)
     admin_info = admin.to_json()
     return JsonResponse({'errno': 0, 'msg': '返回管理员信息成功', 'admin_info': admin_info})
 
@@ -262,7 +262,7 @@ def check_profile_admin(request):
 @require_http_methods(['POST'])
 def change_profile(request):
     data_json = json.loads(request.body)
-    uid = json.loads(request.body).get('id')
+    uid = data_json.get('uid')
     username = data_json.get('username')
     password1 = data_json.get('password1')
     password2 = data_json.get('password2')
@@ -319,12 +319,12 @@ def change_profile_admin(request):
 @login_required
 @require_http_methods(['GET'])
 def check_questionnaire_list(request):
-    uid = json.loads(request.body).get('id')
-    qntype = json.loads(request.body).get('type')
+    uid = json.loads(request.body).get('uid')
+    qn_list_type = json.loads(request.body).get('type')
     user = User.objects.get(user_id=uid)
-    if qntype == 'created':
+    if qn_list_type == 'created':
         questionnaires = user.user_created_questionnaires.all()
-    elif qntype == 'filled':
+    elif qn_list_type == 'filled':
         questionnaires = user.user_filled_questionnaires.all()
     else:
         return JsonResponse({'errno': 1121, 'msg': '未指定问卷列表'})

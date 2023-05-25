@@ -4,17 +4,18 @@
 
 ```python
 class Filler(Model):
-    filler_id = IntegerField(primary_key=True)
+    filler_id = AutoField(primary_key=True)
     filler_ip = CharField(max_length=30)
     filler_is_user = BooleanField(default=False)
-    filler_uid = ForeignKey('User', on_delete=SET_NULL, null=True)
+    filler_user = ForeignKey('User', on_delete=SET_NULL, null=True)
 
 
 class User(Model):
-    user_id = IntegerField(primary_key=True)
+    user_id = AutoField(primary_key=True)
     user_name = CharField(max_length=100)
     user_password = CharField(max_length=20)
-    user_email = CharField(max_length=50, default='')
+    user_email = EmailField(max_length=50, default=None, blank=True, null=True)
+    user_tel = TextField(null=True)
     status_choices = (
         ('free', "未封禁"),
         ('banned', "封禁")
@@ -25,7 +26,7 @@ class User(Model):
 
 
 class Admin(Model):
-    admin_id = IntegerField(primary_key=True)
+    admin_id = AutoField(primary_key=True)
     admin_name = CharField(max_length=100)
     admin_password = CharField(max_length=20)
 ```
@@ -51,7 +52,8 @@ class Admin(Model):
     "username": username,
     "password1": password1,
     "password2": password2,
-    "email": email*
+    "email": email*,
+    "tel": tel*
 }
 ```
 
@@ -61,7 +63,7 @@ class Admin(Model):
 {
     "errno": 0,
     "msg": "注册成功",
-    "username": user_name
+    "uid": 用户id
 }
 ```
 
@@ -96,6 +98,9 @@ class Admin(Model):
     "msg": "登录成功",
     "uid": user_id
 }
+cookie:{
+    "session_id": session_id
+}
 ```
 
 ### 错误码：
@@ -123,7 +128,10 @@ class Admin(Model):
 {
     "errno": 0,
     "msg": "管理员登录成功",
-    'adid': admin_id
+    'admin_id': admin_id
+}
+cookie:{
+    "session_id": session_id
 }
 ```
 
@@ -308,7 +316,8 @@ class Admin(Model):
     "username": username,
     "password1": password1,
     "password2": password2,
-    "email": email*
+    "email": email*,
+    "tel": tel*
 }
 ```
 
@@ -343,7 +352,8 @@ class Admin(Model):
     "username": username,
     "password1": password1,
     "password2": password2,
-    "email": email*
+    "email": email*,
+    "tel": tel*
 }
 ```
 
@@ -358,15 +368,15 @@ class Admin(Model):
 
 ### 错误码：
 
-1081：用户名不合法
+1111：用户名不合法
 
-1082：用户名已存在
+1112：用户名已存在
 
-1083：两次输入的密码相同
+1113：两次输入的密码相同
 
-1084：密码不合法
+1114：密码不合法
 
-## 112 check_questionnaires
+## 112 check_questionnaire_list
 
 ### 请求类型：GET
 
@@ -375,7 +385,7 @@ class Admin(Model):
 ```json
 {
     "uid": uid,
-    "type": type
+    "type": type("created", "filled")
 }
 ```
 
