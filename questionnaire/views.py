@@ -89,7 +89,10 @@ def submit_answers(request):
     answer_sheet.as_answers.all().delete()
     # 解析答案数据，创建答案对象
     answer_list = json.loads(answer_data)
-    for q_id, a_content in answer_list:
+    for a_data in answer_list:
+        a_data_json = json.loads(a_data)
+        q_id = a_data_json.get('q_id')
+        a_content = a_data_json.get('a_content')
         question = Question.objects.get(q_id=q_id)
         answer = Answer.objects.create(
             a_answersheet=answer_sheet,
