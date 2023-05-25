@@ -43,7 +43,7 @@
       <el-container>
         <el-header style="text-align: right; font-size: 12px">
           <el-input style="width: 280px; left: 20px;" placeholder="查找问卷" suffix-icon="el-icon-search"
-            v-model="searchText">
+            v-model="TODO_input1">
           </el-input>
           <span></span>
         </el-header>
@@ -271,6 +271,10 @@ div {
 <style>
 .el-row {
   margin-bottom: 20px;
+
+  &:last-child {
+    margin-bottom: 0;
+  }
 }
 
 .el-col {
@@ -303,7 +307,6 @@ div {
 
 export default {
   data() {
-    
     const item = {
       stDate: '2023-5-16',
       name: 'Loar',
@@ -311,17 +314,18 @@ export default {
       edDate: '2023-5-16'
     };
     return {
-      searchText: '',
       tableData: Array(20).fill(item),
       userID: this.$store.state.curUserID
     }
   },
   mounted() {
+    this.drawCharts();
   },
   watch: {
   questions: {
     deep: true,
     handler() {
+      this.drawCharts();
     },
     },
   },

@@ -3,81 +3,93 @@
     <!-- 最外层的大盒子 -->
     <div class="bigBox">
       <div class="box">
-      <!-- 滑动盒子 -->
-      <div class="pre-box">
-        <h1>问卷猩球</h1>
-        <p>JOIN US!</p>
-        <div class="img-box">
-          <img src="../assets/waoku.jpg" alt="">
+        <!-- 滑动盒子 -->
+        <div class="pre-box">
+          <h1>问卷猩球</h1>
+          <p>JOIN US!</p>
+          <div class="img-box">
+            <img src="../assets/waoku.jpg" alt="">
+          </div>
+        </div>
+        <!-- 注册盒子 -->
+        <div class="register-form">
+          <!-- 标题盒子 -->
+          <div class="title-box">
+            <h1>注册</h1>
+          </div>
+          <!-- 输入框盒子 -->
+          <div class="input-box">
+            <input type="text" placeholder="用户名">
+            <input type="password" placeholder="密码">
+            <input type="password" placeholder="确认密码">
+          </div>
+          <!-- 按钮盒子 -->
+          <div class="btn-box">
+            <button>注册</button>
+            <!-- 绑定点击事件 -->
+            <p onclick="mySwitch()">已有账号?去登录</p>
+          </div>
+        </div>
+        <!-- 登录盒子 -->
+        <div class="login-form">
+          <!-- 标题盒子 -->
+          <div class="title-box">
+            <h1>登录</h1>
+          </div>
+          <!-- 输入框盒子 -->
+          <div class="input-box">
+            <input type="text" v-model="user.username" placeholder="用户名">
+            <input type="password" v-model="user.password" placeholder="密码">
+          </div>
+          <!-- 按钮盒子 -->
+          <div class="btn-box">
+            <button @click="login">登录</button>
+            <!-- 绑定点击事件 -->
+            <p><router-link to="/register">没有账号?去注册</router-link></p> <br>
+          </div>
+          <br>
+          <p><router-link to="/register">忘记密码？</router-link></p> <br>
         </div>
       </div>
-      <!-- 注册盒子 -->
-      <div class="register-form">
-        <!-- 标题盒子 -->
-        <div class="title-box">
-          <h1>注册</h1>
-        </div>
-        <!-- 输入框盒子 -->
-        <div class="input-box">
-          <input type="text" placeholder="用户名">
-          <input type="password" placeholder="密码">
-          <input type="password" placeholder="确认密码">
-        </div>
-        <!-- 按钮盒子 -->
-        <div class="btn-box">
-          <button>注册</button>
-          <!-- 绑定点击事件 -->
-          <p onclick="mySwitch()">已有账号?去登录</p>
-        </div>
-      </div>
-      <!-- 登录盒子 -->
-      <div class="login-form">
-        <!-- 标题盒子 -->
-        <div class="title-box">
-          <h1>注册</h1>
-        </div>
-        <!-- 输入框盒子 -->
-        <div class="input-box">
-          <input type="text" v-model="userR.username" placeholder="用户名">
-          <input type="password" v-model="userR.password1" placeholder="密码">
-          <input type="password" v-model="userR.password2" placeholder="确认密码">
-        </div>
-        <!-- 按钮盒子 -->
-        <div class="btn-box">
-          <button @click="register">注册</button>
-        </div>
-      </div>
-    </div>
     </div>
   </div>
 </template>
 
 <script>
+import axios from 'axios'
 export default {
-  name: 'register',
   data() {
     return {
-      userR: {
+      user: {
         username: '',
-        password1: '',
-        password2: '',
+        password: ''
       },
     }
   },
   methods: {
-    register() {
-      const data = JSON.stringify(this.userR)
-      this.$api.userInfo.postUserInfo_Register(data).then((response) => {
-        console.log(response.data)
-        if (response.data[0].error == 0) {
-          console.log("注册成功")
+    login() {
+      const data = JSON.stringify(this.user)
+      console.log(data)
+
+      this.$api.userInfo.postUserInfo_UserLogin(data).then((response) => {
+        if (response.data['errno'] === 0) {
+          console.log(response.data)
+          console.log(response.data.uid)
+          this.$store.state.curUserID = response.data['uid']
+          this.$store.state.curUsername = this.user.username
+          this.$store.state.isLogin = true
+
           this.$router.push({
-          path: "/login" 
-          })
+          path: "/new/" + this.$store.state.curUserID
+        })
+        }
+        else{
+          console.log("发生了奇怪的问题")
         }
       }).catch(error => {
-        alert("注册失败")
         console.log(error)
+
+
       })
     },
   },
@@ -235,12 +247,11 @@ span {
 .register-form {
   flex: 1;
   height: 100%;
-  
+
 }
 
 /* 标题盒子 */
 .title-box {
-  
   height: 300px;
   line-height: 500px;
 
@@ -248,9 +259,7 @@ span {
 
 /* 标题 */
 .title-box h1 {
-  
   text-align: center;
-  bottom: 80%;
   color: white;
   /* 禁止选中 */
   user-select: none;

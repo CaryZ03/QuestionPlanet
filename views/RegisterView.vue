@@ -71,9 +71,6 @@ export default {
         console.log(response.data)
         if (response.data[0].error == 0) {
           console.log("注册成功")
-          this.$router.push({
-          path: "/login" 
-          })
         }
       }).catch(error => {
         alert("注册失败")
