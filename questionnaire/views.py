@@ -35,8 +35,10 @@ def get_client_ip(request):
 @csrf_exempt
 @questionnaire_exists
 @require_http_methods(['POST'])
-def fill_questionnaire(request, qn_id):
-    uid = json.loads(request.body).get('uid')
+def fill_questionnaire(request):
+    data_json = json.loads(request.body)
+    uid = data_json.get('uid')
+    qn_id = data_json.get('qn_id')
     if not uid:
         filler_ip = get_client_ip(request)
         if Filler.objects.filter(filler_ip=filler_ip).exists():
@@ -62,8 +64,9 @@ def fill_questionnaire(request, qn_id):
 @questionnaire_exists
 @require_http_methods(['POST'])
 def save_answers(request):
-    answer_sheet = request.POST.get('as_id')
-    answer_data = request.POST.get('answer_data')
+    data_json = json.loads(request.body)
+    answer_sheet = data_json.get('as_id')
+    answer_data = data_json.get('answer_data')
     if answer_data is not None:
         answer_sheet.as_temporary_save = answer_data
         answer_sheet.save()
@@ -78,8 +81,9 @@ def save_answers(request):
 @require_http_methods(['POST'])
 def submit_answers(request):
     # 获取请求参数
-    as_id = request.POST.get('as_id')
-    answer_data = request.POST.get('answer_data')
+    data_json = json.loads(request.body)
+    as_id = data_json.get('as_id')
+    answer_data = data_json.get('answer_data')
 
     answer_sheet = AnswerSheet.objects.get(as_id=as_id)
     answer_sheet.as_answers.all().delete()
@@ -148,6 +152,7 @@ def save_questionnaire(request):
     qn.qn_refillable = qn_refillable
     qn.qn_answersheets.all().delete()
     qn.qn_questions.all().delete()
+    qn.qn_data_json = data_json
 
     # 创建问题并加入问卷中
     for i in range(len(question_list)):
@@ -170,6 +175,20 @@ def save_questionnaire(request):
     qn.save()
     # 返回问卷创建成功的响应
     return JsonResponse({'code': 0, 'message': '问卷保存成功'})
+
+
+@csrf_exempt
+@login_required
+@questionnaire_exists
+@require_http_methods(['GET'])
+def check_questionnaire(request):
+    # 从请求中获取问卷信息和问题数据
+    data_json = json.loads(request.body)
+    qn_id = data_json.get('qn_id')
+    # 创建问卷
+    qn = Questionnaire.objects.get(qn_id=qn_id)
+    # 返回问卷创建成功的响应
+    return JsonResponse({'code': 0, 'message': '问卷查看成功', 'qn_data_json': qn.qn_data_json})
 
 
 @csrf_exempt
