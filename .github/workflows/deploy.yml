@@ -25,5 +25,6 @@ jobs:
             git pull
             pip install -r requirements.txt
             killall -9 uwsgi && uwsgi --ini uwsgi.ini
+            uwsgi --ini uwsgi.ini
             sudo nginx -s reload
 
