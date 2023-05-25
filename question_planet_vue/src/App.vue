@@ -47,7 +47,10 @@ export default {
         alert("my new ")
     },
     show() {
-    }
+      const udata={
+        "uid": 21373219
+      }
+    },
   },
 }
 </script>

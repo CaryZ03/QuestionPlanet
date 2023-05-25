@@ -8,7 +8,7 @@ class Filler(Model):
     filler_id = AutoField(primary_key=True)
     filler_ip = CharField(max_length=30)
     filler_is_user = BooleanField(default=False)
-    filler_uid = ForeignKey('User', on_delete=SET_NULL, null=True)
+    filler_user = ForeignKey('User', on_delete=SET_NULL, null=True)
 
 
 class User(Model):

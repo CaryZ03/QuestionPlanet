@@ -8,9 +8,9 @@ class Answer(Model):
     a_id = AutoField(primary_key=True)
     a_answersheet = ForeignKey('Answersheet', on_delete=CASCADE, null=True)
     a_question = ForeignKey('Question', on_delete=CASCADE, null=True)
-    a_content = TextField()
+    a_content = TextField(null=True)
     a_score = DecimalField(max_digits=6, decimal_places=2, default=0)
-    a_comment = TextField()
+    a_comment = TextField(null=True)
 
     def to_json(self):
         info = {
@@ -37,11 +37,11 @@ class Question(Model):
     )
     q_type = CharField(max_length=20, choices=question_types, default='single')
     q_manditory = BooleanField(default=False)
-    q_title = TextField()
-    q_description = TextField()
-    q_option_count = IntegerField()
-    q_options = JSONField()
-    q_correct_answer = TextField()
+    q_title = TextField(null=True)
+    q_description = TextField(null=True)
+    q_option_count = IntegerField(default=1)
+    q_options = JSONField(null=True)
+    q_correct_answer = TextField(null=True)
     q_score = DecimalField(max_digits=6, decimal_places=2, default=0.0)
     q_answers = ManyToManyField(Answer)
 
@@ -52,18 +52,18 @@ class AnswerSheet(Model):
     as_questionnaire = ForeignKey('Questionnaire', on_delete=CASCADE, null=True)
     as_createTime = DateTimeField(auto_now_add=True)
     as_answers = ManyToManyField(Answer)
-    as_score = IntegerField()
-    as_temporary_save = JSONField(default=None)
+    as_score = IntegerField(default=0)
+    as_temporary_save = JSONField(default=None, null=True)
     as_submitted = BooleanField(default=False)
 
 
 class Questionnaire(Model):
     qn_id = AutoField(primary_key=True)
-    qn_title = TextField()
-    qn_description = TextField()
+    qn_title = TextField(null=True)
+    qn_description = TextField(null=True)
     qn_creator = ForeignKey('user.User', on_delete=SET_NULL, null=True)
     qn_createTime = DateTimeField(auto_now_add=True)
-    qn_endTime = DateTimeField(default=None)
+    qn_endTime = DateTimeField(default=None, null=True)
     status_choices = (
         ('unpublished', "未发布"),
         ('published', "已发布"),
