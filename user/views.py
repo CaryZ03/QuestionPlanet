@@ -3,6 +3,7 @@ from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_http_methods
 from django.http.response import JsonResponse
+from django.contrib.sessions.backends.db import SessionStore
 import json
 
 from user.models import User, Admin, Filler
@@ -113,7 +114,9 @@ def user_login(request):
         if user.user_password == password:
             request.session['id'] = user.user_id
             request.session['role'] = 'user'
-            return JsonResponse({'errno': 0, 'msg': "登录成功", 'uid': user.user_id})
+            response = JsonResponse({'errno': 0, 'msg': "登录成功", 'uid': user.user_id})
+            response.set_cookie('session', request.session.session_key)
+            return response
         else:
             return JsonResponse({'errno': 1022, 'msg': "密码错误"})
     else:
@@ -311,4 +314,4 @@ def change_user_status(request):
 @csrf_exempt
 @require_http_methods(['POST'])
 def deploy_test(request):
-    return JsonResponse({'errno': 0, 'ver': "1"})
+    return JsonResponse({'errno': 0, 'ver': "3"})
