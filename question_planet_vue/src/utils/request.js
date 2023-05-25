@@ -12,32 +12,32 @@ const request = axios.create({
     timeout: 10000,
     headers: {
         'Content-Type': 'application/json',
-        'Cookie': 'session_id=' + document.cookie.session_id
+        'Authorization': 'session_id=' + document.cookie.session_id
     }
 })
 
-
+    
 // 请求拦截器，自动注入 cookie
-request.interceptors.request.use((config) => {
-    const session_id = getCookie('session_id');
-    if (session_id) {
-        config.headers.Cookie = `session_id=${session_id}`;
-    }
-    return config;
-});
+// request.interceptors.request.use((config) => {
+//     const session_id = getCookie('session_id');
+//     if (session_id) {
+//         config.headers.Cookie = `session_id=${session_id}`;
+//     }
+//     return config;
+// });
 
 
-function getCookie(key) {
-    const name = `${key}=`;
-    const cookies = document.cookie.split(';');
-    for (let i = 0; i < cookies.length; i++) {
-        let c = cookies[i].trim();
-        if (c.indexOf(name) == 0) {
-            return c.substring(name.length, c.length);
-        }
-    }
-    return '';
-}
+// function getCookie(key) {
+//     const name = `${key}=`;
+//     const cookies = document.cookie.split(';');
+//     for (let i = 0; i < cookies.length; i++) {
+//         let c = cookies[i].trim();
+//         if (c.indexOf(name) == 0) {
+//             return c.substring(name.length, c.length);
+//         }
+//     }
+//     return '';
+// }
 
 
 export default request 

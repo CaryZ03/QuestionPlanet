@@ -6,7 +6,7 @@
           <li><router-link active-class="" to="/">主页</router-link> </li>
           <li><router-link active-class="" to="/about">关于</router-link></li>
           <li v-if="this.$store.state.isLogin"><router-link active-class=""
-              :to="'/new/' + this.$store.state.curUserID">管理问卷</router-link></li>
+              :to="'/manage/' + this.$store.state.curUserID">管理问卷</router-link></li>
           <li v-else><router-link active-class="" to="/login">创建问卷</router-link></li>
           
           <!-- <StepSlideVue></StepSlideVue>
