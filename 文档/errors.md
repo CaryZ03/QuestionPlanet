@@ -447,17 +447,18 @@ cookie:{
 
 ```python
 class Answer(Model):
-    a_id = IntegerField(primary_key=True)
+    a_id = AutoField(primary_key=True)
     a_answersheet = ForeignKey('Answersheet', on_delete=CASCADE, null=True)
     a_question = ForeignKey('Question', on_delete=CASCADE, null=True)
-    a_content = TextField()
+    a_content = TextField(null=True)
     a_score = DecimalField(max_digits=6, decimal_places=2, default=0)
-    a_comment = TextField()
+    a_comment = TextField(null=True)
 
 
 class Question(Model):
-    q_id = IntegerField(primary_key=True)
+    q_id = AutoField(primary_key=True)
     q_questionnaire = ForeignKey('Questionnaire', on_delete=CASCADE, null=True)
+    q_position = IntegerField(default=0)
     question_types = (
         ('single', "单选"),
         ('multiple', "多选"),
@@ -467,32 +468,34 @@ class Question(Model):
         ('grade', "打分")
     )
     q_type = CharField(max_length=20, choices=question_types, default='single')
-    q_title = TextField()
-    q_description = TextField()
-    q_option_count = IntegerField()
-    q_options = JSONField()
-    q_correct_answer = TextField()
+    q_manditory = BooleanField(default=False)
+    q_title = TextField(null=True)
+    q_description = TextField(null=True)
+    q_option_count = IntegerField(default=1)
+    q_options = JSONField(null=True)
+    q_correct_answer = TextField(null=True)
     q_score = DecimalField(max_digits=6, decimal_places=2, default=0.0)
     q_answers = ManyToManyField(Answer)
 
 
 class AnswerSheet(Model):
-    as_id = IntegerField(primary_key=True)
+    as_id = AutoField(primary_key=True)
     as_filler = ForeignKey('user.Filler', on_delete=CASCADE, null=True)
     as_questionnaire = ForeignKey('Questionnaire', on_delete=CASCADE, null=True)
     as_createTime = DateTimeField(auto_now_add=True)
     as_answers = ManyToManyField(Answer)
-    as_score = IntegerField()
-    as_temporary_save = JSONField(default='')
+    as_score = IntegerField(default=0)
+    as_temporary_save = JSONField(default=None, null=True)
     as_submitted = BooleanField(default=False)
 
 
 class Questionnaire(Model):
-    qn_id = IntegerField(primary_key=True)
-    qn_title = TextField()
-    qn_description = TextField()
+    qn_id = AutoField(primary_key=True)
+    qn_title = TextField(null=True)
+    qn_description = TextField(null=True)
+    qn_creator = ForeignKey('user.User', on_delete=SET_NULL, null=True)
     qn_createTime = DateTimeField(auto_now_add=True)
-    qn_endTime = DateTimeField(default=None)
+    qn_endTime = DateTimeField(default=None, null=True)
     status_choices = (
         ('unpublished', "未发布"),
         ('published', "已发布"),
@@ -519,6 +522,7 @@ class Questionnaire(Model):
 
 ```json
 {
+    "uid": uid*,
     "qn_id": 问卷id
 }
 ```
@@ -546,6 +550,7 @@ class Questionnaire(Model):
 
 ```json
 {
+    "qn_id": qn_id,
     "as_id": 答卷id,
     "answer_data": 答卷内容
 }
@@ -578,6 +583,7 @@ else
 
 ```json
 {
+    "qn_id": qn_id,
     "as_id": 答卷id,
     "answer_data": 答卷内容
 }
@@ -636,9 +642,10 @@ else
     "qn_description": 问卷描述,
     "qn_end_time": 问卷截止时间,
     "qn_refillable": 是否可重填,
-    "question_data": [
+    "question_list": [
         {
             "q_type": 问题类型,
+            "q_manditory": 是否必填,
             "q_title": 问题标题,
             "q_description": 问题描述,
             "q_option_count": 选项数,
@@ -700,7 +707,7 @@ else
 {
     "uid": 用户id,
     "qn_id": 问卷id,
-    "status": 目标状态(unpublished, published, closed, banned)
+    "status": 目标状态('unpublished', 'published', 'closed', 'banned')
 }
 ```
 

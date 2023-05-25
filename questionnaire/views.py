@@ -174,8 +174,8 @@ def save_questionnaire(request):
 @questionnaire_exists
 @require_http_methods(['POST'])
 def delete_questionnaire(request):
-    qnid = json.loads(request.body).get('qnid')
-    qn = Questionnaire.objects.get(qn_id=qnid)
+    qn_id = json.loads(request.body).get('qn_id')
+    qn = Questionnaire.objects.get(qn_id=qn_id)
     qn.delete()
     return JsonResponse({'errno': 0, 'msg': "问卷删除成功"})
 
@@ -186,9 +186,9 @@ def delete_questionnaire(request):
 @require_http_methods(['POST'])
 def change_questionnaire_status(request):
     data_json = json.loads(request.body)
-    qnid = data_json.get('qnid')
+    qn_id = data_json.get('qn_id')
     status = data_json.get('status')
-    qn = Questionnaire.objects.get(qn_id=qnid)
+    qn = Questionnaire.objects.get(qn_id=qn_id)
     qn.status = status
     qn.save()
     return JsonResponse({'errno': 0, 'msg': "问卷状态更改成功"})
