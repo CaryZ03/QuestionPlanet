@@ -244,8 +244,7 @@ def delete_answer(request):
     answer = Answer.objects.get(a_id=a_id)
     data = {
         'a_id': answer.a_id,
-        'a_user': answer.a_user.user_id if answer.a_user else None,
-        'a_question': answer.a_question.q_id if answer.a_question else None,
+        'a_question': answer.a_question.q_id,
         'a_createTime': answer.a_createTime,
         'a_content': answer.a_content,
         'a_score': answer.a_score,
