@@ -245,7 +245,7 @@ def delete_answer(request):
     data = {
         'a_id': answer.a_id,
         'a_question': answer.a_question.q_id,
-        'a_createTime': answer.a_createTime,
+        'a_answersheet': answer.a_answersheet.as_id,
         'a_content': answer.a_content,
         'a_score': answer.a_score,
         'a_comment': answer.a_comment,
