@@ -80,11 +80,7 @@ export default ({
   top: 35%;
 }
 </style>
-<<<<<<< Updated upstream
-<style>
-=======
 <style scoped>
->>>>>>> Stashed changes
 .el-header,
 .el-footer {
   background-color: #B3C0D1;
