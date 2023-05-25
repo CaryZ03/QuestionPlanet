@@ -53,7 +53,7 @@
                 <div style="line-height: 30px;">&emsp;</div>
 
             </div>
-            <el-button type="success" style="margin: 0 0 0 -66px" round v-on:click="save_handler()">保存回答</el-button>
+            <el-button type="success" style="margin: 0 0 0 -66px" round v-on:click="commitAnswer()">保存回答</el-button>
             <el-button type="primary" round >提交回答</el-button>
         </div>
 
@@ -123,10 +123,20 @@ export default {
                             a_content_array.push(index_option.toString());
                         }
                         });
-                    question.a_content += a_content_array.join(',');
+                    question.a_content = a_content_array.join(',');
+                    //console.log(question.a_content);
                 }
+ 
                 this.answer_sheet.push({q_id: index_question, a_content: question.a_content});
                 });
+            console.log(this.answer_sheet);
+            const dataObject = { 
+                qn_id: 3,
+                as_id: 3,
+                answer_data: this.answer_sheet
+            };
+            const jsonString = JSON.stringify(dataObject);
+            console.log(jsonString);
             //上传问卷，跳转。
         },  
 

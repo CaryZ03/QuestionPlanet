@@ -139,7 +139,7 @@
             <div v-for="(question, index) in questions" :key="index" class="card mb-2" v-bind:id="question.id">
                 <el-container style="box-shadow: 0 2px 4px rgba(0, 0, 0, .12), 0 0 6px rgba(0, 0, 0, .04)">
                     <el-main v-if="question.isEdit">
-                        <span class="red_star" v-if="question.isMandatory">*&nbsp;</span>
+                        <span class="red_star" v-if="question.isManditory">*&nbsp;</span>
                         <span class="red_star" v-else></span>
 
                         <span v-if="question.type === 'single'">{{ index + 1 }}.单选题</span>
@@ -192,13 +192,13 @@
                             <el-col :span="21">
                                 <div style="line-height: 200%; color: #000;">此题目必须回答</div>
                             </el-col>
-                            <el-col :span="3"><el-switch v-model="question.isMandatory" active-color="#0099ff"
+                            <el-col :span="3"><el-switch v-model="question.isManditory" active-color="#0099ff"
                                     inactive-color="#c2bdbd"></el-switch></el-col>
                         </el-row>
                     </el-main>
 
                     <el-main v-else>
-                        <span class="red_star" v-if="question.isMandatory">*&nbsp;</span>
+                        <span class="red_star" v-if="question.isManditory">*&nbsp;</span>
                         <span class="red_star" v-else></span>
                         <span v-if="question.type === 'single'">{{ index + 1 }}.单选题</span>
                         <span v-if="question.type === 'multiple'">{{ index + 1 }}.多选题</span>
@@ -301,13 +301,13 @@ export default {
             let question = {
                 type: type,
                 isEdit: true,
-                isMandatory: true,
+                isManditory: true,
                 title: "",
                 options: [],
                 q_description: "",
                 a_content: "",
                 right_answer: "",
-                score: "",
+                score: 0.0,
                 stars: [false, false, false, false, false],
             };
             if (type === "single" || type === "multiple") {
@@ -335,11 +335,11 @@ export default {
             // 选择要包含在 JSON 数据中的属性
             return {
                 q_type: question.type,
-                q_mandatory: question.isMandatory,
+                q_manditory: question.isManditory,
                 q_title: question.title,
                 q_description: question.q_description,
                 q_option_count: question.options.length,
-                q_options: JSON.stringify(question.options),
+                q_options: question.options,
                 q_correct_answer: question.right_answer,
                 q_score: question.score,
             };
@@ -351,7 +351,7 @@ export default {
             const dateString = date.toLocaleDateString('en-US', options).replace(/\//g, '-');
             const timeString = date.toLocaleTimeString('en-US', {hour12:false});
 
-            const formattedDate = `${dateString} ${timeString}`;
+            const formattedDate = `${dateString.split('-').reverse().join('-')} ${timeString}`;
 
             const dataObject = { 
                 uid: this.$store.state.curUserID,
@@ -360,7 +360,7 @@ export default {
                 qn_description: this.qn_description,
                 qn_end_time: formattedDate,
                 qn_refillable: this.qn_refillable,
-                questions_data: selectedQuestions,
+                question_list: selectedQuestions,
             };
             const jsonString = JSON.stringify(dataObject);
             console.log(jsonString);
