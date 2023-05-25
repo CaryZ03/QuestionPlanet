@@ -5,16 +5,16 @@ Vue.use(Vuex)
 
 export default new Vuex.Store({
   state: {
-    isLogin:false,
-    curUserID:'',
+    isLogin: false,
+    curUserID: '',
     curUsername: '',
-    my_naire_num:0,
-    my_bin_num:0,
-    is_creating:false,
+    my_naire_num: 0,
+    my_bin_num: 0,
+    is_creating: false,
   },
   getters: {
   },
-  
+
   actions: {
 
   },

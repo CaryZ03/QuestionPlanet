@@ -72,6 +72,7 @@ export default {
 
       this.$api.userInfo.postUserInfo_UserLogin(data).then((response) => {
         if (response.data['errno'] === 0) {
+          console.log(response)
           console.log(response.data)
           console.log(response.data.uid)
           this.$store.state.curUserID = response.data['uid']

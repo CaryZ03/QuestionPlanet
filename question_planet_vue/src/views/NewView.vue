@@ -1,9 +1,7 @@
 <template>
-  
-
-  <div >
-    <router-view  v-show="this.$store.state.is_creating"></router-view>
-    <el-container v-show="!this.$store.state.is_creating" style="height: 745px; border: 1px solid #eee">
+  <div>
+    <router-view v-if="this.$store.state.is_creating"></router-view>
+    <el-container v-else style="height: 745px; border: 1px solid #eee">
       <el-aside width="200px" style="background-color: rgb(238, 241, 246)">
 
         <el-menu>
@@ -37,6 +35,10 @@
             <el-menu-item index="4-3">俺的垃圾2</el-menu-item>
             <el-menu-item index="4-4">俺的垃圾3</el-menu-item>
           </el-submenu>
+
+          <el-submenu index="5">
+            <template slot="title"><i class="el-icon-s-data"></i>已填问卷</template>
+          </el-submenu>
         </el-menu>
       </el-aside>
 
@@ -51,7 +53,7 @@
         <el-main>
 
 
-          <el-row class="single_questionnaire_box">
+          <el-row class="single_questionnaire_box hvr-grow-shadow">
             <div class="questionnaire_title">
               <div class="pull-left">
                 <div class="questionnaire_title">hihi</div>
@@ -72,7 +74,7 @@
 
           </el-row>
 
-          <el-row class="single_questionnaire_box">
+          <el-row class="single_questionnaire_box hvr-grow-shadow">
             <div class="questionnaire_title">
               <div class="pull-left">
                 <div class="questionnaire_title">hihi</div>
@@ -93,7 +95,7 @@
 
           </el-row>
 
-          <el-row class="single_questionnaire_box">
+          <el-row class="single_questionnaire_box hvr-grow-shadow">
             <div class="questionnaire_title">
               <div class="pull-left">
                 <div class="questionnaire_title">hihi</div>
@@ -114,7 +116,7 @@
 
           </el-row>
 
-          <el-row class="single_questionnaire_box">
+          <el-row class="single_questionnaire_box hvr-grow-shadow">
             <div class="questionnaire_title">
               <div class="pull-left">
                 <div class="questionnaire_title">hihi</div>
@@ -147,6 +149,64 @@
   
  -->
 <style scoped>
+/* Curl Bottom Right */
+.hvr-curl-bottom-right {
+  display: inline-block;
+  vertical-align: middle;
+  -webkit-transform: perspective(1px) translateZ(0);
+  transform: perspective(1px) translateZ(0);
+  box-shadow: 0 0 1px rgba(0, 0, 0, 0);
+  position: relative;
+}
+
+.hvr-curl-bottom-right:before {
+  pointer-events: none;
+  position: absolute;
+  content: '';
+  height: 0;
+  width: 0;
+  bottom: 0;
+  right: 0;
+  background: white;
+  /* IE9 */
+  background: linear-gradient(315deg, white 45%, #aaa 50%, #ccc 56%, white 80%);
+  box-shadow: -1px -1px 1px rgba(0, 0, 0, 0.4);
+  -webkit-transition-duration: 0.3s;
+  transition-duration: 0.3s;
+  -webkit-transition-property: width, height;
+  transition-property: width, height;
+}
+
+.hvr-curl-bottom-right:hover:before,
+.hvr-curl-bottom-right:focus:before,
+.hvr-curl-bottom-right:active:before {
+  width: 25px;
+  height: 25px;
+}
+
+/* Grow-Shadow */
+.hvr-grow-shadow {
+  display: inline-block;
+  vertical-align: middle;
+  -webkit-transform: perspective(1px) translateZ(0);
+  transform: perspective(1px) translateZ(0);
+  box-shadow: 0 0 1px rgba(0, 0, 0, 0);
+  -webkit-transition-duration: 0.3s;
+  transition-duration: 0.3s;
+  -webkit-transition-property: box-shadow, transform;
+  transition-property: box-shadow, transform;
+}
+
+.hvr-grow-shadow:hover,
+.hvr-grow-shadow:focus,
+.hvr-grow-shadow:active {
+  box-shadow: 0 10px 10px -10px rgba(0, 0, 0, 0.5);
+  -webkit-transform: scale(1.1);
+  transform: scale(1.1);
+}
+
+
+
 div {
   display: block;
 }
@@ -268,7 +328,7 @@ div {
 }
 </style>
 
-<style>
+<style scoped>
 .el-row {
   margin-bottom: 20px;
 }
@@ -303,7 +363,7 @@ div {
 
 export default {
   data() {
-    
+
     const item = {
       stDate: '2023-5-16',
       name: 'Loar',
@@ -317,12 +377,13 @@ export default {
     }
   },
   mounted() {
+    this.getManagerQuestionnaireList();
   },
   watch: {
-  questions: {
-    deep: true,
-    handler() {
-    },
+    questions: {
+      deep: true,
+      handler() {
+      },
     },
   },
   methods: {
@@ -333,15 +394,18 @@ export default {
         }),
 
         alert(this.$store.state.is_creating)
-    }
+    },
+    getManagerQuestionnaireList() {
+      const data = {
+        "uid": this.$store.state.curUserID,
+        "type": "created"
+      }
+      this.$api.userInfo.getUserInfo_GetQList(data).then((res) => {
+        console.log(res.data)
+      })
 
-
-
-
+    },
   },
-
-  
-
 };
 </script>
 
@@ -373,7 +437,7 @@ export default {
 
 }
 
-.outline-area{
+.outline-area {
   position: fixed;
   top: 4rem;
   left: 82%;
@@ -390,8 +454,8 @@ export default {
   flex-wrap: wrap; */
 }
 
-.outline-list{
-  
+.outline-list {
+
   top: 6rem;
   left: 10%;
   right: 10%;
@@ -403,7 +467,7 @@ export default {
   overflow-y: scroll;
   background-color: #ffffff;
   /* background-color: #aebac5; */
-  
+
 
   /* display: flex;
   justify-content: space-between;
@@ -411,15 +475,15 @@ export default {
   flex-wrap: wrap; */
 }
 
-.outline-title{
-  border-radius: 4px ;
+.outline-title {
+  border-radius: 4px;
   background-color: white;
   left: 10%;
   width: 90%;
-  
+
 }
 
-.outline-item{
+.outline-item {
   box-shadow: none !important;
   /* border: 1px solid #dee2e6 !important; */
   border-radius: 0.25rem !important;
@@ -428,37 +492,38 @@ export default {
 
   display: block;
   padding: 0.5rem;
-  text-align: left!important;
-  width:90%;
+  text-align: left !important;
+  width: 90%;
   /* background-color: #9b5d5d; */
 }
 
-.tool{
+.tool {
   box-shadow: none !important;
   border: 1px solid #dee2e6 !important;
   border-radius: 0.25rem !important;
   margin: 0.5rem;
-  width:45%;
+  width: 45%;
   background-color: #ffffff;
   /* height: 10rem; */
 }
 
-.tool-body{
+.tool-body {
   padding: 0.5rem !important;
-  
+
 }
 
-.tool-title{
+.tool-title {
   font-size: 1rem !important;
   margin-bottom: 0.5rem !important;
 }
 
-.tool-text{
+.tool-text {
   font-size: .875rem !important;
   color: #6c757d !important;
   margin-bottom: 1rem !important;
 }
-.question-card{
+
+.question-card {
   position: fixed;
   top: 4rem;
   left: 25%;
@@ -469,21 +534,22 @@ export default {
   overflow-y: scroll;
 }
 
-.question-type{
+.question-type {
   color: #8d9aa5;
 }
+
 .card {
   box-shadow: none !important;
-  
+
   border-radius: 0.25rem !important;
 
-  
+
   width: 90%;
 
-  
+
   /* margin: 1rem;
   width: 18rem; */
- 
+
 }
 
 .card-body {
@@ -569,60 +635,61 @@ export default {
 }
 
 .login {
-    width: 600px;
-    position:absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    margin: auto;
-  }
+  width: 600px;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  margin: auto;
+}
 
-  .title {
-    color: #857e7e;
-    font-size: 13px;
-  }
+.title {
+  color: #857e7e;
+  font-size: 13px;
+}
 
-  .red_star {
-    color: #ff0000;
-    font-size: 13px;
-  }
+.red_star {
+  color: #ff0000;
+  font-size: 13px;
+}
 
-  .division {
-    line-height: 30px;
-  }
-  
-  .el-header, .el-footer {
-    background-color: #dbe1e9;
-    color: #333;
-    text-align: center;
-    line-height: 60px;
-  }
-  
-  .el-aside {
-    background-color: #D3DCE6;
-    color: #333;
-    text-align: center;
-    line-height: 200px;
-  }
-  
-  .el-main {
-    background-color: #E9EEF3;
-    color: #333;
-    text-align: left;
-  }
-  
-  body > .el-container {
-    margin-bottom: 40px;
-    border-radius: 60%;
-  }
-  
-  .el-container:nth-child(5) .el-aside,
-  .el-container:nth-child(6) .el-aside {
-    line-height: 260px;
-  }
-  
-  .el-container:nth-child(7) .el-aside {
-    line-height: 320px;
-  }
+.division {
+  line-height: 30px;
+}
+
+.el-header,
+.el-footer {
+  background-color: #dbe1e9;
+  color: #333;
+  text-align: center;
+  line-height: 60px;
+}
+
+.el-aside {
+  background-color: #D3DCE6;
+  color: #333;
+  text-align: center;
+  line-height: 200px;
+}
+
+.el-main {
+  background-color: #E9EEF3;
+  color: #333;
+  text-align: left;
+}
+
+body>.el-container {
+  margin-bottom: 40px;
+  border-radius: 60%;
+}
+
+.el-container:nth-child(5) .el-aside,
+.el-container:nth-child(6) .el-aside {
+  line-height: 260px;
+}
+
+.el-container:nth-child(7) .el-aside {
+  line-height: 320px;
+}
 </style>
