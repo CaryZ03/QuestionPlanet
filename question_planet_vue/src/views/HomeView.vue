@@ -32,6 +32,10 @@ export default ({
 <style scoped>
 .BackGround{
   background-image: url(../assets/BackGround_2.jpg);
+  width: 100%;
+  height: 100%;
+position:fixed;
+background-size:100% 100%;
 }
 .stepLine {}
 
