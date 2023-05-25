@@ -96,7 +96,7 @@ def user_register(request):
         new_user = User.objects.create(user_name=username, user_password=password1, user_email=email)
         new_user.save()
         filler_ip = get_client_ip(request)
-        new_filler = Filler.objects.create(filler_ip=filler_ip, filler_is_user=True, filler_uid=new_user.user_id)
+        new_filler = Filler.objects.create(filler_ip=filler_ip, filler_is_user=True, filler_user=new_user)
         new_filler.save()
         return JsonResponse({'errno': 0, 'msg': "注册成功", 'username': new_user.user_name})
 
@@ -311,4 +311,4 @@ def change_user_status(request):
 @csrf_exempt
 @require_http_methods(['POST'])
 def deploy_test(request):
-    return JsonResponse({'errno': 0, 'ver': "1"})
+    return JsonResponse({'errno': 0, 'ver': "2"})
