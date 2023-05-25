@@ -70,6 +70,8 @@ export default {
       const data = JSON.stringify(this.user)
       console.log(data)
 
+      
+
       this.$api.userInfo.postUserInfo_UserLogin(data).then((response) => {
         if (response.data['errno'] === 0) {
           console.log(response.data)
@@ -78,9 +80,10 @@ export default {
           this.$store.state.curUserID = response.data['uid']
           this.$store.state.curUsername = this.user.username
           this.$store.state.isLogin = true
-
+// set cookie
+          document.cookie = `session_id=${response.data.session_id}`;
           this.$router.push({
-          path: "/new/" + this.$store.state.curUserID
+          path: "/manage/" + this.$store.state.curUserID
         })
         }
         else{
