@@ -29,5 +29,5 @@ jobs:
             wait $pid
             uwsgi --ini uwsgi.ini &
             wait $!
-            sudo nginx -s reload
+            
 
