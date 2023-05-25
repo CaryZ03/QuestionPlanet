@@ -59,37 +59,14 @@
 export default {
   data() {
     return {
-<<<<<<< Updated upstream
-      loginAccount: '',
-      loginCode: ''
-=======
       user: {
         username: '',
         password: ''
       },
->>>>>>> Stashed changes
     }
   },
   methods: {
     login() {
-<<<<<<< Updated upstream
-      //todo
-      this.$store.dispatch('login', this.loginAccount, this.loginCode),
-      console.log(this.$store.state.curUserID),
-      //todo先检查一波
-      
-
-      this.$router.push({
-          path: "/new/" + this.loginAccount
-      }),
-      
-      console.log(this.$store.state.curUserID)
-    },
-    register() {
-      alert("register todo")
-    }
-  }
-=======
       const data = JSON.stringify(this.user)
       console.log(data)
 
@@ -115,7 +92,6 @@ export default {
       })
     },
   },
->>>>>>> Stashed changes
 }
 </script>
 <style scoped>
