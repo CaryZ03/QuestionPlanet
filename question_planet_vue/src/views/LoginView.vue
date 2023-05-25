@@ -12,7 +12,7 @@
           </div>
         </div>
         <!-- 注册盒子 -->
-        <div class="register-form">
+        <div class="register-form" id="register">
           <!-- 标题盒子 -->
           <div class="title-box">
             <h1>注册</h1>
@@ -70,6 +70,8 @@ export default {
       const data = JSON.stringify(this.user)
       console.log(data)
 
+      
+
       this.$api.userInfo.postUserInfo_UserLogin(data).then((response) => {
         if (response.data['errno'] === 0) {
           console.log(response.data)
@@ -78,9 +80,10 @@ export default {
           this.$store.state.curUserID = response.data['uid']
           this.$store.state.curUsername = this.user.username
           this.$store.state.isLogin = true
-
+// set cookie
+          document.cookie = `session_id=${response.data.session_id}`;
           this.$router.push({
-          path: "/new/" + this.$store.state.curUserID
+          path: "/manage/" + this.$store.state.curUserID
         })
         }
         else{
@@ -96,6 +99,11 @@ export default {
 }
 </script>
 <style scoped>
+
+#register{
+  opacity: 0%;
+}
+
 * {
   /* 去除浏览器默认内外边距 */
   margin: 0;
@@ -115,7 +123,13 @@ input {
   overflow-x: hidden;
   display: flex;
   /* 渐变方向从左到右 */
-  background: linear-gradient(to right, rgb(247, 209, 215), rgb(191, 227, 241));
+  /* background: linear-gradient(to right, rgb(247, 209, 215), rgb(191, 227, 241)); */
+  background:url("../assets/1680584594127.png.png");
+  width: 100%;
+  height: 100%;
+  position:fixed;
+  background-size:100% 100%;
+  
 }
 
 span {
@@ -195,6 +209,8 @@ span {
   box-shadow: 2px 1px 19px rgba(0, 0, 0, .1);
   /* 动画过渡，先加速再减速 */
   transition: 0.5s ease-in-out;
+
+  opacity: 70%;
 }
 
 /* 滑动盒子的标题 */
@@ -247,6 +263,7 @@ span {
 .register-form {
   flex: 1;
   height: 100%;
+  
 
 }
 

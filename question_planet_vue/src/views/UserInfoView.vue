@@ -3,7 +3,7 @@
     <div class="css_pro-edited-element-0 inherited-styles-for-exported-element">
     
         <!-- 用户头像 -->
-        <div class="user-info" id="content">
+        <div class="user-info hvr-grow-shadow" id="content">
           <div class="avatar-wrapper" >
             <img :src="avatarUrl" alt="Avatar"  style="height: auto; object-fit: contain; width: 120px;">
             <input type="file" @change="handleAvatarUpload">
@@ -21,7 +21,7 @@
 
         <!-- 注册信息 -->
         <div class="title"> 注册信息 </div>
-        <div class="content" style="height: 328px;" id="content">
+        <div class="content hvr-grow-shadow" style="height: 328px;" id="content">
     <div class="items">
       <div style="float: left;"><b>用户名</b><span id="ctl00_ContentPlaceHolder1_lblLoginName" style="margin-right: 10px;">{{userName}}</span></div>
       <div style="clear: both;"></div>
@@ -574,4 +574,20 @@ position:fixed;
 background-size:100% 100%;
 }
 
+.hvr-grow-shadow {
+  /* display: inline-block; */
+  vertical-align: middle;
+  -webkit-transform: perspective(1px) translateZ(0);
+  transform: perspective(1px) translateZ(0);
+  box-shadow: 0 0 1px rgba(0, 0, 0, 0);
+  -webkit-transition-duration: 0.3s;
+  transition-duration: 0.3s;
+  -webkit-transition-property: box-shadow, transform;
+  transition-property: box-shadow, transform;
+}
+.hvr-grow-shadow:hover, .hvr-grow-shadow:focus, .hvr-grow-shadow:active {
+  box-shadow: 0 10px 10px -10px rgba(0, 0, 0, 0.5);
+  -webkit-transform: scale(1.1);
+  transform: scale(1.1);
+}
 </style>
