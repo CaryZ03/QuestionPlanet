@@ -84,6 +84,7 @@ export default {
             qn_end_time: "",
             qn_refillable: "",
             questions: [],
+            answer_sheet: [],
         };
     },
     created() {
@@ -112,6 +113,23 @@ export default {
             });
         },
 
+        commitAnswer(){
+            this.questions.forEach((question, index_question) => {
+                let a_content_array = [];
+                if(question.type === "multiple")
+                {
+                    question.q_options.forEach((option, index_option) => {
+                        if (option.checked) {
+                            a_content_array.push(index_option.toString());
+                        }
+                        });
+                    question.a_content += a_content_array.join(',');
+                }
+                this.answer_sheet.push({q_id: index_question, a_content: question.a_content});
+                });
+            //上传问卷，跳转。
+        },  
+
         // 添加问题
         addQuestion(type) {
             let question = {
@@ -128,8 +146,8 @@ export default {
             };
             if (type === "single" || type === "multiple") {
                 question.options = [
-                    { label: "选项1", checked: false },
-                    { label: "选项2", checked: false },
+                    { label: "选项1", checked: false ,num: 0},
+                    { label: "选项2", checked: false ,num: 0},
                 ];
             } else if (type === "rating") {
                 question.stars = [false, false, false, false, false];
@@ -161,21 +179,10 @@ export default {
                 qn_description: this.qn_description,
                 qn_end_time: this.qn_end_time,
                 qn_refillable: this.qn_refillable,
-                questions_data: selectedQuestions,
+                questions_list: selectedQuestions,
             };
             const jsonString = JSON.stringify(dataObject);
             console.log(jsonString);
-            /*
-            const filename = 'data.json';
-
-            const blob = new Blob([jsonString], { type: 'application/json' });
-            const url = URL.createObjectURL(blob);
-            
-            const link = document.createElement('a');
-            link.href = url;
-            link.download = filename;
-            link.click();
-            URL.revokeObjectURL(url);*/
 
         },
 

@@ -118,6 +118,21 @@
                         <el-input placeholder="请输入问卷标题" v-model="qn_title" clearable></el-input>
                     </el-main>
                 </el-container>
+                <div style="line-height: 30px;">&emsp;</div>
+
+            <el-container class="card mb-2" style="box-shadow: 0 2px 4px rgba(0, 0, 0, .12), 0 0 6px rgba(0, 0, 0, .04)">
+                    <el-main>
+                        <span class="red_star">*&nbsp;</span>
+                        <span class="title">问卷截止填写时间</span>
+                        <br>
+                        <el-date-picker
+                            v-model="qn_end_time"
+                            type="datetime"
+                            placeholder="选择日期时间"
+                            format="yyyy-MM-dd HH:mm:ss">
+                            </el-date-picker>
+                    </el-main>
+                </el-container>
 
                 <div style="line-height: 30px;">&emsp;</div>
 
@@ -234,7 +249,8 @@
 
             </div>
             <el-button type="success" style="margin: 0 0 0 -66px" round v-on:click="save_handler()">保存问卷</el-button>
-            <el-button type="primary" round >提交问卷</el-button>
+            <el-button type="primary" round v-on:click="commitQuestionnaire()">提交问卷</el-button>
+            
         </div>
 
 
@@ -273,8 +289,8 @@ export default {
             qn_id: "",
             qn_title: "",
             qn_description: "",
-            qn_end_time: "",
-            qn_refillable: "",
+            qn_end_time: '',
+            qn_refillable: true,
             questions: [],
             activeNames: ['1','2','3','4','5','6','7']
         };
@@ -296,8 +312,8 @@ export default {
             };
             if (type === "single" || type === "multiple") {
                 question.options = [
-                    { label: "选项1", checked: false },
-                    { label: "选项2", checked: false },
+                    { label: "选项1", checked: false ,num: 0},
+                    { label: "选项2", checked: false ,num: 0},
                 ];
             } else if (type === "rating") {
                 question.stars = [false, false, false, false, false];
@@ -307,6 +323,12 @@ export default {
             this.questions.push(question);
         },
         
+        commitQuestionnaire(){
+            this.saveQuestionnaire();
+            this.$router.push({
+                path: "/new/" + this.$store.state.curUserID
+            })
+        },
         //保存试卷
         saveQuestionnaire(){
             const selectedQuestions = this.questions.map(question => {
@@ -317,33 +339,40 @@ export default {
                 q_title: question.title,
                 q_description: question.q_description,
                 q_option_count: question.options.length,
-                q_options: question.options,
+                q_options: JSON.stringify(question.options),
                 q_correct_answer: question.right_answer,
                 q_score: question.score,
             };
             });
-            const dataObject = {
-                uid: this.uid,
-                qn_id: this.qn_id,
+            const isoString = this.qn_end_time;
+            const date = new Date(isoString);
+
+            const options = { year: 'numeric', month: '2-digit', day: '2-digit' };
+            const dateString = date.toLocaleDateString('en-US', options).replace(/\//g, '-');
+            const timeString = date.toLocaleTimeString('en-US', {hour12:false});
+
+            const formattedDate = `${dateString} ${timeString}`;
+
+            const dataObject = { 
+                uid: this.$store.state.curUserID,
+                qn_id: 3,
                 qn_title: this.qn_title,
                 qn_description: this.qn_description,
-                qn_end_time: this.qn_end_time,
+                qn_end_time: formattedDate,
                 qn_refillable: this.qn_refillable,
                 questions_data: selectedQuestions,
             };
             const jsonString = JSON.stringify(dataObject);
             console.log(jsonString);
-            axios({
-                method: 'post',
-                url: 'http://127.0.0.1:4523/m2/2762233-0-cbe98cc5/83357835',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                params: {
-                    uid: 1
-                },
-                data: jsonString
-            })
+            // axios({
+            //     method: 'post',
+            //     url: '/questionnaire/save_questionnaire',
+            //     headers: {
+            //         'Content-Type': 'application/json'
+            //     },
+            //     data: jsonString
+            // })
+            this.$api.questionnaire.postQuestionnaire_Save(jsonString)
             .then(function (response) {
                 console.log(response);
             })
