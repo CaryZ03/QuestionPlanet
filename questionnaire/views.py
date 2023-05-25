@@ -130,12 +130,13 @@ def create_questionnaire(request):
 @require_http_methods(['POST'])
 def save_questionnaire(request):
     # 从请求中获取问卷信息和问题数据
-    qn_id = request.POST.get('qn_id')
-    qn_title = request.POST.get('qn_title')
-    qn_description = request.POST.get('qn_description')
-    qn_end_time = request.POST.get('qn_end_time')
-    qn_refillable = request.POST.get('qn_refillable')
-    question_data = request.POST.get('question_data')
+    data_json = json.loads(request.body)
+    qn_id = data_json.get('qn_id')
+    qn_title = data_json.get('qn_title')
+    qn_description = data_json.get('qn_description')
+    qn_end_time = data_json.get('qn_end_time')
+    qn_refillable = data_json.get('qn_refillable')
+    question_data = data_json.get('question_data')
 
     # 创建问卷
     qn = Questionnaire.objects.get(qn_id=qn_id)
