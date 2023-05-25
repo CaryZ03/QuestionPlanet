@@ -113,6 +113,7 @@ def user_register(request):
     password1 = data_json.get('password1')
     password2 = data_json.get('password2')
     email = data_json.get('email')
+    tel = data_json.get('tel')
     if not bool(re.match("^[A-Za-z0-9][A-Za-z0-9_]{2,20}$", str(username))):
         return JsonResponse({'errno': 1011, 'msg': "用户名不合法"})
     elif User.objects.filter(user_name=username).exists():
@@ -122,7 +123,7 @@ def user_register(request):
     elif not bool(re.match('^(?=.*\\d)(?=.*[a-zA-Z]).{6,20}$', str(password1))):
         return JsonResponse({'errno': 1014, 'msg': "密码不合法"})
     else:
-        new_user = User.objects.create(user_name=username, user_password=password1, user_email=email)
+        new_user = User.objects.create(user_name=username, user_password=password1, user_email=email, user_tel=tel)
         new_user.save()
         filler_ip = get_client_ip(request)
         new_filler = Filler.objects.create(filler_ip=filler_ip, filler_is_user=True, filler_user=new_user)
@@ -266,6 +267,7 @@ def change_profile(request):
     password1 = data_json.get('password1')
     password2 = data_json.get('password2')
     mail = data_json.get('email')
+    tel = data_json.get('tel')
     if not bool(re.match("^[A-Za-z0-9][A-Za-z0-9_]{2,20}$", str(username))):
         return JsonResponse({'errno': 1101, 'msg': "用户名不合法"})
     elif User.objects.filter(user_id__ne=uid, user_name=username).exists():
@@ -279,6 +281,7 @@ def change_profile(request):
         user.user_name = username
         user.user_password = password1
         user.user_mail = mail
+        user.user_tel = tel
         user.save()
         return JsonResponse({'errno': 0, 'msg': '修改用户信息成功'})
 
@@ -292,7 +295,8 @@ def change_profile_admin(request):
     username = data_json.get('username')
     password1 = data_json.get('password1')
     password2 = data_json.get('password2')
-    mail = data_json.get('email', '')
+    mail = data_json.get('email')
+    tel = data_json.get('tel')
     if not bool(re.match("^[A-Za-z0-9][A-Za-z0-9_]{2,20}$", str(username))):
         return JsonResponse({'errno': 1111, 'msg': "用户名不合法"})
     elif User.objects.filter(user_id__ne=uid, user_name=username).exists():
@@ -306,6 +310,7 @@ def change_profile_admin(request):
         user.user_name = username
         user.user_password = password1
         user.user_mail = mail
+        user.user_tel = tel
         user.save()
         return JsonResponse({'errno': 0, 'msg': '修改用户信息成功'})
 

@@ -8,7 +8,7 @@ from django.http.response import JsonResponse
 import json
 from user.models import User, Admin, Filler
 from questionnaire.models import Questionnaire, AnswerSheet, Question, Answer
-from user.views import login_required, not_login_required, admin_required
+from user.views import login_required, admin_required
 
 
 def questionnaire_exists(view_func):
