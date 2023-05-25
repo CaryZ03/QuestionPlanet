@@ -4,7 +4,7 @@ import HomeView from '../views/HomeView.vue'
 
 const Login = () => import('../views/LoginView.vue');
 const Register = () => import('../views/RegisterView.vue');
-const CreateQuestionnaireView = () => import('../views/CreateView.vue');
+const CreateQuestionnaireView = () => import('../views/AnswerView.vue');
 const UserInfoView = () => import('../views/UserInfoView.vue')
 Vue.use(VueRouter)
 
