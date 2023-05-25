@@ -49,7 +49,7 @@ def check_identity(view_func):
             elif 'a_id' in data:
                 a_id = data.get('a_id')
                 if not Answer.objects.filter(a_id=a_id).exists():
-                    return JsonResponse({'errno': 3006, 'msg': "问题不存在"})
+                    return JsonResponse({'errno': 3006, 'msg': "答案不存在"})
                 answer = Answer.objects.get(a_id=a_id)
                 question = answer.a_question
                 questionnaire = question.q_questionnaire
@@ -203,13 +203,11 @@ def questionnaire_analysis(request):
 @require_http_methods(['GET'])
 def get_questions_by_questionnaire(request):
     qn_id = json.loads(request.body.decode('utf-8')).get('qn_id')
-    if not qn_id:
-        return JsonResponse({'error': 'No qn_id provided'})
 
     try:
         questionnaire = Questionnaire.objects.get(qn_id=qn_id)
     except Questionnaire.DoesNotExist:
-        return JsonResponse({'error': 'Invalid q_id'})
+        return JsonResponse({'errno': 3041, 'msg': '问卷不存在'})
 
     questions = questionnaire.qn_questions.all()
 
@@ -228,13 +226,11 @@ def get_questions_by_questionnaire(request):
 @require_http_methods(['GET'])
 def get_answers_by_question(request):
     q_id = json.loads(request.body.decode('utf-8')).get('q_id')
-    if not q_id:
-        return JsonResponse({'error': 'No q_id provided'})
 
     try:
         question = Question.objects.get(q_id=q_id)
     except Question.DoesNotExist:
-        return JsonResponse({'error': 'Invalid q_id'})
+        return JsonResponse({'errno': 3051, 'msg': '问题不存在'})
 
     answers = question.q_answers.all()
 
@@ -321,6 +317,7 @@ def generate_chart(request):
 
 @csrf_exempt
 @transaction.atomic
+@require_http_methods(['POST'])
 def import_questionnaire(request):
     file = request.FILES['file']  # 获取上传的文件
     ext = file.name.split('.')[-1]  # 获取文件扩展名
@@ -385,4 +382,4 @@ def import_questionnaire(request):
         question.q_questionnaire = questionnaire
         question.save()
 
-    return HttpResponse('Questionnaire imported successfully')
+    return JsonResponse({'errno': 0, 'msg': '问卷导入成功'})
