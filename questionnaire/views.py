@@ -136,7 +136,7 @@ def save_questionnaire(request):
     qn_description = data_json.get('qn_description')
     qn_end_time = data_json.get('qn_end_time')
     qn_refillable = data_json.get('qn_refillable')
-    question_data = data_json.get('question_data')
+    question_list = data_json.get('question_list')
 
     # 创建问卷
     qn = Questionnaire.objects.get(qn_id=qn_id)
@@ -147,9 +147,8 @@ def save_questionnaire(request):
     qn.qn_refillable = qn_refillable
 
     # 创建问题并加入问卷中
-    question_list = json.loads(question_data)
     for i in range(len(question_list)):
-        q_data = question_list[i]
+        q_data = json.loads(question_list[i])
         question = Question.objects.create(
             q_questionnaire=qn,
             q_position=i,
