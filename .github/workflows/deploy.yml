@@ -26,7 +26,6 @@ jobs:
             pip install -r requirements.txt
             pid=$(cat uwsgi.pid)
             kill -15 $pid
-            sleep 2
             uwsgi --ini uwsgi.ini
             
 
