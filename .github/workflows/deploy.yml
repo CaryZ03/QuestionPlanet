@@ -27,7 +27,7 @@ jobs:
             pid=$(cat uwsgi.pid)
             kill -15 $pid
             uwsgi --ini uwsgi.ini
-            uwsgi --reload uwsgi.ini
+            nohup uwsgi --reload uwsgi.ini &
             sudo nginx -s reload
             
 
