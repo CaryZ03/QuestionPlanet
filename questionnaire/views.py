@@ -82,6 +82,7 @@ def submit_answers(request):
     answer_data = request.POST.get('answer_data')
 
     answer_sheet = AnswerSheet.objects.get(as_id=as_id)
+    answer_sheet.as_answers.all().delete()
     # 解析答案数据，创建答案对象
     answer_list = json.loads(answer_data)
     for q_id, a_content in answer_list:
@@ -145,6 +146,8 @@ def save_questionnaire(request):
     qn.qn_createTime = datetime.now()
     qn.qn_endTime = datetime.strptime(qn_end_time, '%Y-%m-%d %H:%M:%S')
     qn.qn_refillable = qn_refillable
+    qn.qn_answersheets.all().delete()
+    qn.qn_questions.all().delete()
 
     # 创建问题并加入问卷中
     for i in range(len(question_list)):
