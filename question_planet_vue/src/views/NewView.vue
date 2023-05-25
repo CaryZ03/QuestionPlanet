@@ -149,6 +149,8 @@
   
  -->
 <style scoped>
+
+
 /* Curl Bottom Right */
 .hvr-curl-bottom-right {
   display: inline-block;
@@ -201,8 +203,8 @@
 .hvr-grow-shadow:focus,
 .hvr-grow-shadow:active {
   box-shadow: 0 10px 10px -10px rgba(0, 0, 0, 0.5);
-  -webkit-transform: scale(1.1);
-  transform: scale(1.1);
+  -webkit-transform: scale(1.03, 1.10);
+  transform: scale(1.03, 1.10);
 }
 
 
@@ -243,8 +245,8 @@ div {
 }
 
 .single_questionnaire_box {
-  left: 1%;
-  width: 98%;
+  left: 2.5%;
+  width: 95%;
 
   height: 90px;
   border: 10px;
@@ -261,7 +263,7 @@ div {
   z-index: 100;
   position: relative;
   border-radius: 4px;
-  box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
+  box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.3);
 
   font-size: 12px;
   line-height: normal;
