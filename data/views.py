@@ -234,10 +234,7 @@ def get_answers_by_question(request):
 @require_http_methods(['POST'])
 def delete_answer(request):
     a_id = json.loads(request.body.decode('utf-8')).get('a_id')
-    try:
-        answer = Answer.objects.get(a_id=a_id)
-    except Answer.DoesNotExist:
-        return JsonResponse({'error': f'Answer with ID {a_id} does not exist.'})
+    answer = Answer.objects.get(a_id=a_id)
     data = {
         'a_id': answer.a_id,
         'a_user': answer.a_user.user_id if answer.a_user else None,
