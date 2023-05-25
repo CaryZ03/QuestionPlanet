@@ -75,6 +75,7 @@ class Questionnaire(Model):
     qn_refillable = BooleanField(default=True)
     qn_questions = ManyToManyField(Question)
     qn_answersheets = ManyToManyField(AnswerSheet)
+    qn_data_json = JSONField(default=None, null=True)
 
     def to_json(self):
         info = {

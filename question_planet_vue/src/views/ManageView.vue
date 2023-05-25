@@ -332,7 +332,7 @@ div {
   height: 80px;
 }
 
-.table {}
+
 
 .el-header {
   background-color: #B3C0D1;
