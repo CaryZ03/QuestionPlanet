@@ -45,13 +45,13 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'corsheaders.middleware.CorsMiddleware',
 ]
 
 ROOT_URLCONF = 'QuestionPlanet.urls'
@@ -146,3 +146,12 @@ CORS_ALLOWED_ORIGINS = [
 ]
 
 SESSION_ENGINE = 'django.contrib.sessions.backends.db'  # 使用数据库存储会话
+
+CORS_ALLOW_HEADERS = [
+    'cookie',
+]
+
+CORS_ALLOW_METHODS = [
+    'GET',
+    'POST',
+]
