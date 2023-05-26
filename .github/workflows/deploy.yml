@@ -25,10 +25,10 @@ jobs:
             git pull
             pip install -r requirements.txt
             pid=$(cat uwsgi.pid)
-            kill -15 $pid
-            sleep 1
+            kill -9 $pid
+            sleep 3
             uwsgi --ini uwsgi.ini
-            sleep 1
+            sleep 2
             sudo nginx -s reload
             
 
