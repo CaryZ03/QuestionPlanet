@@ -109,7 +109,7 @@ input {
   display: flex;
   /* 渐变方向从左到右 */
   /* background: linear-gradient(to right, rgb(247, 209, 215), rgb(191, 227, 241)); */
-  background:url("../assets/1680584594127.png.png");
+  background:url("../assets/background0.png");
   width: 100%;
   height: 100%;
   position:fixed;

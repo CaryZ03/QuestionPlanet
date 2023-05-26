@@ -1,5 +1,6 @@
 <template>
-  <div class="BackGround">
+  <body>
+    <div>
     <div>
 
       <div class="box-btn" v-show="!this.$store.state.isLogin">
@@ -14,6 +15,7 @@
 
     </div>
   </div>
+  </body>
 </template>
 
 
@@ -29,7 +31,7 @@ export default ({
 
 })
 </script>
-<style scoped>
+<!-- <style scoped>
 .BackGround{
   background-image: url(../assets/BackGround_2.jpg);
   width: 100%;
@@ -85,6 +87,18 @@ background-size:100% 100%;
 }
 </style>
 <style scoped>
+
+body {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  background: url('../assets/background2.jpg');
+
+  background-size: cover;
+  background-position: center;
+}
+
 .el-header,
 .el-footer {
   background-color: #B3C0D1;
@@ -119,4 +133,4 @@ body>.el-container {
 .el-container:nth-child(7) .el-aside {
   line-height: 320px;
 }
-</style>
+</style> -->

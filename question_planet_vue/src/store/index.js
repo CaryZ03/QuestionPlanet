@@ -11,6 +11,7 @@ export default new Vuex.Store({
     my_naire_num: 0,
     my_bin_num: 0,
     is_creating: false,
+    token_key: ''
   },
   getters: {
   },

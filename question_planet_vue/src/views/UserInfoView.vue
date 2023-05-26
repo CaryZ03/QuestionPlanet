@@ -567,7 +567,7 @@ padding: 1px 20px 0px;
 
 body .background{
   background-image: linear-gradient(220.55deg, #FFED46 0%, #FF7EC7 100%);
-  background:url("../assets/1680584594127.png.png");
+  background:url("../assets/background0.png");
   width: 100%;
   height: 100%;
 position:fixed;

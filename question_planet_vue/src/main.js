@@ -9,8 +9,15 @@ import 'element-ui/lib/theme-chalk/index.css';
 import api from './api';
 import Cookies from 'js-cookie'
 
-const token = Cookies.get('token')
-axios.defaults.headers.common['Authorization'] = `Bearer ${token}`
+import AllIosIcon from "vue-ionicons/dist/ionicons-ios.js";
+//全局使用ionicons图标
+Vue.use(AllIosIcon);
+Vue.config.productionTip = false;
+
+
+
+
+
 axios.defaults.withCredentials = true;
 
 Vue.prototype.$api = api;

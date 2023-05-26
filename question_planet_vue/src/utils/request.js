@@ -1,10 +1,12 @@
 import axios from "axios";
+import store from "@/store";
 // import Cookies from 'js-cookie'
 
 // const token = Cookies.get('token')
 // axios.defaults.headers.common['Authorization'] = `Bearer ${token}`
 // axios.defaults.withCredentials = true;
 
+// axios.defaults.headers.common['Authorization'] = `Bearer ${token}`
 
 
 const request = axios.create({
@@ -12,9 +14,21 @@ const request = axios.create({
     timeout: 10000,
     headers: {
         'Content-Type': 'application/json',
-        'Authorization': 'session_id=' + document.cookie.session_id
     }
 })
+
+axios.interceptors.request.use(
+    config => {
+      const token_key = store.state.token_key;
+      if (token_key) {
+        config.headers['Authorization'] = token_key ;
+      }
+      return config;
+    },
+    error => {
+      return Promise.reject(error);
+    }
+  );
 
     
 // 请求拦截器，自动注入 cookie
