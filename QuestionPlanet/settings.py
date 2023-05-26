@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'questionnaire',
     'data',
     'corsheaders',
+    'rest_framework',
 ]
 
 MIDDLEWARE = [

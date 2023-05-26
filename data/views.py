@@ -17,7 +17,9 @@ from django.core.files.base import ContentFile
 from django.db import transaction
 import csv
 
-from user.views import get_session
+
+def get_session(session_id):
+    return session_id
 
 
 def check_identity(view_func):
