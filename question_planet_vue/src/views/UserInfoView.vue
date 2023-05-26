@@ -124,7 +124,7 @@ export default {
           this.address = value;
 
           const tmp = {
-              "id":this.userId,
+              "uid":this.userId,
               "username": this.userName,
               "password1":this.userKey,
               "password2": this.userKey,
@@ -154,7 +154,7 @@ export default {
           this.addressIsBind = false;
 
           const tmp = {
-              "id":this.userId,
+              "uid":this.userId,
               "username": this.userName,
               "password1":this.userKey,
               "password2": this.userKey,
@@ -269,6 +269,7 @@ export default {
         "uid": this.$store.state.curUserID
       }
       this.$api.userInfo.postUserInfo_GetUserInfo(tmpUser).then((response) => {
+        console.log(tmpUser)
         console.log(response.data)
         if (response.data.errno == 0) {
           console.log("获取用户信息成功")

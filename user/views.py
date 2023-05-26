@@ -1,13 +1,18 @@
 import re
+from datetime import datetime
+
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_http_methods
 from django.http.response import JsonResponse
 from django.contrib.sessions.models import Session
+from rest_framework.authtoken.models import Token
+from datetime import datetime, timedelta
+from django.core.management.utils import get_random_secret_key
 from django.utils import timezone
 import json
 
-from user.models import User, Admin, Filler
+from user.models import User, Admin, Filler, UserToken
 from questionnaire.models import Questionnaire
 from random import randint
 import smtplib
@@ -42,33 +47,35 @@ def send_email_verification(email, code):
         server.sendmail(sender, receiver, msg.as_string())
 
 
-def get_session(session_id):
-    # 查询会话对象
-    session = Session.objects.get(session_key=session_id)
+def create_token(uid, is_admin):
+    token_key = get_random_secret_key()
+    expiry_date = datetime.now() + timedelta(minutes=20)
+    if is_admin:
+        admin = Admin.objects.get(admin_id=uid)
+        token = UserToken(key=token_key, admin=admin, created=expiry_date)
+    else:
+        user = Admin.objects.get(user_id=uid)
+        token = UserToken(key=token_key, user=user, created=expiry_date)
+    token.save()
 
-    # 检查会话是否已过期
-    if session.expire_date < timezone.now():
-        # 会话已过期，可以选择删除该会话
-        session.delete()
-        return None
-
-    # 返回与会话关联的request.session对象
-    return session.get_decoded()
+    return token.key
 
 
 def login_required(view_func):
     def wrapper(request, *args, **kwargs):
-        session_id = request.COOKIES.get('session_id')
-        if session_id:
-            # 根据session_id获取相应的会话数据
-            session_data = get_session(session_id)
-            # 处理会话数据
-            if session_data is None:
+        auth_data = request.headers.get('Authorization')
+        token_key = auth_data.get('token_key')
+        if token_key:
+            # 使用 Token 模型的 objects.get 方法查找令牌
+            token = UserToken.objects.get(key=token_key)
+            if token is None or token.expire_time < datetime.now():
                 return JsonResponse({'errno': 1002, 'msg': "登录信息已过期"})
-            elif session_data.get('id') != json.loads(request.body).get('uid'):
-                return JsonResponse({'errno': 1003, 'msg': "用户不一致"})
             else:
-                return view_func(request, *args, **kwargs)
+                user = token.user
+                if user.user_id != json.loads(request.body).get('uid'):
+                    return JsonResponse({'errno': 1003, 'msg': "用户不一致"})
+                else:
+                    return view_func(request, *args, **kwargs)
         else:
             return JsonResponse({'errno': 1001, 'msg': "未登录"})
     return wrapper
@@ -85,19 +92,21 @@ def login_required(view_func):
 
 def admin_required(view_func):
     def wrapper(request, *args, **kwargs):
-        session_id = request.COOKIES.get('session_id')
-        if session_id:
-            # 根据session_id获取相应的会话数据
-            session_data = get_session(session_id)
-            # 处理会话数据
-            if session_data is None:
+        auth_data = request.headers.get('Authorization')
+        token_key = auth_data.get('token_key')
+        if token_key:
+            # 使用 Token 模型的 objects.get 方法查找令牌
+            token = UserToken.objects.get(key=token_key)
+            if token is None or token.expire_time < datetime.now():
                 return JsonResponse({'errno': 1002, 'msg': "登录信息已过期"})
-            elif session_data.get('id') != json.loads(request.body).get('uid'):
-                return JsonResponse({'errno': 1003, 'msg': "用户不一致"})
-            elif session_data.get('role') != 'admin':
+            elif not token.is_admin:
                 return JsonResponse({'errno': 1004, 'msg': "需要管理员权限"})
             else:
-                return view_func(request, *args, **kwargs)
+                admin = token.admin
+                if admin.admin_id != json.loads(request.body).get('uid'):
+                    return JsonResponse({'errno': 1003, 'msg': "用户不一致"})
+                else:
+                    return view_func(request, *args, **kwargs)
         else:
             return JsonResponse({'errno': 1001, 'msg': "未登录"})
     return wrapper
@@ -141,13 +150,8 @@ def user_login(request):
     if User.objects.filter(user_name=username).exists():
         user = User.objects.get(user_name=username)
         if user.user_password == password:
-            request.session['id'] = user.user_id
-            request.session['role'] = 'user'
-            request.session.save()
-            session_id = request.session.session_key
-            response = JsonResponse({'errno': 0, 'msg': "登录成功", 'uid': user.user_id})
-            response.set_cookie('session_id', session_id)
-            return response
+            token_key = create_token(user.user_id, False)
+            return JsonResponse({'errno': 0, 'msg': "登录成功", 'uid': user.user_id, 'token_key': token_key})
         else:
             return JsonResponse({'errno': 1022, 'msg': "密码错误"})
     else:
@@ -164,13 +168,8 @@ def admin_login(request):
     if Admin.objects.filter(admin_name=admin_name).exists():
         admin = Admin.objects.get(admin_name=admin_name)
         if admin.admin_password == password:
-            request.session['id'] = admin.admin_id
-            request.session['role'] = 'admin'
-            request.session.save()
-            session_id = request.session.session_key
-            response = JsonResponse({'errno': 0, 'msg': "管理员登录成功", 'admin_id': admin.admin_id})
-            response.set_cookie('session_id', session_id)
-            return response
+            token_key = create_token(admin.admin_id, True)
+            return JsonResponse({'errno': 0, 'msg': "管理员登录成功", 'admin_id': admin.admin_id, 'token_key': token_key})
         else:
             return JsonResponse({'errno': 1032, 'msg': "密码错误"})
     else:
