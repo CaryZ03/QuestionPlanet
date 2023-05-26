@@ -1,25 +1,22 @@
 <template>
   <body>
+    <div class="wrapper">
+      <header>
 
-    <el-container>
-      <el-header>
-        <header>
-          <h2 class="logo">logo</h2>
-          <nav class="navigation">
-            <a href="#">Home</a>
-            <a href="#">About </a>
-            <a href="#">Service</a>
-            <a href="#">Contact</a>
-            <button class="btnLogin-popup">Login</button>
-          </nav>
-        </header>
-      </el-header>
-      <el-container>
-        <el-main><router-view></router-view></el-main>
-      </el-container>
-    </el-container>
+        <h2 class="logo">logo</h2>
+        <nav class="navigation">
+          <a href="#">Home</a>
+          <a href="#">About </a>
+          <a href="#">Service</a>
+          <a href="#">Contact</a>
+          <button class="btnLogin-popup">Login</button>
+        </nav>
+      </header>
 
-    
+      <router-view></router-view>
+    </div>
+
+
   </body>
 </template>
 
@@ -56,27 +53,17 @@ export default {
 
 
 
-<style >
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-  font-family: 'Poppins', sans-serif;
-}
-
-body {
+<style scoped>
+.wrapper {
   display: flex;
-  justify-content: center;
-  align-items: center;
-  min-height: 100vh;
-  background: url('./assets/background2.jpg');
-
-  background-size: cover;
-  background-position: center;
+  position: relative;
 }
-
 
 header {
+  flex: 1;
+  /* background: transparent; */
+  /* background-color: #4CAF50; */
+
   position: fixed;
   top: 0;
   left: 0;
@@ -87,7 +74,65 @@ header {
   justify-content: space-between;
   align-items: center;
   z-index: 99;
+  /* 设置一个背景色便于观察 */
 }
+
+aside {
+  bottom: 40px;
+  color: #262626;
+  display: block;
+  font-family: "Helvetica Neue", Helvetica, Arial, "PingFang SC", "Microsoft YaHei", "Microsoft YaHei UI", 微软雅黑, sans-serif;
+  font-size: 12px;
+  left: 5px;
+  margin: 0;
+  padding: 0 0px 0 0;
+  position: fixed;
+  text-align: left;
+  top: 100px;
+  width: 20%;
+  z-index: 200;
+  /* background-color: #fff; */
+}
+
+main {
+  bottom: 40px;
+  color: #262626;
+  display: block;
+  font-family: "Helvetica Neue", Helvetica, Arial, "PingFang SC", "Microsoft YaHei", "Microsoft YaHei UI", 微软雅黑, sans-serif;
+  font-size: 12px;
+  left: 25%;
+  margin: 0;
+  padding: 0 0px 0 0;
+  position: fixed;
+  text-align: left;
+  top: 100px;
+  /* position: absolute; */
+  width: 70%;
+  z-index: 200;
+  background:transparent;
+  backdrop-filter: blur(20px);
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Poppins', sans-serif;
+}
+
+
+
+body {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  background: url('./assets/background0.png');
+
+  background-size: cover;
+  background-position: center;
+}
+
 
 .logo {
   font-size: 2em;

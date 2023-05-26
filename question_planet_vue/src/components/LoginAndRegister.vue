@@ -95,6 +95,7 @@ export default {
 
       this.$api.userInfo.postUserInfo_UserLogin(data).then((response) => {
         if (response.data['errno'] === 0) {
+          console.log(response.data)
 
           this.$store.state.token_key=response.data['token_key']
           console.log(response.data.token_key)
