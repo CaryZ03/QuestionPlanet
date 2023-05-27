@@ -150,7 +150,6 @@ def save_questionnaire(request):
     qn = Questionnaire.objects.get(qn_id=qn_id)
     qn.qn_title = qn_title
     qn.qn_description = qn_description
-    qn.qn_createTime = datetime.now()
     qn.qn_endTime = datetime.strptime(qn_end_time, '%Y-%m-%d %H:%M:%S')
     qn.qn_refillable = qn_refillable
     qn.qn_answersheets.all().delete()
