@@ -1,5 +1,7 @@
 <template>
-  <LoginAndRegister />
+  <div>
+    <LoginAndRegister></LoginAndRegister>
+  </div>
 </template>
 
 <script>
@@ -131,72 +133,6 @@ header {
   z-index: 99;
 }
 
-.logo {
-  font-size: 2em;
-  color: #fff;
-  user-select: none;
-
-}
-
-.navigation {
-  position: relative;
-  font-size: 1.1em;
-  color: #fff;
-  text-decoration: none;
-  font-weight: 500;
-  margin-left: 40px;
-}
-
-
-.navigation .btnLogin-popup {
-  width: 130px;
-  height: 50px;
-  background: transparent;
-  border: 2px solid #fff;
-  outline: none;
-  border-radius: 6px;
-  cursor: pointer;
-  font-size: 1.1em;
-  color: #fff;
-  font-weight: 500;
-  margin-left: 40px;
-  transition: .3s;
-}
-
-.navigation a {
-  position: relative;
-  font-size: 1.1em;
-  color: #fff;
-  text-decoration: none;
-  font-weight: 500;
-  margin-left: 40px;
-}
-
-.navigation a::after {
-  content: '';
-  position: absolute;
-  width: 100%;
-  height: 3px;
-  bottom: -6px;
-  left: 0;
-  background: #fff;
-  border-radius: 5px;
-  transform-origin: right;
-  transform: scaleX(0);
-  transition: transform .4s;
-}
-
-.navigation a:hover::after {
-  transform-origin: left;
-  transform: scaleX(1);
-}
-
-
-.navigation .btnLogin-popup:hover {
-  background: #fff;
-  color: #162938;
-
-}
 
 .wrapper {
   position: relative;

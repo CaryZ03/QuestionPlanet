@@ -1,18 +1,19 @@
 <template>
   <body>
-    <div class="wrapper">
-      <header>
+    <el-header>
+        <header>
 
-        <h2 class="logo">logo</h2>
-        <nav class="navigation">
-          <a href="#">Home</a>
-          <a href="#">About </a>
-          <a href="#">Service</a>
-          <a href="#">Contact</a>
-          <button class="btnLogin-popup">Login</button>
-        </nav>
-      </header>
-
+          <h2 class="logo">logo</h2>
+          <nav class="navigation">
+            <a href="#">Home</a>
+            <a href="#">About </a>
+            <a href="#">Service</a>
+            <a href="#">Contact</a>
+            <button class="btnLogin-popup">Login</button>
+          </nav>
+        </header>
+      </el-header>
+    <div class="app-wrapper">
       <router-view></router-view>
     </div>
 
@@ -23,6 +24,7 @@
 <script>
 import axios from 'axios'
 import StepSlideVue from './components/StepSlide.vue'
+import LoginAndRegister from './components/LoginAndRegister.vue'
 
 export default {
 
@@ -54,7 +56,7 @@ export default {
 
 
 <style scoped>
-.wrapper {
+.app-wrapper {
   display: flex;
   position: relative;
 }
@@ -73,7 +75,7 @@ header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  z-index: 99;
+  z-index: 200;
   /* 设置一个背景色便于观察 */
 }
 
@@ -109,7 +111,7 @@ main {
   /* position: absolute; */
   width: 70%;
   z-index: 200;
-  background:transparent;
+  background: transparent;
   backdrop-filter: blur(20px);
 }
 
@@ -127,7 +129,7 @@ body {
   justify-content: center;
   align-items: center;
   min-height: 100vh;
-  background: url('./assets/background0.png');
+  background: url('./assets/background2.jpg');
 
   background-size: cover;
   background-position: center;
