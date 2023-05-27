@@ -82,8 +82,8 @@ class Questionnaire(Model):
             "qn_id": self.qn_id,
             "qn_title": self.qn_title,
             "qn_description": self.qn_description,
-            "qn_createTime": self.qn_createTime,
-            "qn_endTime": self.qn_endTime,
+            "qn_createTime": str(self.qn_createTime),
+            "qn_endTime": str(self.qn_endTime),
             "qn_status": self.qn_status,
             "qn_refillable": self.qn_refillable
         }
