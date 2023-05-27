@@ -13,11 +13,11 @@ const request = axios.create({
     baseURL: 'http://182.92.102.246:1145/api',
     timeout: 10000,
     headers: {
-        'Content-Type': 'application/x-www-form-urlencoded',
+        'Content-Type': 'application/json',
     }
 })
 
-axios.interceptors.request.use(
+request.interceptors.request.use(
     config => {
       const token_key = store.state.token_key;
       console.log(token_key)
@@ -28,6 +28,7 @@ axios.interceptors.request.use(
       return config;
     },
     error => {
+      console.log(error)
       return Promise.reject(error);
     }
   );

@@ -94,9 +94,9 @@ export function postUserInfo_ChangeAdminInfo(data) {
 }
 
 // 获取用户问卷列表
-export function getUserInfo_GetQList(data) {
+export function postUserInfo_GetQList(data) {
     return request({
-        method: 'GET',
+        method: 'POST',
         url:  '/user/check_questionnaire_list',
         data: data
     })

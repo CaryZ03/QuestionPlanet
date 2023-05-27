@@ -27,152 +27,6 @@
     </main>
   </div>
 </template>
-<!--   <el-main>
-    <div>
-      <router-view v-if="this.$store.state.is_creating"></router-view>
-      <el-container v-else style="height: 745px; border: 1px solid #eee">
-        <el-aside width="200px" style="background-color: rgb(238, 241, 246)">
-
-          <el-menu>
-            <el-submenu index="0">
-              <template slot="title"><i class="el-icon-s-data"></i>全部问卷</template>
-            </el-submenu>
-            <el-submenu index="1">
-              <template slot="title"><i class="el-icon-plus"></i>创建问卷</template>
-              <el-menu-item index="1-1" @click="pushView">从空白创建</el-menu-item>
-              <el-menu-item-group title="从模板创建">
-                <el-menu-item index="1-2">模板1</el-menu-item>
-                <el-menu-item index="1-3">模板2</el-menu-item>
-                <el-menu-item index="1-4">模板3</el-menu-item>
-              </el-menu-item-group>
-            </el-submenu>
-            <el-submenu index="2">
-              <template slot="title"><i class="el-icon-s-operation"></i>管理问卷</template>
-              <el-menu-item index="2-2">俺的问卷1</el-menu-item>
-              <el-menu-item index="2-3">俺的问卷2</el-menu-item>
-              <el-menu-item index="2-4">俺的问卷3</el-menu-item>
-            </el-submenu>
-            <el-submenu index="3">
-              <template slot="title"><i class="el-icon-pie-chart"></i>查看问卷</template>
-              <el-menu-item index="3-2">俺的问卷1</el-menu-item>
-              <el-menu-item index="3-3">俺的问卷2</el-menu-item>
-              <el-menu-item index="3-4">俺的问卷3</el-menu-item>
-            </el-submenu>
-            <el-submenu index="4">
-              <template slot="title"><i class="el-icon-delete"></i>回收站</template>
-              <el-menu-item index="4-2">俺的垃圾1</el-menu-item>
-              <el-menu-item index="4-3">俺的垃圾2</el-menu-item>
-              <el-menu-item index="4-4">俺的垃圾3</el-menu-item>
-            </el-submenu>
-
-            <el-submenu index="5">
-              <template slot="title"><i class="el-icon-s-data"></i>已填问卷</template>
-            </el-submenu>
-          </el-menu>
-        </el-aside>
-
-        <el-container>
-          <el-header style="text-align: right; font-size: 12px">
-            <el-input style="width: 280px; left: 20px;" placeholder="查找问卷" suffix-icon="el-icon-search"
-              v-model="searchText">
-            </el-input>
-            <span></span>
-          </el-header>
-
-          <el-main>
-
-
-            <el-row class="single_questionnaire_box hvr-grow-shadow">
-              <div class="questionnaire_title">
-                <div class="pull-left">
-                  <div class="questionnaire_title">hihi</div>
-                </div>
-                <div class="pull-right">
-                  <div class="pull-left item-id">id:NULL</div>
-                  <div class="pull-left item-running">status:NULL</div>
-                  <div class="pull-left item-data">receive:0</div>
-                  <div class="pull-left item-data">2020/02/02 00:22</div>
-                </div>
-              </div>
-              <el-divider></el-divider>
-              <div class="questionnaire_body">
-                <el-button round style="background-color:rgba(227, 227, 227, 0.1);;">设计问卷</el-button>
-                <el-button round style="background-color:rgba(227, 227, 227, 0.1);;">发送问卷</el-button>
-                <el-button round style="background-color:rgba(227, 227, 227, 0.1);;">分析问卷</el-button>
-              </div>
-
-            </el-row>
-
-            <el-row class="single_questionnaire_box hvr-grow-shadow">
-              <div class="questionnaire_title">
-                <div class="pull-left">
-                  <div class="questionnaire_title">hihi</div>
-                </div>
-                <div class="pull-right">
-                  <div class="pull-left item-id">id:NULL</div>
-                  <div class="pull-left item-running">status:NULL</div>
-                  <div class="pull-left item-data">receive:0</div>
-                  <div class="pull-left item-data">2020/02/02 00:22</div>
-                </div>
-              </div>
-              <el-divider></el-divider>
-              <div class="questionnaire_body">
-                <el-button round style="background-color:rgba(227, 227, 227, 0.1);;">设计问卷</el-button>
-                <el-button round style="background-color:rgba(227, 227, 227, 0.1);;">发送问卷</el-button>
-                <el-button round style="background-color:rgba(227, 227, 227, 0.1);;">分析问卷</el-button>
-              </div>
-
-            </el-row>
-
-            <el-row class="single_questionnaire_box hvr-grow-shadow">
-              <div class="questionnaire_title">
-                <div class="pull-left">
-                  <div class="questionnaire_title">hihi</div>
-                </div>
-                <div class="pull-right">
-                  <div class="pull-left item-id">id:NULL</div>
-                  <div class="pull-left item-running">status:NULL</div>
-                  <div class="pull-left item-data">receive:0</div>
-                  <div class="pull-left item-data">2020/02/02 00:22</div>
-                </div>
-              </div>
-              <el-divider></el-divider>
-              <div class="questionnaire_body">
-                <el-button round style="background-color:rgba(227, 227, 227, 0.1);;">设计问卷</el-button>
-                <el-button round style="background-color:rgba(227, 227, 227, 0.1);;">发送问卷</el-button>
-                <el-button round style="background-color:rgba(227, 227, 227, 0.1);;">分析问卷</el-button>
-              </div>
-
-            </el-row>
-
-            <el-row class="single_questionnaire_box hvr-grow-shadow">
-              <div class="questionnaire_title">
-                <div class="pull-left">
-                  <div class="questionnaire_title">hihi</div>
-                </div>
-                <div class="pull-right">
-                  <div class="pull-left item-id">id:NULL</div>
-                  <div class="pull-left item-running">status:NULL</div>
-                  <div class="pull-left item-data">receive:0</div>
-                  <div class="pull-left item-data">2020/02/02 00:22</div>
-                </div>
-              </div>
-              <el-divider></el-divider>
-              <div class="questionnaire_body">
-                <el-button round style="background-color:rgba(227, 227, 227, 0.1);;">设计问卷</el-button>
-                <el-button round style="background-color:rgba(227, 227, 227, 0.1);;">发送问卷</el-button>
-                <el-button round style="background-color:rgba(227, 227, 227, 0.1);;">分析问卷</el-button>
-              </div>
-
-            </el-row>
-
-          </el-main>
-
-        </el-container>
-      </el-container>
-    </div>
-  </el-main> -->
-
 
 <script>
 import AsideMenu from '@/components/AsideMenu.vue'
@@ -189,9 +43,6 @@ export default {
       tableData: Array(20).fill(item),
       userID: this.$store.state.curUserID
     }
-  },
-  mounted() {
-    this.getManagerQuestionnaireList();
   },
   watch: {
     questions: {
@@ -214,7 +65,8 @@ export default {
         "uid": this.$store.state.curUserID,
         "type": "created"
       }
-      this.$api.userInfo.getUserInfo_GetQList(data).then((res) => {
+      console.log(this.$store.state.token_key)
+      this.$api.userInfo.postUserInfo_GetQList(data).then((res) => {
         console.log(res.data)
       })
 
