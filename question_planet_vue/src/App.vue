@@ -1,9 +1,8 @@
 <template>
   <body>
-
-    <el-container>
-      <el-header>
+    <el-header>
         <header>
+
           <h2 class="logo">logo</h2>
           <nav class="navigation">
             <a href="#">Home</a>
@@ -14,18 +13,18 @@
           </nav>
         </header>
       </el-header>
-      <el-container>
-        <el-main><router-view></router-view></el-main>
-      </el-container>
-    </el-container>
+    <div class="app-wrapper">
+      <router-view></router-view>
+    </div>
 
-    
+
   </body>
 </template>
 
 <script>
 import axios from 'axios'
 import StepSlideVue from './components/StepSlide.vue'
+import LoginAndRegister from './components/LoginAndRegister.vue'
 
 export default {
 
@@ -56,13 +55,74 @@ export default {
 
 
 
-<style >
+<style scoped>
+.app-wrapper {
+  display: flex;
+  position: relative;
+}
+
+header {
+  flex: 1;
+  /* background: transparent; */
+  /* background-color: #4CAF50; */
+
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  padding: 20px 100px;
+  /* background: red; */
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  z-index: 200;
+  /* 设置一个背景色便于观察 */
+}
+
+aside {
+  bottom: 40px;
+  color: #262626;
+  display: block;
+  font-family: "Helvetica Neue", Helvetica, Arial, "PingFang SC", "Microsoft YaHei", "Microsoft YaHei UI", 微软雅黑, sans-serif;
+  font-size: 12px;
+  left: 5px;
+  margin: 0;
+  padding: 0 0px 0 0;
+  position: fixed;
+  text-align: left;
+  top: 100px;
+  width: 20%;
+  z-index: 200;
+  /* background-color: #fff; */
+}
+
+main {
+  bottom: 40px;
+  color: #262626;
+  display: block;
+  font-family: "Helvetica Neue", Helvetica, Arial, "PingFang SC", "Microsoft YaHei", "Microsoft YaHei UI", 微软雅黑, sans-serif;
+  font-size: 12px;
+  left: 25%;
+  margin: 0;
+  padding: 0 0px 0 0;
+  position: fixed;
+  text-align: left;
+  top: 100px;
+  /* position: absolute; */
+  width: 70%;
+  z-index: 200;
+  background: transparent;
+  backdrop-filter: blur(20px);
+}
+
 * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
   font-family: 'Poppins', sans-serif;
 }
+
+
 
 body {
   display: flex;
@@ -75,19 +135,6 @@ body {
   background-position: center;
 }
 
-
-header {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  padding: 20px 100px;
-  /* background: red; */
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  z-index: 99;
-}
 
 .logo {
   font-size: 2em;
