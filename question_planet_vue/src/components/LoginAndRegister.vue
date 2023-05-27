@@ -4,7 +4,7 @@
 
         <div class="form-box login">
             <h2>Login</h2>
-            <form>
+            <form @click.prevent="">
                 <div class="input-box">
                     <span class="icon"><i class="el-icon-edit"></i></span>
                     <input type="text" v-model="user.username" required>
@@ -23,6 +23,7 @@
                 </div>
 
                 <button class="btn" @click="login">Login</button>
+                <button class="btn" @click="test">test</button>
 
                 <div class="login-register">
                     <p>Don't have an account?<a href="#" class="register-link">Register</a></p>
@@ -95,6 +96,9 @@ export default {
 
       this.$api.userInfo.postUserInfo_UserLogin(data).then((response) => {
         if (response.data['errno'] === 0) {
+
+
+          alert("win")
           console.log(response.data)
 
           this.$store.state.token_key=response.data['token_key']
@@ -106,10 +110,11 @@ export default {
           this.$store.state.curUserID = response.data['uid']
           this.$store.state.curUsername = this.user.username
           this.$store.state.isLogin = true
+
+          console.log(`/manage/${this.$store.state.curUserID}`)
           // set cookie
-          document.cookie = `session_id=${response.data.session_id}`;
           this.$router.push({
-            path: "/manage/" + this.$store.state.curUserID
+            path: `/manage/${this.$store.state.curUserID}`
           })
         }
         else {
@@ -118,9 +123,15 @@ export default {
         }
       }).catch(error => {
         console.log(error)
+        alert("wa")
 
 
       })
+    },
+    test(){
+      this.$router.push({
+            path: "/manage/" + this.$store.state.curUserID
+          })
     },
     register() {
         if(this.isAgree==false){

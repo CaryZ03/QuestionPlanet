@@ -13,14 +13,16 @@ const request = axios.create({
     baseURL: 'http://182.92.102.246:1145/api',
     timeout: 10000,
     headers: {
-        'Content-Type': 'application/json',
+        'Content-Type': 'application/x-www-form-urlencoded',
     }
 })
 
 axios.interceptors.request.use(
     config => {
       const token_key = store.state.token_key;
+      console.log(token_key)
       if (token_key) {
+        
         config.headers['Authorization'] = token_key ;
       }
       return config;
