@@ -315,7 +315,7 @@ def change_profile_admin(request):
 
 @csrf_exempt
 @login_required
-@require_http_methods(['GET'])
+@require_http_methods(['POST'])
 def check_questionnaire_list(request):
     data_json = json.loads(request.body)
     uid = data_json.get('uid')
