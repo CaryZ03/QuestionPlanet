@@ -1,12 +1,5 @@
 <template>
-  <div class="login-page">
-    <!-- 最外层的大盒子 -->
-    <div class="bigBox">
-
-
-      <LoginAndRegister />
-    </div>
-  </div>
+  <LoginAndRegister />
 </template>
 
 <script>
