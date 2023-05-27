@@ -317,8 +317,9 @@ def change_profile_admin(request):
 @login_required
 @require_http_methods(['GET'])
 def check_questionnaire_list(request):
-    uid = json.loads(request.body).get('uid')
-    qn_list_type = json.loads(request.body).get('type')
+    data_json = json.loads(request.body)
+    uid = data_json.get('uid')
+    qn_list_type = data_json.get('type')
     user = User.objects.get(user_id=uid)
     if qn_list_type == 'created':
         questionnaires = user.user_created_questionnaires.all()

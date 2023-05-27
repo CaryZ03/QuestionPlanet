@@ -149,13 +149,3 @@ CORS_ALLOWED_ORIGINS = [
 ]
 
 SESSION_ENGINE = 'django.contrib.sessions.backends.db'  # 使用数据库存储会话
-
-CORS_ALLOW_HEADERS = [
-    'Authorization',
-    'Cookie',
-]
-
-CORS_ALLOW_METHODS = [
-    'GET',
-    'POST',
-]
