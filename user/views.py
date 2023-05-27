@@ -2,6 +2,7 @@ import re
 from datetime import datetime
 
 from django.http import JsonResponse
+from django.utils.timezone import make_aware, utc, now
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_http_methods
 from django.http.response import JsonResponse
@@ -49,13 +50,13 @@ def send_email_verification(email, code):
 
 def create_token(uid, is_admin):
     token_key = get_random_secret_key()
-    expiry_date = datetime.now() + timedelta(minutes=20)
+    expiry_time = now() + timedelta(minutes=20)
     if is_admin:
         admin = Admin.objects.get(admin_id=uid)
-        token = UserToken(key=token_key, admin=admin, created=expiry_date)
+        token = UserToken(key=token_key, admin=admin, expire_time=expiry_time)
     else:
-        user = Admin.objects.get(user_id=uid)
-        token = UserToken(key=token_key, user=user, created=expiry_date)
+        user = User.objects.get(user_id=uid)
+        token = UserToken(key=token_key, user=user, expire_time=expiry_time)
     token.save()
 
     return token.key
@@ -63,12 +64,11 @@ def create_token(uid, is_admin):
 
 def login_required(view_func):
     def wrapper(request, *args, **kwargs):
-        auth_data = request.headers.get('Authorization')
-        token_key = auth_data.get('token_key')
+        token_key = request.headers.get('Authorization')
         if token_key:
             # 使用 Token 模型的 objects.get 方法查找令牌
             token = UserToken.objects.get(key=token_key)
-            if token is None or token.expire_time < datetime.now():
+            if token is None or token.expire_time < now():
                 return JsonResponse({'errno': 1002, 'msg': "登录信息已过期"})
             else:
                 user = token.user
@@ -92,12 +92,11 @@ def login_required(view_func):
 
 def admin_required(view_func):
     def wrapper(request, *args, **kwargs):
-        auth_data = request.headers.get('Authorization')
-        token_key = auth_data.get('token_key')
+        token_key = request.headers.get('Authorization')
         if token_key:
             # 使用 Token 模型的 objects.get 方法查找令牌
             token = UserToken.objects.get(key=token_key)
-            if token is None or token.expire_time < datetime.now():
+            if token is None or token.expire_time < now():
                 return JsonResponse({'errno': 1002, 'msg': "登录信息已过期"})
             elif not token.is_admin:
                 return JsonResponse({'errno': 1004, 'msg': "需要管理员权限"})
