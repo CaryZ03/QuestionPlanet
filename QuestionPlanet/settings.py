@@ -143,13 +143,15 @@ CORS_ALLOW_CREDENTIALS = True
 
 CORS_ALLOWED_ORIGINS = [
     'http://localhost:8080',
+    'http://127.0.0.1:8080',
     # 添加其他允许的域名
 ]
 
 SESSION_ENGINE = 'django.contrib.sessions.backends.db'  # 使用数据库存储会话
 
 CORS_ALLOW_HEADERS = [
-    'cookie',
+    'Authorization',
+    'Cookie',
 ]
 
 CORS_ALLOW_METHODS = [
