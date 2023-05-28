@@ -53,10 +53,10 @@ def create_token(uid, is_admin):
     expiry_time = now() + timedelta(minutes=20)
     if is_admin:
         admin = Admin.objects.get(admin_id=uid)
-        token = UserToken(key=token_key, admin=admin, expire_time=expiry_time)
+        token = UserToken(key=token_key, is_admin=is_admin, admin=admin, expire_time=expiry_time)
     else:
         user = User.objects.get(user_id=uid)
-        token = UserToken(key=token_key, user=user, expire_time=expiry_time)
+        token = UserToken(key=token_key, is_admin=is_admin, user=user, expire_time=expiry_time)
     token.save()
 
     return token.key
@@ -149,6 +149,7 @@ def user_login(request):
     if User.objects.filter(user_name=username).exists():
         user = User.objects.get(user_name=username)
         if user.user_password == password:
+            UserToken.objects.filter(user=user).delete()
             token_key = create_token(user.user_id, False)
             return JsonResponse({'errno': 0, 'msg': "登录成功", 'uid': user.user_id, 'token_key': token_key})
         else:
@@ -167,6 +168,7 @@ def admin_login(request):
     if Admin.objects.filter(admin_name=admin_name).exists():
         admin = Admin.objects.get(admin_name=admin_name)
         if admin.admin_password == password:
+            UserToken.objects.filter(admin=admin).delete()
             token_key = create_token(admin.admin_id, True)
             return JsonResponse({'errno': 0, 'msg': "管理员登录成功", 'admin_id': admin.admin_id, 'token_key': token_key})
         else:
@@ -219,7 +221,8 @@ def reset_password(request):
 @login_required
 @require_http_methods(['POST'])
 def logout(request):
-    request.session.flush()
+    token_key = request.headers.get('Authorization')
+    UserToken.objects.get(key=token_key).delete()
     return JsonResponse({'errno': 0, 'msg': "登出成功"})
 
 
@@ -229,6 +232,7 @@ def logout(request):
 def cancel_account(request):
     uid = json.loads(request.body).get('id')
     user = User.objects.get(user_id=uid)
+    UserToken.objects.filter(user=user).delete()
     user.delete()
     return JsonResponse({'errno': 0, 'msg': "注销成功"})
 
@@ -321,7 +325,7 @@ def check_questionnaire_list(request):
     uid = data_json.get('uid')
     qn_list_type = data_json.get('type')
     user = User.objects.get(user_id=uid)
-    if qn_list_type == 'created' || qn_list_type == 'deleted':
+    if qn_list_type == 'created' or qn_list_type == 'deleted':
         questionnaires = user.user_created_questionnaires.all()
     elif qn_list_type == 'filled':
         questionnaires = user.user_filled_questionnaires.all()
