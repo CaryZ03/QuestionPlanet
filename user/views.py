@@ -321,15 +321,21 @@ def check_questionnaire_list(request):
     uid = data_json.get('uid')
     qn_list_type = data_json.get('type')
     user = User.objects.get(user_id=uid)
-    if qn_list_type == 'created':
+    if qn_list_type == 'created' || qn_list_type == 'deleted':
         questionnaires = user.user_created_questionnaires.all()
     elif qn_list_type == 'filled':
         questionnaires = user.user_filled_questionnaires.all()
     else:
         return JsonResponse({'errno': 1121, 'msg': '未指定问卷列表'})
     qn_info = []
-    for qn in questionnaires:
-        qn_info.append(qn.to_json())
+    if qn_list_type == 'deleted':
+        for qn in questionnaires:
+            if qn.qn_status == 'deleted':
+                qn_info.append(qn.to_json())
+    else:
+        for qn in questionnaires:
+            if qn.qn_status != 'deleted':
+                qn_info.append(qn.to_json())
     return JsonResponse({'errno': 0, 'msg': '返回问卷列表成功', 'qn_info': qn_info})
 
 

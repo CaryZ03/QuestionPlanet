@@ -69,7 +69,8 @@ class Questionnaire(Model):
         ('unpublished', "未发布"),
         ('published', "已发布"),
         ('closed', "已关闭"),
-        ('banned', "已封禁")
+        ('banned', "已封禁"),
+        ('deleted', "已删除")
     )
     qn_status = CharField(max_length=20, choices=status_choices, default='unpublished')
     qn_refillable = BooleanField(default=True)
