@@ -26,8 +26,6 @@ def get_session(session_id):
 def check_identity(view_func):
     def wrapper(request, *args, **kwargs):
         token_key = request.headers.get('Authorization')
-        body = request.body.decode('utf-8')
-        data = json.loads(body)
         if token_key:
             # 使用 Token 模型的 objects.get 方法查找令牌
             token = UserToken.objects.filter(key=token_key).first()
@@ -35,23 +33,23 @@ def check_identity(view_func):
                 return JsonResponse({'errno': 3002, 'msg': "登录信息已过期"})
             elif not token.is_admin:
                 user = token.user
-                if 'qn_id' in data:
-                    qn_id = data.get('qn_id')
+                if kwargs.get('qn_id') is not None:
+                    qn_id = kwargs.get('qn_id')
                     if not Questionnaire.objects.filter(qn_id=qn_id).exists():
                         return JsonResponse({'errno': 3005, 'msg': "问卷不存在"})
                     questionnaire = Questionnaire.objects.get(qn_id=qn_id)
                     if questionnaire not in user.user_created_questionnaires.all():
                         return JsonResponse({'errno': 3008, 'msg': '用户没有权限进行该操作'})
-                elif 'q_id' in data:
-                    q_id = data.get('q_id')
+                elif kwargs.get('q_id') is not None:
+                    q_id = kwargs.get('q_id')
                     if not Question.objects.filter(q_id=q_id).exists():
                         return JsonResponse({'errno': 3006, 'msg': "问题不存在"})
                     question = Question.objects.get(q_id=q_id)
                     questionnaire = question.q_questionnaire
                     if questionnaire not in user.user_created_questionnaires.all():
                         return JsonResponse({'errno': 3008, 'msg': '用户没有权限进行该操作'})
-                elif 'a_id' in data:
-                    a_id = data.get('a_id')
+                elif kwargs.get('a_id'):
+                    a_id = kwargs.get('a_id')
                     if not Answer.objects.filter(a_id=a_id).exists():
                         return JsonResponse({'errno': 3007, 'msg': "答案不存在"})
                     answer = Answer.objects.get(a_id=a_id)
