@@ -27,8 +27,9 @@
   overflow-y: hidden;
 position:fixed;
 background-size:100% 100%;
+background: transparent;
 
-margin: -284px 0 0 -759px;
+margin: -284px 0 0 -761px;
 padding: 0px 0 0 9px;
 }
 
@@ -38,12 +39,15 @@ padding: 0px 0 0 9px;
     padding: 30px;
     text-align: center;
     font-size: 18px;
-    color: #333;
+    color: #e9e9e9;
+
+    margin: -36px auto 0;
 
   }
   .about h1 {
     font-size: 28px;
     margin-bottom: 20px;
+    color:#162938;
   }
 
 

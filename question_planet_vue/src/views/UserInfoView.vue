@@ -97,6 +97,7 @@ export default {
     methods:{
 
         uploadData(data){
+          console.log(data);
           this.$api.userInfo.postUserInfo_ChangeUserInfo(data).then((response) => {
         console.log(response.data)
         if (response.data.errno == 0) {
@@ -128,7 +129,8 @@ export default {
               "username": this.userName,
               "password1":this.userKey,
               "password2": this.userKey,
-              "email": this.address
+              "email": this.address,
+              "tel":this.phone
           }
           this.uploadData(tmp);
         
@@ -158,7 +160,8 @@ export default {
               "username": this.userName,
               "password1":this.userKey,
               "password2": this.userKey,
-              "email": this.address
+              "email": this.address,
+              "tel":this.phone
           }
           this.uploadData(tmp);
         }).catch(() => {
@@ -183,6 +186,16 @@ export default {
           });
           this.phoneIsBind = true;
           this.phone = value;
+
+          const tmp = {
+              "uid":this.userId,
+              "username": this.userName,
+              "password1":this.userKey,
+              "password2": this.userKey,
+              "email": this.address,
+              "tel":this.phone
+          }
+          this.uploadData(tmp);
         }).catch(() => {
           this.$message({
             type: 'info',
@@ -203,6 +216,16 @@ export default {
           });
           this.phone= null; 
           this.phoneIsBind = false;
+
+          const tmp = {
+              "uid":this.userId,
+              "username": this.userName,
+              "password1":this.userKey,
+              "password2": this.userKey,
+              "email": this.address,
+              "tel":this.phone
+          }
+          this.uploadData(tmp);
         }).catch(() => {
           this.$message({
             type: 'info',
@@ -263,20 +286,23 @@ export default {
       corperation: UserInfo,
     },
 
-    created:function(){
+    mounted:function(){
       
       const tmpUser = {
         "uid": this.$store.state.curUserID
       }
-      this.$api.userInfo.postUserInfo_GetUserInfo(tmpUser).then((response) => {
+      this.$api.userInfo.getUserInfo_GetUserInfo(this.$store.state.curUserID).then((response) => {
         console.log(tmpUser)
         console.log(response.data)
         if (response.data.errno == 0) {
           console.log("获取用户信息成功")
-          this.userId = response.user_id;
-          this.userName = response.user_name;
-          this.userKey  = response.user_password;
-          this.address  = response.user_email;
+          console.log(response.data.user_info)
+          const userObj = JSON.parse(response.data.user_info);
+         
+          this.userId = userObj.user_id;
+          this.userName = userObj.user_name;
+          this.userKey  = userObj.user_password;
+          this.address  = userObj.user_email;
           if( this.address != null)
             this.addressIsBind = true;
         }
