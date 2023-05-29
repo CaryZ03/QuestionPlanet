@@ -72,11 +72,11 @@ def login_required(view_func):
                 return JsonResponse({'errno': 1002, 'msg': "登录信息已过期"})
             else:
                 user = token.user
-                if (request.method == 'POST' and user.user_id != json.loads(request.body).get('uid')) \
-                        or (request.method == 'GET' and user.user_id != request.GET.get('uid')):
-                    return JsonResponse({'errno': 1003, 'msg': "用户不一致"})
-                else:
-                    return view_func(request, *args, **kwargs)
+                # if (request.method == 'POST' and user.user_id != json.loads(request.body).get('uid')) \
+                #         or (request.method == 'GET' and user.user_id != request.GET.get('uid')):
+                #     return JsonResponse({'errno': 1003, 'msg': "用户不一致"})
+                # else:
+                return view_func(request, *args, **kwargs)
         else:
             return JsonResponse({'errno': 1001, 'msg': "未登录"})
     return wrapper
