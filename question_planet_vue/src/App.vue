@@ -5,11 +5,16 @@
 
         <h2 class="logo">logo</h2>
         <nav class="navigation">
-          <a href="" @click.prevent="pushHome">主页</a>
+          <a href=""  @click.prevent="pushHome">主页</a>
           <a href="" @click.prevent="pushAbout">关于 </a>
-          <a href="" @click.prevent="pushManage">问卷管理</a>
+
+          <a href="" v-if="this.$store.state.isLogin" @click.prevent="pushManage">问卷管理</a>
+          <a href="" v-else @click.prevent="pushLogin">问卷管理</a>
+
           <!-- <a href="" @click.prevent="">Contact</a> -->
-          <a href="" @click.prevent="pushUserInfo">用户信息</a>
+          <a href="" v-if="this.$store.state.isLogin" @click.prevent="pushUserInfo">用户信息</a>
+          <a href="" v-else @click.prevent="pushLogin">用户信息</a>
+
           <button v-if="!this.$store.state.isLogin" class="btnLogin-popup">登录/注册</button>
           <a href="" v-else @click.prevent="logout">退出登录</a>
         </nav>
@@ -57,6 +62,8 @@ export default {
         alert("my new ")
     },
     pushManage() {
+      this.$store.state.isAnalyzing = false
+      this.$store.state.is_creating = false
       if (this.$store.state.isLogin == false) {
         this.$router.push({
           name: 'Login',
@@ -72,7 +79,10 @@ export default {
         alert("my new ")
     },
     pushLogin() {
-
+      const wrapper = document.querySelector('.wrapper')
+      const btnLogin = document.querySelector('.btnLogin-popup')
+      wrapper.classList.add('active-popup');
+      
       this.$router.push({
         name: 'Login',
       }),

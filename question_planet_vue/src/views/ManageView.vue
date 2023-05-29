@@ -1,8 +1,8 @@
 <template>
   <div>
-    <div v-show="!this.$store.state.isAnalyzing">
+    <div v-if="!this.$store.state.isAnalyzing && !this.$store.state.is_creating">
       <aside>
-        <AsideMenu></AsideMenu>
+        <AsideMenu @childEvent="handleChildEvent"></AsideMenu>
       </aside>
       <main>
         <el-main style="background: transparent;">
@@ -43,19 +43,25 @@
             </div>
             <el-divider></el-divider>
             <div class="questionnaire_body">
-              <el-button @click="pushCreate()" round style="background-color:rgba(227, 227, 227, 0.1);;">设计问卷</el-button>
+              <el-button @click="pushCreate(questionnaire)" round style="background-color:rgba(227, 227, 227, 0.1);;">设计问卷</el-button>
               <el-button round style="background-color:rgba(227, 227, 227, 0.1);;">发送问卷</el-button>
-              <el-button @click="pushAnalyze(questionnaire.qn_id)" round
-                style="background-color:rgba(227, 227, 227, 0.1);;">分析问卷</el-button>
-              <el-button @click="deleteQuestionnaire(questionnaire.qn_id)" round
-                style="background-color:rgba(227, 227, 227, 0.1);;">删除问卷</el-button>
-              <el-button @click="deleteQuestionnaire(questionnaire.qn_id)" round
-                style="background-color:rgba(227, 227, 227, 0.1);;">移除问卷</el-button>
+              <el-button @click="pushAnalyze(questionnaire)" round
+                style="background-color:rgba(227, 227, 227, 0.1);">分析问卷</el-button>
+              <el-button v-show="stateType==0" @click="deleteQuestionnaire(questionnaire)" round
+                style="background-color:rgba(227, 227, 227, 0.1);">删除问卷</el-button>
+              <el-button v-show="stateType==0" @click="deleteQuestionnaire(questionnaire)" round
+                style="background-color:rgba(227, 227, 227, 0.1);">移除问卷</el-button>
+              <el-button v-show="stateType==2" @click="deleteQuestionnaire(questionnaire)" round
+                style="background-color:rgba(227, 227, 227, 0.1);">撤销删除</el-button>
             </div>
 
           </el-row>
         </el-main>
       </main>
+    </div>
+
+    <div v-else>
+      <router-view></router-view>
     </div>
   </div>
 </template>
@@ -86,22 +92,31 @@ export default {
     },
   },
   methods: {
-    pushCreate() {
+    pushCreate(questionnaire) {
+      var data=JSON.parse(questionnaire)
+      var id=data.qn_id
       this.$store.state.is_creating = true,
         this.$router.push({
-          name: 'questionnaire_create'
+          name: 'questionnaire_create',
+          params:{
+            "qn_id": id
+          }
         }),
-
         alert(this.$store.state.is_creating)
     },
 
 
-    pushAnalyze(id) {
-      this.$store.state.isAnalyzing = false
+    pushAnalyze(questionnaire) {
+      var data=JSON.parse(questionnaire)
+      var id=data.qn_id
+      console.log("data!!!!!!"+data)
+      this.$store.state.isAnalyzing = true
       this.$router.push({
-        path: `/Analyze/${id}`,
-        name: 'Analyze',
-      })
+          name: 'Analyze',
+          params:{
+            "qn_id": id
+          }
+        })
     },
 
     getManagerQuestionnaireList_Create() {
@@ -112,8 +127,9 @@ export default {
       console.log(this.$store.state.token_key)
       console.log(this.$store.state.curUserID)
       this.$api.userInfo.getUserInfo_GetQList(data).then((res) => {
-        console.log(res.data)
+
         this.questionnaireList = res.data['qn_info']
+        console.log(typeof (res.data['qn_info'][0]))
       })
       this.stateType = 0
     },
@@ -144,11 +160,12 @@ export default {
       })
       this.stateType = 1
     },
-    deleteQuestionnaire(qn_id) {
-
-      console.log(this.questionnaireList[0])
-      console.log(this.questionnaireList[0])
-      console.log(data)
+    deleteQuestionnaire(questionnaire) {
+      console.dir(questionnaire)
+      questionnaire = JSON.parse(questionnaire)
+      console.log(questionnaire.qn_id)
+      var qn_id
+      qn_id = questionnaire.qn_id
 
       if (this.stateType == 0) {
         const data = {
@@ -156,9 +173,9 @@ export default {
           "qn_id": qn_id,
           "status": "deleted"
         }
-        console.log(data)
+        console.log("deleteQuestionnaire_data:" + data)
 
-        this.$api.questionnaire.postQuestionnaire_ChangeStatus(data).then((res)=>{
+        this.$api.questionnaire.postQuestionnaire_ChangeStatus(data).then((res) => {
           console.log(res)
         })
         this.getManagerQuestionnaireList_Create()
@@ -175,10 +192,29 @@ export default {
         this.getManagerQuestionnaireList_Delete()
       }
 
+    },
+
+    handleChildEvent(key) {
+      console.log('Received child event:', key)
+      switch (key) {
+        case 0:
+          this.getManagerQuestionnaireList_Create()
+          break;
+        case 1:
+          this.getManagerQuestionnaireList_Filled()
+          break;
+        case 2:
+          this.getManagerQuestionnaireList_Delete()
+          break;
+        default:
+          break;
+      }
     }
   },
   mounted() {
     this.getManagerQuestionnaireList_Create();
+    this.$store.state.isAnalyzing=false
+    this.$store.state.is_creating=false
   },
   components: {
     AsideMenu
