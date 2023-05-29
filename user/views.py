@@ -263,7 +263,7 @@ def change_profile(request):
     username = data_json.get('username')
     password1 = data_json.get('password1')
     password2 = data_json.get('password2')
-    mail = data_json.get('email')
+    email = data_json.get('email')
     tel = data_json.get('tel')
     if not bool(re.match("^[A-Za-z0-9][A-Za-z0-9_]{2,29}$", str(username))):
         return JsonResponse({'errno': 1101, 'msg': "用户名不合法"})
@@ -277,7 +277,7 @@ def change_profile(request):
         user = User.objects.get(user_id=uid)
         user.user_name = username
         user.user_password = password1
-        user.user_mail = mail
+        user.user_email = email
         user.user_tel = tel
         user.save()
         return JsonResponse({'errno': 0, 'msg': '修改用户信息成功'})
@@ -292,7 +292,7 @@ def change_profile_admin(request):
     username = data_json.get('username')
     password1 = data_json.get('password1')
     password2 = data_json.get('password2')
-    mail = data_json.get('email')
+    email = data_json.get('email')
     tel = data_json.get('tel')
     if not bool(re.match("^[A-Za-z0-9][A-Za-z0-9_]{2,29}$", str(username))):
         return JsonResponse({'errno': 1111, 'msg': "用户名不合法"})
@@ -306,7 +306,7 @@ def change_profile_admin(request):
         user = User.objects.get(user_id=uid)
         user.user_name = username
         user.user_password = password1
-        user.user_mail = mail
+        user.user_email = email
         user.user_tel = tel
         user.save()
         return JsonResponse({'errno': 0, 'msg': '修改用户信息成功'})
