@@ -2,7 +2,7 @@ import Vue from 'vue'
 import VueRouter from 'vue-router'
 import HomeView from '../views/HomeView.vue'
 
-const Login = () => import('../views/AnswerView.vue');
+const Login = () => import('../views/LoginView.vue');
 const Register = () => import('../views/RegisterView.vue');
 const CreateQuestionnaireView = () => import('../views/CreateView.vue');
 const UserInfoView = () => import('../views/UserInfoView.vue')
