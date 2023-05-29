@@ -51,6 +51,7 @@ def fill_questionnaire(request, qn_id):
             filler = Filler.objects.get(filler_ip=filler_ip)
         else:
             filler = Filler.objects.create(filler_ip=filler_ip)
+            filler.save()
     questionnaire = Questionnaire.objects.get(qn_id=qn_id)
     if AnswerSheet.objects.filter(as_questionnaire=questionnaire, as_filler=filler).exists():
         answer_sheet = AnswerSheet.objects.get(as_questionnaire=questionnaire, as_filler=filler)
@@ -59,6 +60,7 @@ def fill_questionnaire(request, qn_id):
         answer_sheet.save()
         if filler.filler_is_user:
             filler.filler_user.user_filled_questionnaire.add(questionnaire)
+            filler.filler_user.save()
     temp_save = answer_sheet.as_temporary_save
     return JsonResponse({'errno': 0, 'msg': "答卷创建成功", 'as_id': answer_sheet.as_id, 'temp_save': temp_save})
 
