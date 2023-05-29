@@ -208,7 +208,6 @@ def questionnaire_export_file(request):
 @require_http_methods('GET')
 def questionnaire_analysis(request):
     qn_id = json.loads(request.body.decode('utf-8')).get('qn_id')
-    print(qn_id)
     questionnaire = Questionnaire.objects.get(qn_id=qn_id)
     questions_count = Question.objects.filter(q_questionnaire=questionnaire).count()
     questions = Question.objects.filter(q_questionnaire=questionnaire)
@@ -220,7 +219,7 @@ def questionnaire_analysis(request):
         q_result['q_description'] = question.q_description
         q_result['q_type'] = question.q_type
         if question.q_type == 'single' or question.q_type == 'multiple':
-            options = list(question.q_options)
+            options = list(json.loads(question.q_options))
             q_result['q_options'] = [{'choose': str(num), 'label': option, 'num': 0} for num, option in enumerate(options)]
             for answer in answers:
                 a_content = answer.a_content.upper()
