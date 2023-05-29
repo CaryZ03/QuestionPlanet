@@ -211,11 +211,13 @@ def questionnaire_analysis(request):
     questionnaire = Questionnaire.objects.get(qn_id=qn_id)
     questions_count = Question.objects.filter(q_questionnaire=questionnaire).count()
     questions = Question.objects.filter(q_questionnaire=questionnaire)
+    answersheet_count = AnswerSheet.objects.filter(as_questionnaire=questionnaire).count()
     q_results = []
     i = 0
     for question in questions:
         answers = Answer.objects.filter(a_question=question)
         q_result = {}
+        q_result['q_title'] = question.q_title
         q_result['q_description'] = question.q_description
         q_result['q_type'] = question.q_type
         if question.q_type == 'single' or question.q_type == 'multiple':
@@ -240,6 +242,7 @@ def questionnaire_analysis(request):
         'questionnaire_title': questionnaire.qn_title,
         'questionnaire_description': questionnaire.qn_description,
         'questions_count': questions_count,
+        'answersheet_count': answersheet_count,
         'q_results': q_results
     }
     return JsonResponse({'errno': 0, 'msg': '问卷分析成功', 'result': result})
