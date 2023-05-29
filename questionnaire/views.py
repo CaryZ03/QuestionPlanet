@@ -125,9 +125,7 @@ def submit_answers(request):
 @csrf_exempt
 @login_required
 @require_http_methods(['POST'])
-def create_questionnaire(request):
-    user_id = json.loads(request.body).get('uid')
-    user = User.objects.get(user_id=user_id)
+def create_questionnaire(request, user):
     qn = Questionnaire.objects.create()
     qn.qn_creator = user
     user.user_created_questionnaires.add(qn)
@@ -140,7 +138,7 @@ def create_questionnaire(request):
 @login_required
 @questionnaire_exists
 @require_http_methods(['POST'])
-def save_questionnaire(request):
+def save_questionnaire(request, user):
     # 从请求中获取问卷信息和问题数据
     data_json = json.loads(request.body)
     qn_id = data_json.get('qn_id')
@@ -187,7 +185,7 @@ def save_questionnaire(request):
 @login_required
 @questionnaire_exists
 @require_http_methods(['GET'])
-def check_questionnaire(request):
+def check_questionnaire(request, user):
     # 从请求中获取问卷信息和问题数据
     data_json = json.loads(request.body)
     qn_id = data_json.get('qn_id')
@@ -201,7 +199,7 @@ def check_questionnaire(request):
 @login_required
 @questionnaire_exists
 @require_http_methods(['POST'])
-def delete_questionnaire(request):
+def delete_questionnaire(request, user):
     qn_id = json.loads(request.body).get('qn_id')
     qn = Questionnaire.objects.get(qn_id=qn_id)
     qn.delete()
@@ -212,7 +210,7 @@ def delete_questionnaire(request):
 @login_required
 @questionnaire_exists
 @require_http_methods(['POST'])
-def change_questionnaire_status(request):
+def change_questionnaire_status(request, user):
     data_json = json.loads(request.body)
     qn_id = data_json.get('qn_id')
     status = data_json.get('status')
