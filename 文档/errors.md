@@ -747,7 +747,7 @@ else
 {
     "uid": 用户id,
     "qn_id": 问卷id,
-    "status": 目标状态('unpublished', 'published', 'closed', 'banned')
+    "status": 目标状态('unpublished', 'published', 'closed', 'banned', 'deleted')
 }
 ```
 

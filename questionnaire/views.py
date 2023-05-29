@@ -18,6 +18,7 @@ def questionnaire_exists(view_func):
         qn_id = kwargs.get('qn_id')
         if qn_id is None:
             qn_id = json.loads(request.body).get('qn_id')
+            print(111111111111)
         if not Questionnaire.objects.filter(qn_id=qn_id).exists():
             return JsonResponse({'errno': 2001, 'qn_id': qn_id, 'msg': "问卷不存在"})
         else:
