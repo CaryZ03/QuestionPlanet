@@ -11,6 +11,7 @@
           <!-- <a href="" @click.prevent="">Contact</a> -->
           <a href="" @click.prevent="pushUserInfo">用户信息</a>
           <button v-if="!this.$store.state.isLogin" class="btnLogin-popup">登录/注册</button>
+          <a href="" v-else @click.prevent="logout">退出登录</a>
         </nav>
       </header>
     </el-header>
@@ -34,11 +35,17 @@ export default {
 
 
   methods: {
-    pushUserInfo() {
-      if(this.$store.state.isLogin==false){
-        this.$router.push({
-        name: 'Login',
+    pushHome() {
+
+      this.$router.push({
+        name: 'home',
       })
+    },
+    pushUserInfo() {
+      if (this.$store.state.isLogin == false) {
+        this.$router.push({
+          name: 'Login',
+        })
         return;
       }
       this.$router.push({
@@ -50,10 +57,10 @@ export default {
         alert("my new ")
     },
     pushManage() {
-      if(this.$store.state.isLogin==false){
+      if (this.$store.state.isLogin == false) {
         this.$router.push({
-        name: 'Login',
-      })
+          name: 'Login',
+        })
         return;
       }
       this.$router.push({
@@ -65,18 +72,28 @@ export default {
         alert("my new ")
     },
     pushLogin() {
-      
+
       this.$router.push({
         name: 'Login',
       }),
         alert("my new ")
     },
     pushAbout() {
-      
+
       this.$router.push({
         name: 'About',
       }),
         alert("my new ")
+    },
+    logout() {
+      this.$store.isLogin = false
+      this.$store.curUserID = -1
+      this.$store.curUserName = ''
+      this.$store.token_key = ''
+      this.$router.push({
+        name: 'Login',
+      })
+
     },
 
     show() {
@@ -238,6 +255,7 @@ body {
 
 }
 </style>
+
 
 <style >
 #login {
