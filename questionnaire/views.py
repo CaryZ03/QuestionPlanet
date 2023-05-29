@@ -126,7 +126,6 @@ def submit_answers(request):
 @require_http_methods(['POST'])
 def create_questionnaire(request):
     user_id = json.loads(request.body).get('uid')
-    print(user_id)
     user = User.objects.get(user_id=user_id)
     qn = Questionnaire.objects.create()
     qn.qn_creator = user

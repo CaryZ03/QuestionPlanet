@@ -1,7 +1,7 @@
 import json
 
 from django.db.models import *
-from questionnaire.models import *
+from questionnaire.models import Questionnaire
 
 
 class Filler(Model):
