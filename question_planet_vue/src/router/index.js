@@ -48,11 +48,7 @@ const routes = [
         name:'questionnaire_check',
         path:'questionnaire_check',
       },
-      {
-        path: 'questionnaire_analyze',
-        name: 'questionnaire_analyze',
-        component: Analyze
-      }
+
     ]
   },
   {
@@ -79,6 +75,11 @@ const routes = [
     // which is lazy-loaded when the route is visited.
     component:UserInfoView
   },
+  {
+    path: '/Analyze/:qn_id',
+    name: 'Analyze',
+    component: Analyze
+  }
 
 ]
 

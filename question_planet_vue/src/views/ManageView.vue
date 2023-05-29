@@ -1,6 +1,7 @@
 <template>
-  <div>
-    <aside>
+  <div >
+    <div v-show="!this.$store.state.isAnalyzing">
+      <aside>
       <AsideMenu></AsideMenu>
     </aside>
     <main>
@@ -44,12 +45,13 @@
           <div class="questionnaire_body">
             <el-button @click="pushCreate()" round style="background-color:rgba(227, 227, 227, 0.1);;">设计问卷</el-button>
             <el-button  round style="background-color:rgba(227, 227, 227, 0.1);;">发送问卷</el-button>
-            <el-button @click="pushAnalyze()" round style="background-color:rgba(227, 227, 227, 0.1);;">分析问卷</el-button>
+            <el-button @click="pushAnalyze(questionnaire.qn_id)" round style="background-color:rgba(227, 227, 227, 0.1);;">分析问卷</el-button>
           </div>
 
         </el-row>
       </el-main>
     </main>
+    </div>
   </div>
 </template>
 
@@ -88,9 +90,11 @@ export default {
     },
 
 
-    pushAnalyze() {
+    pushAnalyze(id) {
+      this.$store.state.isAnalyzing=false
       this.$router.push({
-        name: 'questionnaire_analyze'
+        path: `/Analyze/${id}`,
+        name: 'Analyze',
       })
     },
 
