@@ -66,6 +66,7 @@ export default {
         "type": "created"
       }
       console.log(this.$store.state.token_key)
+      console.log(this.$store.state.curUserID)
       this.$api.userInfo.postUserInfo_GetQList(data).then((res) => {
         console.log(res.data['qn_info'])
       })

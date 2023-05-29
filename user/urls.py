@@ -13,7 +13,7 @@ urlpatterns = [
     path('check_profile_admin', check_profile_admin),
     path('change_profile', change_profile),
     path('change_profile_admin', change_profile_admin),
-    path('check_questionnaire_list', check_questionnaire_list),
+    path('check_questionnaire_list/<str:qn_list_type>', check_questionnaire_list),
     path('change_user_status', change_user_status),
     path('deploy_test', deploy_test),
 ]
