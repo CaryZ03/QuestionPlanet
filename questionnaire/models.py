@@ -37,7 +37,7 @@ class Question(Model):
         ('grade', "打分")
     )
     q_type = CharField(max_length=20, choices=question_types, default='single')
-    q_manditory = BooleanField(default=False)
+    q_mandatory = BooleanField(default=False)
     q_title = TextField(null=True)
     q_description = TextField(null=True)
     q_option_count = IntegerField(default=1)
@@ -45,6 +45,22 @@ class Question(Model):
     q_correct_answer = TextField(null=True)
     q_score = DecimalField(max_digits=6, decimal_places=2, default=0.0)
     q_answers = ManyToManyField(Answer)
+
+    def to_json(self):
+        info = {
+            "q_id": self.q_id,
+            "q_questionnaire": self.q_questionnaire,
+            "q_position": self.q_position,
+            "q_type": self.q_type,
+            "q_mandatory": self.q_mandatory,
+            "q_title": self.q_title,
+            "q_description": self.q_description,
+            "q_option_count": self.q_option_count,
+            "q_options": self.q_options,
+            "q_correct_answer": self.q_correct_answer,
+            "q_score": self.q_score
+        }
+        return json.dumps(info)
 
 
 class AnswerSheet(Model):
