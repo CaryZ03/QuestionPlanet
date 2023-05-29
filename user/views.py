@@ -45,7 +45,7 @@ def send_email_verification(email, code):
 
 def create_token(uid, is_admin):
     token_key = get_random_secret_key()
-    expiry_time = now() + timedelta(minutes=20)
+    expiry_time = now() + timedelta(days=1)
     if is_admin:
         admin = Admin.objects.get(admin_id=uid)
         token = UserToken(key=token_key, is_admin=is_admin, admin=admin, expire_time=expiry_time)
@@ -66,12 +66,8 @@ def login_required(view_func):
             if token is None or token.expire_time < now():
                 return JsonResponse({'errno': 1002, 'msg': "登录信息已过期"})
             else:
-                # user = token.user
-                # if (request.method == 'POST' and user.user_id != json.loads(request.body).get('uid')) \
-                #         or (request.method == 'GET' and user.user_id != request.GET.get('uid')):
-                #     return JsonResponse({'errno': 1003, 'msg': "用户不一致"})
-                # else:
-                return view_func(request, *args, **kwargs)
+                user = token.user
+                return view_func(request, *args, user=user, **kwargs)
         else:
             return JsonResponse({'errno': 1001, 'msg': "未登录"})
     return wrapper
@@ -95,13 +91,10 @@ def admin_required(view_func):
             if token is None or token.expire_time < now():
                 return JsonResponse({'errno': 1002, 'msg': "登录信息已过期"})
             elif not token.is_admin:
-                return JsonResponse({'errno': 1004, 'msg': "需要管理员权限"})
+                return JsonResponse({'errno': 1003, 'msg': "需要管理员权限"})
             else:
                 admin = token.admin
-                if admin.admin_id != json.loads(request.body).get('uid'):
-                    return JsonResponse({'errno': 1003, 'msg': "用户不一致"})
-                else:
-                    return view_func(request, *args, **kwargs)
+                return view_func(request, *args, **kwargs)
         else:
             return JsonResponse({'errno': 1001, 'msg': "未登录"})
     return wrapper
@@ -214,19 +207,16 @@ def reset_password(request):
 @csrf_exempt
 @login_required
 @require_http_methods(['POST'])
-def logout(request):
+def logout(request, user):
     token_key = request.headers.get('Authorization')
-    # UserToken.objects.get(key=token_key).delete()
+    UserToken.objects.get(key=token_key).delete()
     return JsonResponse({'errno': 0, 'msg': "登出成功"})
 
 
 @csrf_exempt
 @login_required
 @require_http_methods(['POST'])
-def cancel_account(request):
-    uid = json.loads(request.body).get('id')
-    user = User.objects.get(user_id=uid)
-    UserToken.objects.filter(user=user).delete()
+def cancel_account(request, user):
     user.delete()
     return JsonResponse({'errno': 0, 'msg': "注销成功"})
 
@@ -234,9 +224,7 @@ def cancel_account(request):
 @csrf_exempt
 @login_required
 @require_http_methods(['GET'])
-def check_profile(request):
-    uid = request.GET.get('uid')
-    user = User.objects.get(user_id=uid)
+def check_profile(request, user):
     user_info = user.to_json()
     return JsonResponse({'errno': 0, 'msg': '返回用户信息成功', 'user_info': user_info})
 
@@ -255,9 +243,9 @@ def check_profile_admin(request):
 @csrf_exempt
 @login_required
 @require_http_methods(['POST'])
-def change_profile(request):
+def change_profile(request, user):
     data_json = json.loads(request.body)
-    uid = data_json.get('uid')
+    uid = user.user_id
     username = data_json.get('username')
     password1 = data_json.get('password1')
     password2 = data_json.get('password2')
@@ -273,7 +261,6 @@ def change_profile(request):
     elif not re.match('^(?=.*\\d)(?=.*[a-zA-Z]).{6,20}$', str(password1)):
         return JsonResponse({'errno': 1104, 'msg': "密码不合法"})
     else:
-        user = User.objects.get(user_id=uid)
         user.user_name = username
         user.user_password = password1
         user.user_signature = signature
@@ -317,7 +304,7 @@ def change_profile_admin(request):
 @csrf_exempt
 @login_required
 @require_http_methods(['GET'])
-def check_questionnaire_list(request, qn_list_type):
+def check_questionnaire_list(request, user, qn_list_type):
     uid = request.GET.get('uid')
     user = User.objects.get(user_id=uid)
     if qn_list_type == 'created' or qn_list_type == 'deleted':
