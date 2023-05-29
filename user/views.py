@@ -149,7 +149,7 @@ def user_login(request):
     if User.objects.filter(user_name=username).exists():
         user = User.objects.get(user_name=username)
         if user.user_password == password:
-            UserToken.objects.filter(user=user).delete()
+            # UserToken.objects.filter(user=user).delete()
             token_key = create_token(user.user_id, False)
             return JsonResponse({'errno': 0, 'msg': "登录成功", 'uid': user.user_id, 'token_key': token_key})
         else:
@@ -222,7 +222,7 @@ def reset_password(request):
 @require_http_methods(['POST'])
 def logout(request):
     token_key = request.headers.get('Authorization')
-    UserToken.objects.get(key=token_key).delete()
+    # UserToken.objects.get(key=token_key).delete()
     return JsonResponse({'errno': 0, 'msg': "登出成功"})
 
 
@@ -241,8 +241,7 @@ def cancel_account(request):
 @login_required
 @require_http_methods(['GET'])
 def check_profile(request):
-    data_json = json.loads(request.body)
-    uid = data_json.get('uid')
+    uid = request.GET.get('uid')
     user = User.objects.get(user_id=uid)
     user_info = user.to_json()
     return JsonResponse({'errno': 0, 'msg': '返回用户信息成功', 'user_info': user_info})
@@ -361,5 +360,5 @@ def change_user_status(request):
 
 @csrf_exempt
 @require_http_methods(['POST'])
-def deploy_test(request):
-    return JsonResponse({'errno': 0, 'ver': "6"})
+def deploy_test():
+    return JsonResponse({'errno': 0, 'ver': "7"})
