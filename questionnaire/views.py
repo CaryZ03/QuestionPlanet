@@ -15,7 +15,9 @@ from user.views import login_required, admin_required
 
 def questionnaire_exists(view_func):
     def wrapper(request, *args, **kwargs):
-        qn_id = json.loads(request.body).get('qn_id')
+        qn_id = kwargs.get('qn_id')
+        if qn_id is None:
+            qn_id = json.loads(request.body).get('qn_id')
         if not Questionnaire.objects.filter(qn_id=qn_id).exists():
             return JsonResponse({'errno': 2001, 'qn_id': qn_id, 'msg': "问卷不存在"})
         else:
@@ -35,11 +37,9 @@ def get_client_ip(request):
 
 # path('fill_questionnaire', fill_questionnaire),
 @csrf_exempt
-# @questionnaire_exists
+@questionnaire_exists
 @require_http_methods(['POST'])
 def fill_questionnaire(request, qn_id):
-    if not Questionnaire.objects.filter(qn_id=qn_id).exists():
-        return JsonResponse({'errno': 2011, 'msg': "问卷不存在"})
     token_key = request.headers.get('Authorization')
     if token_key and UserToken.objects.filter(Q(key=token_key) & Q(expire_time__gte=now())).exists():
         token = UserToken.objects.get(key=token_key)
@@ -195,7 +195,7 @@ def check_questionnaire(request, qn_id):
         return JsonResponse({'code': 2061, 'message': '问卷不存在'})
     questionnaire = Questionnaire.objects.get(qn_id=qn_id)
     question_list = []
-    for q in questionnaire.qn_questions:
+    for q in questionnaire.qn_questions.all():
         question_list.append(q.to_json())
     return JsonResponse({'errno': 0, 'msg': '问卷查看成功', 'qn_info': questionnaire.to_json(), 'question_list': question_list})
 
