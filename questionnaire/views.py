@@ -1,12 +1,14 @@
 import re
 from datetime import datetime
 
+from django.db.models import Q
 from django.http import JsonResponse
+from django.utils.timezone import now
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_http_methods
 from django.http.response import JsonResponse
 import json
-from user.models import User, Admin, Filler
+from user.models import User, Admin, Filler, UserToken
 from questionnaire.models import Questionnaire, AnswerSheet, Question, Answer
 from user.views import login_required, admin_required
 
@@ -35,18 +37,18 @@ def get_client_ip(request):
 @csrf_exempt
 @questionnaire_exists
 @require_http_methods(['POST'])
-def fill_questionnaire(request):
-    data_json = json.loads(request.body)
-    uid = data_json.get('uid')
-    qn_id = data_json.get('qn_id')
-    if not uid:
+def fill_questionnaire(request, qn_id):
+    token_key = request.headers.get('Authorization')
+    if token_key and UserToken.objects.filter(Q(key=token_key) & Q(expire_time__gte=now())).exists():
+        token = UserToken.objects.get(key=token_key)
+        user = token.user
+        filler = Filler.objects.get(filler_user=user)
+    else:
         filler_ip = get_client_ip(request)
         if Filler.objects.filter(filler_ip=filler_ip).exists():
             filler = Filler.objects.get(filler_ip=filler_ip)
         else:
             filler = Filler.objects.create(filler_ip=filler_ip)
-    else:
-        filler = Filler.objects.get(filler_uid=uid)
     questionnaire = Questionnaire.objects.get(qn_id=qn_id)
     if AnswerSheet.objects.filter(as_questionnaire=questionnaire, as_filler=filler).exists():
         answer_sheet = AnswerSheet.objects.get(as_questionnaire=questionnaire, as_filler=filler)

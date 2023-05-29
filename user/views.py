@@ -62,11 +62,11 @@ def login_required(view_func):
         token_key = request.headers.get('Authorization')
         if token_key:
             # 使用 Token 模型的 objects.get 方法查找令牌
-            token = UserToken.objects.get(key=token_key)
+            token = UserToken.objects.filter(key=token_key).first()
             if token is None or token.expire_time < now():
                 return JsonResponse({'errno': 1002, 'msg': "登录信息已过期"})
             else:
-                user = token.user
+                # user = token.user
                 # if (request.method == 'POST' and user.user_id != json.loads(request.body).get('uid')) \
                 #         or (request.method == 'GET' and user.user_id != request.GET.get('uid')):
                 #     return JsonResponse({'errno': 1003, 'msg': "用户不一致"})
