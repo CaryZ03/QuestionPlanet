@@ -1,30 +1,62 @@
 <template>
   <div>
-    <aside><AsideMenu></AsideMenu></aside>
-    <main>
-      <el-main style="background: transparent;">
-        <el-row class="single_questionnaire_box hvr-grow-shadow">
-              <div class="questionnaire_title">
-                <div class="pull-left">
-                  <div class="questionnaire_title">hihi</div>
-                </div>
-                <div class="pull-right">
-                  <div class="pull-left item-id">id:NULL</div>
-                  <div class="pull-left item-running">status:NULL</div>
-                  <div class="pull-left item-data">receive:0</div>
-                  <div class="pull-left item-data">2020/02/02 00:22</div>
-                </div>
+    <div v-show="!this.$store.state.isAnalyzing">
+      <aside>
+        <AsideMenu></AsideMenu>
+      </aside>
+      <main>
+        <el-main style="background: transparent;">
+          <el-row class="single_questionnaire_box hvr-grow-shadow">
+            <div class="questionnaire_title">
+              <div class="pull-left">
+                <div class="questionnaire_title">hihi</div>
               </div>
-              <el-divider></el-divider>
-              <div class="questionnaire_body">
-                <el-button round style="background-color:rgba(227, 227, 227, 0.1);;">设计问卷</el-button>
-                <el-button round style="background-color:rgba(227, 227, 227, 0.1);;">发送问卷</el-button>
-                <el-button @click="getManagerQuestionnaireList" round style="background-color:rgba(227, 227, 227, 0.1);;">分析问卷</el-button>
+              <div class="pull-right">
+                <div class="pull-left item-id">id:NULL</div>
+                <div class="pull-left item-running">status:NULL</div>
+                <div class="pull-left item-data">receive:0</div>
+                <div class="pull-left item-data">2020/02/02 00:22</div>
               </div>
+            </div>
+            <el-divider></el-divider>
+            <div class="questionnaire_body">
+              <el-button round style="background-color:rgba(227, 227, 227, 0.1);;">设计问卷</el-button>
+              <el-button round style="background-color:rgba(227, 227, 227, 0.1);;">发送问卷</el-button>
+              <el-button @click="getManagerQuestionnaireList_Create" round
+                style="background-color:rgba(227, 227, 227, 0.1);;">分析问卷</el-button>
+            </div>
 
-            </el-row>
-      </el-main>
-    </main>
+          </el-row>
+          <el-row v-for="questionnaire in questionnaireList" :key="questionnaire.qn_id"
+            class="single_questionnaire_box hvr-grow-shadow">
+            <div class="questionnaire_title">
+              <div class="pull-left">
+                <div class="questionnaire_title">{{ questionnaire.qn_title }}</div>
+              </div>
+              <div class="pull-right">
+                <div class="pull-left item-id">ID:{{ questionnaire.qn_id }}</div>
+                <div class="pull-left item-running">Status:{{ questionnaire.qn_status }}</div>
+                <div class="pull-left item-data">receive:0</div>
+                <div class="pull-left item-data">创建时间:{{ questionnaire.qn_createTime }}</div>
+                <div class="pull-left item-data">结束时间:{{ questionnaire.qn_endTime }}</div>
+              </div>
+            </div>
+            <el-divider></el-divider>
+            <div class="questionnaire_body">
+              <el-button @click="pushCreate()" round style="background-color:rgba(227, 227, 227, 0.1);;">设计问卷</el-button>
+              <el-button round style="background-color:rgba(227, 227, 227, 0.1);;">发送问卷</el-button>
+              <el-button @click="pushAnalyze(questionnaire.qn_id)" round
+                style="background-color:rgba(227, 227, 227, 0.1);;">分析问卷</el-button>
+              <el-button @click="deleteQuestionnaire(questionnaire.qn_id)" round
+                style="background-color:rgba(227, 227, 227, 0.1);;">删除问卷</el-button>
+              <el-button @click="deleteQuestionnaire(questionnaire.qn_id)" round
+                style="background-color:rgba(227, 227, 227, 0.1);;">移除问卷</el-button>
+            </div>
+
+          </el-row>
+        </el-main>
+      </main>
+    </div>
   </div>
 </template>
 
@@ -41,7 +73,9 @@ export default {
     return {
       searchText: '',
       tableData: Array(20).fill(item),
-      userID: this.$store.state.curUserID
+      userID: this.$store.state.curUserID,
+      questionnaireList: null,
+      stateType: 0 //0是管理，1是填写，2是回收站
     }
   },
   watch: {
@@ -52,7 +86,7 @@ export default {
     },
   },
   methods: {
-    pushView() {
+    pushCreate() {
       this.$store.state.is_creating = true,
         this.$router.push({
           name: 'questionnaire_create'
@@ -60,18 +94,91 @@ export default {
 
         alert(this.$store.state.is_creating)
     },
-    getManagerQuestionnaireList() {
+
+
+    pushAnalyze(id) {
+      this.$store.state.isAnalyzing = false
+      this.$router.push({
+        path: `/Analyze/${id}`,
+        name: 'Analyze',
+      })
+    },
+
+    getManagerQuestionnaireList_Create() {
       const data = {
         "uid": this.$store.state.curUserID,
         "type": "created"
       }
       console.log(this.$store.state.token_key)
       console.log(this.$store.state.curUserID)
-      this.$api.userInfo.postUserInfo_GetQList(data).then((res) => {
-        console.log(res.data['qn_info'])
+      this.$api.userInfo.getUserInfo_GetQList(data).then((res) => {
+        console.log(res.data)
+        this.questionnaireList = res.data['qn_info']
       })
-
+      this.stateType = 0
     },
+    getManagerQuestionnaireList_Delete() {
+      const data = {
+        "uid": this.$store.state.curUserID,
+        "type": "deleted"
+      }
+      console.log(this.$store.state.token_key)
+      console.log(this.$store.state.curUserID)
+      this.$api.userInfo.getUserInfo_GetQList(data).then((res) => {
+        console.log(res.data['qn_info'])
+        this.questionnaireList = res.data['qn_info']
+      })
+      this.stateType = 2
+    },
+    getManagerQuestionnaireList_Filled() {
+      const data = {
+        "uid": this.$store.state.curUserID,
+        "type": "filled"
+      }
+      console.log(this.$store.state.token_key)
+      console.log(this.$store.state.curUserID)
+      this.$api.userInfo.getUserInfo_GetQList(data).then((res) => {
+        console.log("!!!!!!!!!!!!!!!")
+        console.log(res.data['qn_info'] + "!!!!!!!!!!!!!!!")
+        this.questionnaireList = res.data['qn_info']
+      })
+      this.stateType = 1
+    },
+    deleteQuestionnaire(qn_id) {
+
+      console.log(this.questionnaireList[0])
+      console.log(this.questionnaireList[0])
+      console.log(data)
+
+      if (this.stateType == 0) {
+        const data = {
+          "uid": this.$store.state.curUserID,
+          "qn_id": qn_id,
+          "status": "deleted"
+        }
+        console.log(data)
+
+        this.$api.questionnaire.postQuestionnaire_ChangeStatus(data).then((res)=>{
+          console.log(res)
+        })
+        this.getManagerQuestionnaireList_Create()
+      } else if (this.stateType == 1) {
+        this.getManagerQuestionnaireList_Filled()
+      } else if (this.stateType == 2) {
+        const data = {
+          "uid": this.$store.state.curUserID,
+          "qn_id": qn_id
+        }
+        this.$api.questionnaire.postQuestionnaire_Delete(data).then((res) => {
+          console.log(res)
+        })
+        this.getManagerQuestionnaireList_Delete()
+      }
+
+    }
+  },
+  mounted() {
+    this.getManagerQuestionnaireList_Create();
   },
   components: {
     AsideMenu
@@ -81,7 +188,6 @@ export default {
 
 
 <style scoped>
-
 .wrapper {
   display: flex;
   position: relative;
@@ -321,6 +427,7 @@ div {
   text-decoration-color: #0095ff;
 }
 </style>
+
 
 <style scoped>
 .el-row {
