@@ -189,8 +189,9 @@ a:active {
   width: 40%;
   height: 100% !important;
 
-  padding: 7px 35px 27px 20px;
-margin: 59px 105px 0 -39px;
+  /* padding: 7px 35px 27px 20px; */
+  padding: 7px 35px 27px 55px;
+  margin: 59px 105px 0 -39px;
 
 /* background-image: linear-gradient(to right, rgb(199, 210, 254), rgb(254, 202, 202), rgb(254, 243, 199)); */
 }

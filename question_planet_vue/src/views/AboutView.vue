@@ -3,6 +3,7 @@
         <div class="about" >
       <h1>关于我们</h1>
       <p>我们是一家专注于问卷管理的公司，致力于为用户提供高效、便捷、可靠的问卷管理服务。</p>
+      <!-- <img src="../assets/planet1.png"> -->
         </div>
     </div>
   </template>
@@ -47,7 +48,7 @@ padding: 0px 0 0 9px;
   .about h1 {
     font-size: 28px;
     margin-bottom: 20px;
-    color:#162938;
+    color:#d3d8db;
   }
 
 
