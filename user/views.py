@@ -319,11 +319,10 @@ def change_profile_admin(request):
 
 @csrf_exempt
 @login_required
-@require_http_methods(['POST'])
+@require_http_methods(['GET'])
 def check_questionnaire_list(request):
-    data_json = json.loads(request.body)
-    uid = data_json.get('uid')
-    qn_list_type = data_json.get('type')
+    uid = request.GET.get('uid')
+    qn_list_type = request.GET.get('type')
     user = User.objects.get(user_id=uid)
     if qn_list_type == 'created' or qn_list_type == 'deleted':
         questionnaires = user.user_created_questionnaires.all()
@@ -362,4 +361,4 @@ def change_user_status(request):
 @csrf_exempt
 @require_http_methods(['POST'])
 def deploy_test(request):
-    return JsonResponse({'errno': 0, 'ver': "7"})
+    return JsonResponse({'errno': 0, 'ver': "8"})

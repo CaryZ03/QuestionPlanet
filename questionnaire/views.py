@@ -68,7 +68,8 @@ def fill_questionnaire(request):
 @require_http_methods(['POST'])
 def save_answers(request):
     data_json = json.loads(request.body)
-    answer_sheet = data_json.get('as_id')
+    as_id = data_json.get('as_id')
+    answer_sheet = AnswerSheet.objects.get(as_id=as_id)
     answer_data = data_json.get('answer_data')
     if answer_data is not None:
         answer_sheet.as_temporary_save = answer_data
