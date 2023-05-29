@@ -7,7 +7,7 @@ import store from "@/store";
 // axios.defaults.withCredentials = true;
 
 // axios.defaults.headers.common['Authorization'] = `Bearer ${token}`
-
+axios.defaults.withCredentials = true;
 
 const request = axios.create({
     baseURL: 'http://182.92.102.246:1145/api',
@@ -22,7 +22,6 @@ request.interceptors.request.use(
       const token_key = store.state.token_key;
       console.log(token_key)
       if (token_key) {
-        
         config.headers['Authorization'] = token_key ;
       }
       return config;
