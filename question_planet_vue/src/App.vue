@@ -10,7 +10,7 @@
           <a href="" @click.prevent="pushManage">问卷管理</a>
           <!-- <a href="" @click.prevent="">Contact</a> -->
           <a href="" @click.prevent="pushUserInfo">用户信息</a>
-          <button class="btnLogin-popup">登录/注册</button>
+          <button v-if="!this.$store.state.isLogin" class="btnLogin-popup">登录/注册</button>
         </nav>
       </header>
     </el-header>
