@@ -29,7 +29,7 @@ def check_identity(view_func):
         data = json.loads(body)
         if token_key:
             # 使用 Token 模型的 objects.get 方法查找令牌
-            token = UserToken.objects.filter(key=token_key).first
+            token = UserToken.objects.filter(key=token_key).first()
             if token is None or token.expire_time < now():
                 return JsonResponse({'errno': 3002, 'msg': "登录信息已过期"})
             elif not token.is_admin:
