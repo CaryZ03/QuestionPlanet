@@ -24,9 +24,12 @@
     background-image: url("../assets/-311481de54f03b8f.png.png");
   width: 100%;
   height: 200%;
-  overflow-y: scroll;
+  overflow-y: hidden;
 position:fixed;
 background-size:100% 100%;
+
+margin: -284px 0 0 -759px;
+padding: 0px 0 0 9px;
 }
 
   .about {
@@ -45,4 +48,68 @@ background-size:100% 100%;
 
 
   
+  /* header */
+  
+.navigation {
+  position: relative;
+  font-size: 1.1em;
+  color: #fff;
+  text-decoration: none;
+  font-weight: 500;
+  margin-left: 40px;
+}
+
+
+.navigation .btnLogin-popup {
+  width: 130px;
+  height: 50px;
+  background: transparent;
+  border: 2px solid #fff;
+  outline: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 1.1em;
+  color: #fff;
+  font-weight: 500;
+  margin-left: 40px;
+  transition: .3s;
+}
+
+.navigation a {
+  position: relative;
+  font-size: 1.1em;
+  color: #040404;
+  text-decoration: none;
+  font-weight: 500;
+  margin-left: 40px;
+}
+
+.navigation a::after {
+  content: '';
+  position: absolute;
+  width: 100%;
+  height: 3px;
+  bottom: -6px;
+  left: 0;
+  background: #fff;
+  border-radius: 5px;
+  transform-origin: right;
+  transform: scaleX(0);
+  transition: transform .4s;
+}
+
+.navigation a:hover::after {
+  transform-origin: left;
+  transform: scaleX(1);
+}
+
+
+.navigation .btnLogin-popup:hover {
+  background: #fff;
+  color: #162938;
+
+}
+
+
+
   </style>
