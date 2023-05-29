@@ -23,39 +23,77 @@ def get_session(session_id):
     return session_id
 
 
-def check_identity(view_func):
+def check_identity_get(view_func):
     def wrapper(request, *args, **kwargs):
         token_key = request.headers.get('Authorization')
-        body = request.body.decode('utf-8')
-        data = json.loads(body)
         if token_key:
             # 使用 Token 模型的 objects.get 方法查找令牌
             token = UserToken.objects.filter(key=token_key).first()
             if token is None or token.expire_time < now():
                 return JsonResponse({'errno': 3002, 'msg': "登录信息已过期"})
             elif not token.is_admin:
-                user_id = data.get('uid')
-                if token.user.user_id != user_id:
-                    return JsonResponse({'errno': 3003, 'msg': "用户不一致"})
-                if not User.objects.filter(user_id=user_id).exists():
-                    return JsonResponse({'errno': 3004, 'msg': "用户不存在"})
-                user = User.objects.get(user_id=user_id)
-                if 'qn_id' in data:
-                    qn_id = data.get('qn_id')
+                user = token.user
+                if kwargs.get('qn_id') is not None:
+                    qn_id = kwargs.get('qn_id')
                     if not Questionnaire.objects.filter(qn_id=qn_id).exists():
                         return JsonResponse({'errno': 3005, 'msg': "问卷不存在"})
                     questionnaire = Questionnaire.objects.get(qn_id=qn_id)
                     if questionnaire not in user.user_created_questionnaires.all():
                         return JsonResponse({'errno': 3008, 'msg': '用户没有权限进行该操作'})
-                elif 'q_id' in data:
-                    q_id = data.get('q_id')
+                elif kwargs.get('q_id') is not None:
+                    q_id = kwargs.get('q_id')
                     if not Question.objects.filter(q_id=q_id).exists():
                         return JsonResponse({'errno': 3006, 'msg': "问题不存在"})
                     question = Question.objects.get(q_id=q_id)
                     questionnaire = question.q_questionnaire
                     if questionnaire not in user.user_created_questionnaires.all():
                         return JsonResponse({'errno': 3008, 'msg': '用户没有权限进行该操作'})
-                elif 'a_id' in data:
+                # elif kwargs.get('a_id'):
+                #     a_id = kwargs.get('a_id')
+                #     if not Answer.objects.filter(a_id=a_id).exists():
+                #         return JsonResponse({'errno': 3007, 'msg': "答案不存在"})
+                #     answer = Answer.objects.get(a_id=a_id)
+                #     question = answer.a_question
+                #     questionnaire = question.q_questionnaire
+                #     if questionnaire not in user.user_created_questionnaires.all():
+                #         return JsonResponse({'errno': 3008, 'msg': '用户没有权限进行该操作'})
+                return view_func(request, *args, user=user, **kwargs)
+            else:
+                admin = token.admin
+                return view_func(request, *args, admin=admin, **kwargs)
+        else:
+            return JsonResponse({'errno': 3001, 'msg': "未登录"})
+
+    return wrapper
+
+
+def check_identity_post(view_func):
+    def wrapper(request, *args, **kwargs):
+        token_key = request.headers.get('Authorization')
+        data = json.loads(request.body.decode('utf-8'))
+        if token_key:
+            # 使用 Token 模型的 objects.get 方法查找令牌
+            token = UserToken.objects.filter(key=token_key).first()
+            if token is None or token.expire_time < now():
+                return JsonResponse({'errno': 3002, 'msg': "登录信息已过期"})
+            elif not token.is_admin:
+                user = token.user
+                # if 'qn_id' in data:
+                #     qn_id = data.get('qn_id')
+                #     if not Questionnaire.objects.filter(qn_id=qn_id).exists():
+                #         return JsonResponse({'errno': 3005, 'msg': "问卷不存在"})
+                #     questionnaire = Questionnaire.objects.get(qn_id=qn_id)
+                #     if questionnaire not in user.user_created_questionnaires.all():
+                #         return JsonResponse({'errno': 3008, 'msg': '用户没有权限进行该操作'})
+                # elif 'q_id' in data:
+                #     q_id = data.get('q_id')
+                #     if not Question.objects.filter(q_id=q_id).exists():
+                #         return JsonResponse({'errno': 3006, 'msg': "问题不存在"})
+                #     question = Question.objects.get(q_id=q_id)
+                #     questionnaire = question.q_questionnaire
+                #     if questionnaire not in user.user_created_questionnaires.all():
+                #         return JsonResponse({'errno': 3008, 'msg': '用户没有权限进行该操作'})
+                if 'a_id' in data:
                     a_id = data.get('a_id')
                     if not Answer.objects.filter(a_id=a_id).exists():
                         return JsonResponse({'errno': 3007, 'msg': "答案不存在"})
@@ -64,65 +102,16 @@ def check_identity(view_func):
                     questionnaire = question.q_questionnaire
                     if questionnaire not in user.user_created_questionnaires.all():
                         return JsonResponse({'errno': 3008, 'msg': '用户没有权限进行该操作'})
-                return view_func(request, *args, **kwargs)
+                return view_func(request, *args, user=user, **kwargs)
             else:
-                admin_id = data.get('uid')
-                if token.admin.admin_id != admin_id:
-                    return JsonResponse({'errno': 3003, 'msg': "用户不一致"})
-                else:
-                    return view_func(request, *args, **kwargs)
+                admin = token.admin
+                return view_func(request, *args, admin=admin, **kwargs)
         else:
             return JsonResponse({'errno': 3001, 'msg': "未登录"})
 
     return wrapper
 
 
-# def check_identity(view_func):
-#     def wrapper(request, *args, **kwargs):
-#         session_id = request.COOKIES.get('session_id')
-#         body = request.body.decode('utf-8')
-#         data = json.loads(body)
-#         if session_id:
-#             # 根据session_id获取相应的会话数据
-#             session_data = get_session(session_id)
-#             # 处理会话数据
-#             if session_data is None:
-#                 return JsonResponse({'errno': 3002, 'msg': "登录信息已过期"})
-#             elif session_data.get('id') != json.loads(request.body).get('uid'):
-#                 return JsonResponse({'errno': 3003, 'msg': "用户不一致"})
-#             elif session_data.get('role') != 'admin':
-#                 user_id = data.get('uid')
-#                 if not User.objects.filter(user_id=user_id).exists():
-#                     return JsonResponse({'errno': 3004, 'msg': "用户不存在"})
-#                 user = User.objects.get(user_id=user_id)
-#                 if 'qn_id' in data:
-#                     qn_id = data.get('qn_id')
-#                     if not Questionnaire.objects.filter(qn_id=qn_id).exists():
-#                         return JsonResponse({'errno': 3005, 'msg': "问卷不存在"})
-#                     questionnaire = Questionnaire.objects.get(qn_id=qn_id)
-#                     if questionnaire not in user.user_created_questionnaires.all():
-#                         return JsonResponse({'errno': 3008, 'msg': '用户没有权限进行该操作'})
-#                 elif 'q_id' in data:
-#                     q_id = data.get('q_id')
-#                     if not Question.objects.filter(q_id=q_id).exists():
-#                         return JsonResponse({'errno': 3006, 'msg': "问题不存在"})
-#                     question = Question.objects.get(q_id=q_id)
-#                     questionnaire = question.q_questionnaire
-#                     if questionnaire not in user.user_created_questionnaires.all():
-#                         return JsonResponse({'errno': 3008, 'msg': '用户没有权限进行该操作'})
-#                 elif 'a_id' in data:
-#                     a_id = data.get('a_id')
-#                     if not Answer.objects.filter(a_id=a_id).exists():
-#                         return JsonResponse({'errno': 3007, 'msg': "答案不存在"})
-#                     answer = Answer.objects.get(a_id=a_id)
-#                     question = answer.a_question
-#                     questionnaire = question.q_questionnaire
-#                     if questionnaire not in user.user_created_questionnaires.all():
-#                         return JsonResponse({'errno': 3008, 'msg': '用户没有权限进行该操作'})
-#             return view_func(request, *args, **kwargs)
-#         else:
-#             return JsonResponse({'errno': 3001, 'msg': "未登录"})
-#     return wrapper
 def calculate_score(answer_sheet):
     total_score = 0
     for answer in answer_sheet.as_answers.all():
@@ -131,10 +120,9 @@ def calculate_score(answer_sheet):
 
 
 @csrf_exempt
-@check_identity
+@check_identity_get
 @require_http_methods(['GET'])
-def questionnaire_export(request):
-    qn_id = json.loads(request.body.decode('utf-8')).get('qn_id')
+def questionnaire_export(request, user, qn_id):
     questionnaire = Questionnaire.objects.get(qn_id=qn_id)
     questions_count = Question.objects.filter(q_questionnaire=questionnaire).count()
     answer_sheet_count = AnswerSheet.objects.filter(as_questionnaire=questionnaire).count()
@@ -167,10 +155,9 @@ def questionnaire_export(request):
 
 
 @csrf_exempt
-@check_identity
+@check_identity_get
 @require_http_methods(['GET'])
-def questionnaire_export_file(request):
-    qn_id = json.loads(request.body.decode('utf-8')).get('qn_id')
+def questionnaire_export_file(request, user, qn_id):
     questionnaire = Questionnaire.objects.get(qn_id=qn_id)
     questions_count = Question.objects.filter(q_questionnaire=questionnaire).count()
     answer_sheet_count = AnswerSheet.objects.filter(as_questionnaire=questionnaire).count()
@@ -204,10 +191,9 @@ def questionnaire_export_file(request):
 
 
 @csrf_exempt
-@check_identity
+@check_identity_get
 @require_http_methods('GET')
-def questionnaire_analysis(request):
-    qn_id = json.loads(request.body.decode('utf-8')).get('qn_id')
+def questionnaire_analysis(request, user, qn_id):
     questionnaire = Questionnaire.objects.get(qn_id=qn_id)
     questions_count = Question.objects.filter(q_questionnaire=questionnaire).count()
     questions = Question.objects.filter(q_questionnaire=questionnaire)
@@ -249,11 +235,9 @@ def questionnaire_analysis(request):
 
 
 @csrf_exempt
-@check_identity
+@check_identity_get
 @require_http_methods(['GET'])
-def get_questions_by_questionnaire(request):
-    qn_id = json.loads(request.body.decode('utf-8')).get('qn_id')
-
+def get_questions_by_questionnaire(request, user, qn_id):
     try:
         questionnaire = Questionnaire.objects.get(qn_id=qn_id)
     except Questionnaire.DoesNotExist:
@@ -272,11 +256,9 @@ def get_questions_by_questionnaire(request):
 
 
 @csrf_exempt
-@check_identity
+@check_identity_get
 @require_http_methods(['GET'])
-def get_answers_by_question(request):
-    q_id = json.loads(request.body.decode('utf-8')).get('q_id')
-
+def get_answers_by_question(request, user, q_id):
     try:
         question = Question.objects.get(q_id=q_id)
     except Question.DoesNotExist:
@@ -295,9 +277,9 @@ def get_answers_by_question(request):
 
 
 @csrf_exempt
-@check_identity
+@check_identity_post
 @require_http_methods(['POST'])
-def delete_answer(request):
+def delete_answer(request, user):
     a_id = json.loads(request.body.decode('utf-8')).get('a_id')
     answer = Answer.objects.get(a_id=a_id)
     data = {
@@ -313,10 +295,9 @@ def delete_answer(request):
 
 
 @csrf_exempt
-@check_identity
+@check_identity_get
 @require_http_methods(['GET'])
-def generate_chart(request):
-    qn_id = json.loads(request.body.decode('utf-8')).get('qn_id')
+def generate_chart(request, user, qn_id):
     questionnaires = Question.objects.filter(qn_id=qn_id).prefetch_related('q_questions')
     questions = questionnaires.first().q_questions.all()
 
