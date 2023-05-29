@@ -6,6 +6,7 @@ const Login = () => import('../views/LoginView.vue');
 const Register = () => import('../views/RegisterView.vue');
 const CreateQuestionnaireView = () => import('../views/CreateView.vue');
 const UserInfoView = () => import('../views/UserInfoView.vue')
+const Analyze = () => import('../views/AnalyzeView.vue')
 Vue.use(VueRouter)
 
 const routes = [
@@ -46,6 +47,11 @@ const routes = [
       {
         name:'questionnaire_check',
         path:'questionnaire_check',
+      },
+      {
+        path: 'questionnaire_analyze',
+        name: 'questionnaire_analyze',
+        component: Analyze
       }
     ]
   },
@@ -72,7 +78,8 @@ const routes = [
     // this generates a separate chunk (about.[hash].js) for this route
     // which is lazy-loaded when the route is visited.
     component:UserInfoView
-  }
+  },
+
 ]
 
 const router = new VueRouter({

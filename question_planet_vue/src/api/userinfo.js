@@ -96,11 +96,18 @@ export function postUserInfo_ChangeAdminInfo(data) {
 }
 
 // 获取用户问卷列表
-export function postUserInfo_GetQList(data) {
+export function getUserInfo_GetQList(data) {
+    const id=data.uid
+    const type=data.type
+    console.log(data.uid)
+    console.log(data.type)
+
     return request({
-        method: 'POST',
-        url:  '/user/check_questionnaire_list',
-        data: data
+        method: 'GET',
+        url:  `/user/check_questionnaire_list/${type}`,
+        params:{
+            "uid": id,
+        }
     })
 }
 
