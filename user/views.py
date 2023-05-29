@@ -116,8 +116,6 @@ def user_register(request):
     username = data_json.get('username')
     password1 = data_json.get('password1')
     password2 = data_json.get('password2')
-    email = data_json.get('email')
-    tel = data_json.get('tel')
     if not bool(re.match("^[A-Za-z0-9][A-Za-z0-9_]{2,29}$", str(username))):
         return JsonResponse({'errno': 1011, 'msg': "用户名不合法"})
     elif User.objects.filter(user_name=username).exists():
@@ -127,7 +125,7 @@ def user_register(request):
     elif not bool(re.match('^(?=.*\\d)(?=.*[a-zA-Z]).{6,20}$', str(password1))):
         return JsonResponse({'errno': 1014, 'msg': "密码不合法"})
     else:
-        new_user = User.objects.create(user_name=username, user_password=password1, user_email=email, user_tel=tel)
+        new_user = User.objects.create(user_name=username, user_password=password1)
         new_user.save()
         filler_ip = get_client_ip(request)
         new_filler = Filler.objects.create(filler_ip=filler_ip, filler_is_user=True, filler_user=new_user)
@@ -263,6 +261,7 @@ def change_profile(request):
     username = data_json.get('username')
     password1 = data_json.get('password1')
     password2 = data_json.get('password2')
+    signature = data_json.get('signature')
     email = data_json.get('email')
     tel = data_json.get('tel')
     if not bool(re.match("^[A-Za-z0-9][A-Za-z0-9_]{2,29}$", str(username))):
@@ -277,6 +276,7 @@ def change_profile(request):
         user = User.objects.get(user_id=uid)
         user.user_name = username
         user.user_password = password1
+        user.user_signature = signature
         user.user_email = email
         user.user_tel = tel
         user.save()
@@ -292,6 +292,7 @@ def change_profile_admin(request):
     username = data_json.get('username')
     password1 = data_json.get('password1')
     password2 = data_json.get('password2')
+    signature = data_json.get('signature')
     email = data_json.get('email')
     tel = data_json.get('tel')
     if not bool(re.match("^[A-Za-z0-9][A-Za-z0-9_]{2,29}$", str(username))):
@@ -306,6 +307,7 @@ def change_profile_admin(request):
         user = User.objects.get(user_id=uid)
         user.user_name = username
         user.user_password = password1
+        user.user_signature = signature
         user.user_email = email
         user.user_tel = tel
         user.save()
@@ -355,4 +357,4 @@ def change_user_status(request):
 @csrf_exempt
 @require_http_methods(['POST'])
 def deploy_test(request):
-    return JsonResponse({'errno': 0, 'ver': "9", 'cur_time': now()})
+    return JsonResponse({'errno': 0, 'ver': "5", 'cur_time': now()})

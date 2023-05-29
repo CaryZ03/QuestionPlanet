@@ -15,6 +15,7 @@ class User(Model):
     user_id = AutoField(primary_key=True)
     user_name = CharField(max_length=100)
     user_password = CharField(max_length=20)
+    user_signature = TextField(null=True)
     user_email = EmailField(max_length=50, default=None, blank=True, null=True)
     user_tel = TextField(null=True)
     status_choices = (
