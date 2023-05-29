@@ -2,6 +2,7 @@ from collections import Counter
 from django.shortcuts import render
 from django.db.models import Count, Avg, StdDev
 from datetime import datetime
+from django.utils.timezone import now
 from django.http import JsonResponse, HttpResponse, HttpResponseBadRequest
 from questionnaire.models import *
 from user.models import *
