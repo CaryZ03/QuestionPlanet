@@ -194,7 +194,6 @@ body {
   font-size: 2em;
   color: #fff;
   user-select: none;
-
 }
 
 .navigation {
