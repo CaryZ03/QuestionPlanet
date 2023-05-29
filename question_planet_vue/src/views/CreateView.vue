@@ -366,7 +366,7 @@ export default {
             console.log(jsonString);
             // axios({
             //     method: 'post',
-            //     url: '/questionnaire/save_questionnaire',
+            //     url: 'http://182.92.102.246:1145/api/questionnaire//save_questionnaire',
             //     headers: {
             //         'Content-Type': 'application/json'
             //     },
