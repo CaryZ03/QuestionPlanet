@@ -23,13 +23,12 @@
     <div class="app-wrapper">
       <router-view></router-view>
     </div>
-
-
+    
   </body>
 </template>
 
 <script>
-
+import Newhome from '@/components/Newhome.vue';
 export default {
 
   name: 'app',
@@ -112,6 +111,9 @@ export default {
       }
     },
   },
+  components:{
+      newhome: Newhome,
+  },
 }
 </script>
 
@@ -192,7 +194,8 @@ body {
   justify-content: center;
   align-items: center;
   min-height: 100vh;
-  background: url('./assets/background2.jpg');
+  /* background: url('./assets/background2.jpg'); */
+  background:  url('./assets/homebackground.jpg');
 
   background-size: cover;
   background-position: center;

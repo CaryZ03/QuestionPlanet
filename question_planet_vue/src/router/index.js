@@ -6,7 +6,7 @@ const Login = () => import('../views/LoginView.vue');
 const Register = () => import('../views/RegisterView.vue');
 const CreateQuestionnaireView = () => import('../views/CreateView.vue');
 const UserInfoView = () => import('../views/UserInfoView.vue')
-const Analyze = () => import('../views/AnalyzeView.vue')
+const Analyze = () => import('../views/CreateView.vue')
 Vue.use(VueRouter)
 
 const routes = [

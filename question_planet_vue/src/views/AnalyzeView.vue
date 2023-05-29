@@ -4,7 +4,7 @@
       <!-- 问题列表 -->
       <div class="question-card" id="question-list">
         <div>
-        <h2 style="margin: 0 0 0 -73px">{{ qn_title }}</h2>
+        <h2 style="margin: 0 0 0 -70px; text-align: center;">{{ qn_title }}</h2>
         </div>
 
         <div v-for="(question, index) in questions" :key="index" class="card mb-2">
@@ -20,11 +20,11 @@
             :data="question.q_options"
             style="width: 100%"
             show-summary
-            :default-sort = "{prop: 'label', order: 'ascending'}"
+            :default-sort = "{prop: 'label.label', order: 'ascending'}"
             v-if="question.q_type === 'single' || question.q_type === 'multiple'"
             >
               <el-table-column
-                prop="label"
+                prop="label.label"
                 label="选项"
                 sortable
                 width="500">
@@ -39,7 +39,7 @@
                 label="比例"
                 width="100">
                 <template slot-scope="scope">
-                {{ calculatePercentage(scope.row.num, question.q_answer_num) }}
+                {{ calculatePercentage(scope.row.num, a_count) }}
                 </template>
               </el-table-column>
 
@@ -96,15 +96,16 @@
     data() {
       return {
         qn_title: "这是一个问卷名称",
+        isBar: true,
+        isLine: false,
+        isPie: false,
+        isRing: false,
+        a_count: 0,
         questions: [
           {
           type: "single",
           isEdit: true,
           isMandatory: true,
-          isBar: true,
-          isLine: false,
-          isPie: false,
-          isRing: false,
           title: "问题名称1",
           options: [
             { label: "选项1", checked: false, num: 15 },
@@ -138,7 +139,7 @@
           answerNum: 105, // 回答本问题总人数
           },
         ],
-        myChartStyle: { float: "left", width: "100%", height: "400px" }
+        myChartStyle: { float: "left", width: "100%", height: "400px"}
       };
     },
     created() {
@@ -169,19 +170,21 @@
       load_qn()
         {   
             var _this = this;
-            axios({
-                method: 'get',
-                url: 'http://127.0.0.1:4523/m2/2618081-0-default/83421811',
-                params: {
-                    uid: 1
-                },
-            })
+            // axios({
+            //     method: 'get',
+            //     url: 'http://127.0.0.1:4523/m2/2618081-0-default/83421811',
+            //     params: {
+            //         uid: 1
+            //     },
+            // })
+            this.$api.data.getQuestionnaire_Analyze(28)
             .then(function (response) {
             console.log(response);
-            console.log(response.data);
-            console.log(response.data.qn_title);
-            _this.qn_title = response.data.qn_title;
-            _this.questions = response.data.questions_data;
+            console.log(response.data.result);
+            console.log(response.data.result.questionnaire_title);
+            _this.qn_title = response.data.result.questionnaire_title;
+            _this.a_count = response.data.result.answersheet_count;
+            _this.questions = response.data.result.q_results;
             })
             .catch(function (error) {
             console.log(error);
@@ -199,7 +202,7 @@
         const option = {
           // 配置项
             xAxis: {
-            data: question.q_options.map(option => option.label)
+            data: question.q_options.map(option => option.label.label)
           },
           yAxis: {},
           series: [
@@ -229,7 +232,7 @@
         const option = {
           // 配置项
             xAxis: {
-            data: question.q_options.map(option => option.label)
+            data: question.q_options.map(option => option.label.label)
           },
           yAxis: {},
           series: [
@@ -262,7 +265,7 @@
             {
               type: "pie", //形状为饼状图
               data: question.q_options.map(option => ({
-                name: option.label,
+                name: option.label.label,
                 value: option.num
               }))
             }
@@ -292,7 +295,7 @@
               type: "pie", //形状为饼状图
               radius: ['50%', '70%'],
               data: question.q_options.map(option => ({
-                name: option.label,
+                name: option.label.label,
                 value: option.num
               }))
             }
@@ -308,31 +311,31 @@
 
     //绘制柱形图
       change_to_bar(index) {
-        this.questions[index].isLine = false;
-        this.questions[index].isPie = false;
-        this.questions[index].isRing = false;
-        this.questions[index].isBar = true;
+        this.isLine = false;
+        this.isPie = false;
+        this.isRing = false;
+        this.isBar = true;
       },
 
       change_to_line(index) {
-        this.questions[index].isPie = false;
-        this.questions[index].isRing = false;
-        this.questions[index].isBar = false;
-        this.questions[index].isLine = true;
+        this.isPie = false;
+        this.isRing = false;
+        this.isBar = false;
+        this.isLine = true;
       },
     
       change_to_pie(index) {
-        this.questions[index].isLine = false;
-        this.questions[index].isPie = true;
-        this.questions[index].isRing = false;
-        this.questions[index].isBar = false;
+        this.isLine = false;
+        this.isPie = true;
+        this.isRing = false;
+        this.isBar = false;
       },
 
       change_to_Ring(index) {
-        this.questions[index].isLine = false;
-        this.questions[index].isPie = false;
-        this.questions[index].isRing = true;
-        this.questions[index].isBar = false;
+        this.isLine = false;
+        this.isPie = false;
+        this.isRing = true;
+        this.isBar = false;
       },
 
       // 选择题添加选项
@@ -483,6 +486,9 @@
   
   }
   
+  .echart{
+    background-color: rgba(240, 240, 240, .68);
+  }
   .outline-area{
     position: fixed;
     top: 4rem;
@@ -578,6 +584,10 @@
     width: 54%;
     overflow-y: scroll;
   }
+
+  .question-card::-webkit-scrollbar {
+    display: none;
+}
 
   .question-type{
     color: #8d9aa5;

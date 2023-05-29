@@ -139,7 +139,7 @@
             <div v-for="(question, index) in questions" :key="index" class="card mb-2" v-bind:id="question.id">
                 <el-container style="box-shadow: 0 2px 4px rgba(0, 0, 0, .12), 0 0 6px rgba(0, 0, 0, .04)">
                     <el-main v-if="question.isEdit">
-                        <span class="red_star" v-if="question.isManditory">*&nbsp;</span>
+                        <span class="red_star" v-if="question.isMandatory">*&nbsp;</span>
                         <span class="red_star" v-else></span>
 
                         <span v-if="question.type === 'single'">{{ index + 1 }}.单选题</span>
@@ -192,13 +192,13 @@
                             <el-col :span="21">
                                 <div style="line-height: 200%; color: #000;">此题目必须回答</div>
                             </el-col>
-                            <el-col :span="3"><el-switch v-model="question.isManditory" active-color="#0099ff"
+                            <el-col :span="3"><el-switch v-model="question.isMandatory" active-color="#0099ff"
                                     inactive-color="#c2bdbd"></el-switch></el-col>
                         </el-row>
                     </el-main>
 
                     <el-main v-else>
-                        <span class="red_star" v-if="question.isManditory">*&nbsp;</span>
+                        <span class="red_star" v-if="question.isMandatory">*&nbsp;</span>
                         <span class="red_star" v-else></span>
                         <span v-if="question.type === 'single'">{{ index + 1 }}.单选题</span>
                         <span v-if="question.type === 'multiple'">{{ index + 1 }}.多选题</span>
@@ -248,7 +248,7 @@
                 <div style="line-height: 30px;">&emsp;</div>
 
             </div>
-            <el-button type="success" style="margin: 0 0 0 -66px" round v-on:click="save_handler()">保存问卷</el-button>
+            <el-button type="success" style="margin: 0 0 0 214px" round v-on:click="save_handler()">保存问卷</el-button>
             <el-button type="primary" round v-on:click="commitQuestionnaire()">提交问卷</el-button>
             
         </div>
@@ -272,7 +272,6 @@
 </template>
   
 <script>
-import axios from 'axios';
 // const vm = new Vue({
 //   el: '#question-list',
 //   data:{
@@ -301,7 +300,7 @@ export default {
             let question = {
                 type: type,
                 isEdit: true,
-                isManditory: true,
+                isMandatory: true,
                 title: "",
                 options: [],
                 q_description: "",
@@ -335,7 +334,7 @@ export default {
             // 选择要包含在 JSON 数据中的属性
             return {
                 q_type: question.type,
-                q_manditory: question.isManditory,
+                q_mandatory: question.isMandatory,
                 q_title: question.title,
                 q_description: question.q_description,
                 q_option_count: question.options.length,
@@ -354,8 +353,8 @@ export default {
             const formattedDate = `${dateString.split('-').reverse().join('-')} ${timeString}`;
 
             const dataObject = { 
-                uid: this.$store.state.curUserID,
-                qn_id: 3,
+                uid: 7,
+                qn_id: 65,
                 qn_title: this.qn_title,
                 qn_description: this.qn_description,
                 qn_end_time: formattedDate,
@@ -564,6 +563,9 @@ export default {
 
 }
 
+.sidebar::-webkit-scrollbar {
+    display: none;
+}
 .outline-area {
     position: fixed;
     top: 4rem;
@@ -668,6 +670,9 @@ export default {
     
 }
 
+.question-card::-webkit-scrollbar {
+    display: none;
+}
 .card {
     box-shadow: none !important;
 
@@ -777,7 +782,7 @@ export default {
 }
 
 .title {
-    color: #857e7e;
+    color: #F3F2F2;
     font-size: 13px;
 }
 
@@ -792,7 +797,7 @@ export default {
 
 .el-header,
 .el-footer {
-    background-color: #dbe1e9;
+    background-color: rgba(219, 225, 233, .73) !important;
     color: #333;
     text-align: center;
     line-height: 60px;
@@ -806,7 +811,7 @@ export default {
 }
 
 .el-main {
-    background-color: #E9EEF3;
+    background-color: rgba(233, 238, 243, .27) !important;
     color: #333;
     text-align: left;
 }

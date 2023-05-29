@@ -94,7 +94,7 @@ def admin_required(view_func):
                 return JsonResponse({'errno': 1003, 'msg': "需要管理员权限"})
             else:
                 admin = token.admin
-                return view_func(request, *args, **kwargs)
+                return view_func(request, *args, admin=admin, **kwargs)
         else:
             return JsonResponse({'errno': 1001, 'msg': "未登录"})
     return wrapper

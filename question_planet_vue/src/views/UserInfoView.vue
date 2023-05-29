@@ -74,9 +74,11 @@
 
     <div id="ctl00_ContentPlaceHolder1_lkPasswordBox" class="items">
             <b>密码</b>
-            <a id="ctl00_ContentPlaceHolder1_lkPassword" title="修改密码" causesvalidation="false" onclick="
+            <!-- <a id="ctl00_ContentPlaceHolder1_lkPassword" title="修改密码" causesvalidation="false" onclick="
             " href="" class="wjx_alink" style="display: inline-block; width: 80px;">
-            修改密码</a>
+            修改密码</a> -->
+            <el-button type="text" @click="changePassword" >修改密码</el-button>
+
     </div>
     <div class="items" style="margin-top: 10px;"></div>
     <div style="clear: both;"></div>
@@ -259,7 +261,55 @@ export default {
       editUserInfo () {
       // 进入用户信息编辑页面
     },
-  
+    
+
+    changePassword() {
+      this.$prompt('请输入新密码', '修改密码', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        inputPlaceholder: '请输入新密码',
+        inputType: 'password'
+      }).then(({ value: password }) => {
+        this.$prompt('请再次输入新密码', '确定密码', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          inputPlaceholder: '请再次输入新密码',
+          inputType: 'password',
+          inputValidator: (value) => {
+            if (value !== password) {
+              return '两次输入的密码不一致';
+            } else {
+              return true;
+            }
+          }
+        }).then(({ value }) => {
+          this.$message({
+            type: 'success',
+            message: '密码修改成功'
+          });
+          const tmp = {
+              "uid":this.userId,
+              "username": this.userName,
+              "password1":value,
+              "password2": value,
+              "email": this.address,
+              "tel":this.phone
+          }
+          this.uploadData(tmp);
+
+        }).catch(() => {
+          this.$message({
+            type: 'info',
+            message: '取消修改密码'
+          });       
+        });
+      }).catch(() => {
+        this.$message({
+          type: 'info',
+          message: '取消修改密码'
+        });       
+      });
+    }
 
 
     },
@@ -267,10 +317,10 @@ export default {
     
     data(){
         return{
-            address:114 ,
+            address:null ,
             addressIsBind: false,
             phoneIsBind: false,
-            phone: 321321321,
+            phone: null,
 
             userKey:114514,
             sign: '还没有签名捏',
@@ -303,8 +353,11 @@ export default {
           this.userName = userObj.user_name;
           this.userKey  = userObj.user_password;
           this.address  = userObj.user_email;
+          this.phone  = userObj.user_tel;
           if( this.address != null)
             this.addressIsBind = true;
+          if( this.phone != null)
+            this.phoneIsBind = true;
         }
       }).catch(error => {
         alert("获取用户信息失败")
