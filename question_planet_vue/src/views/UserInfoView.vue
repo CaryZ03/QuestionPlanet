@@ -263,12 +263,12 @@ export default {
       corperation: UserInfo,
     },
 
-    created:function(){
+    mounted:function(){
       
       const tmpUser = {
         "uid": this.$store.state.curUserID
       }
-      this.$api.userInfo.postUserInfo_GetUserInfo(tmpUser).then((response) => {
+      this.$api.userInfo.getUserInfo_GetUserInfo(this.$store.state.curUserID).then((response) => {
         console.log(tmpUser)
         console.log(response.data)
         if (response.data.errno == 0) {
