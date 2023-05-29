@@ -35,9 +35,11 @@ def get_client_ip(request):
 
 # path('fill_questionnaire', fill_questionnaire),
 @csrf_exempt
-@questionnaire_exists
+# @questionnaire_exists
 @require_http_methods(['POST'])
 def fill_questionnaire(request, qn_id):
+    if not Questionnaire.objects.filter(qn_id=qn_id).exists():
+        return JsonResponse({'errno': 2011, 'msg': "问卷不存在"})
     token_key = request.headers.get('Authorization')
     if token_key and UserToken.objects.filter(Q(key=token_key) & Q(expire_time__gte=now())).exists():
         token = UserToken.objects.get(key=token_key)
@@ -70,6 +72,8 @@ def fill_questionnaire(request, qn_id):
 def save_answers(request):
     data_json = json.loads(request.body)
     as_id = data_json.get('as_id')
+    if not AnswerSheet.objects.filter(as_id=as_id).exists():
+        return JsonResponse({'code': 2021, 'message': '答卷不存在'})
     answer_sheet = AnswerSheet.objects.get(as_id=as_id)
     answer_data = data_json.get('answer_data')
     if answer_data is not None:
@@ -89,7 +93,8 @@ def submit_answers(request):
     data_json = json.loads(request.body)
     as_id = data_json.get('as_id')
     answer_data = data_json.get('answer_data')
-
+    if not AnswerSheet.objects.filter(as_id=as_id).exists():
+        return JsonResponse({'code': 2031, 'message': '答卷不存在'})
     answer_sheet = AnswerSheet.objects.get(as_id=as_id)
     answer_sheet.as_answers.all().delete()
     # 解析答案数据，创建答案对象
@@ -130,6 +135,7 @@ def create_questionnaire(request, user):
     qn.qn_creator = user
     user.user_created_questionnaires.add(qn)
     qn.save()
+    user.save()
     # 返回问卷创建成功的响应
     return JsonResponse({'errno': 0, 'message': '问卷创建成功', 'qn_id': qn.qn_id})
 
@@ -148,14 +154,15 @@ def save_questionnaire(request, user):
     qn_refillable = data_json.get('qn_refillable')
     question_list = data_json.get('question_list')
 
-    # 创建问卷
     qn = Questionnaire.objects.get(qn_id=qn_id)
     qn.qn_title = qn_title
     qn.qn_description = qn_description
     qn.qn_endTime = datetime.strptime(qn_end_time, '%Y-%m-%d %H:%M:%S')
     qn.qn_refillable = qn_refillable
+
     qn.qn_answersheets.all().delete()
     qn.qn_questions.all().delete()
+
     qn.qn_data_json = data_json
 
     # 创建问题并加入问卷中
@@ -175,21 +182,15 @@ def save_questionnaire(request, user):
         )
         question.save()
         qn.qn_questions.add(question)
-
     qn.save()
-    # 返回问卷创建成功的响应
     return JsonResponse({'code': 0, 'message': '问卷保存成功'})
 
 
 @csrf_exempt
-@login_required
-@questionnaire_exists
 @require_http_methods(['GET'])
-def check_questionnaire(request, user):
-    # 从请求中获取问卷信息和问题数据
-    data_json = json.loads(request.body)
-    qn_id = data_json.get('qn_id')
-    # 创建问卷
+def check_questionnaire(request, qn_id):
+    if not Questionnaire.objects.filter(qn_id=qn_id).exists():
+        return JsonResponse({'code': 2061, 'message': '问卷不存在'})
     qn = Questionnaire.objects.get(qn_id=qn_id)
     # 返回问卷创建成功的响应
     return JsonResponse({'code': 0, 'message': '问卷查看成功', 'qn_data_json': qn.qn_data_json})

@@ -14,6 +14,7 @@ class User(Model):
     user_id = AutoField(primary_key=True)
     user_name = CharField(max_length=100)
     user_password = CharField(max_length=20)
+    user_signature = TextField(null=True)
     user_email = EmailField(max_length=50, default=None, blank=True, null=True)
     user_tel = TextField(null=True)
     status_choices = (
@@ -29,6 +30,14 @@ class Admin(Model):
     admin_id = AutoField(primary_key=True)
     admin_name = CharField(max_length=100)
     admin_password = CharField(max_length=20)
+
+
+class UserToken(Model):
+    key = CharField(max_length=200, unique=True)
+    is_admin = BooleanField(default=False)
+    user = ForeignKey('User', on_delete=CASCADE, null=True)
+    admin = ForeignKey('Admin', on_delete=CASCADE, null=True)
+    expire_time = DateTimeField()
 ```
 
 ## 100 system
@@ -96,10 +105,8 @@ class Admin(Model):
 {
     "errno": 0,
     "msg": "登录成功",
-    "uid": user_id
-}
-cookie:{
-    "session_id": session_id
+    "uid": user_id,
+    "token_key": token_key
 }
 ```
 
@@ -128,10 +135,8 @@ cookie:{
 {
     "errno": 0,
     "msg": "管理员登录成功",
-    'admin_id': admin_id
-}
-cookie:{
-    "session_id": session_id
+    'admin_id': admin_id,
+	"token_key": token_key
 }
 ```
 
@@ -204,13 +209,9 @@ cookie:{
 
 ### 请求类型：POST
 
-### 输入数据：
+### Header：Authorization
 
-```json
-{
-    "uid": uid
-}
-```
+### 输入数据：无
 
 ### 返回数据：
 
@@ -227,13 +228,9 @@ cookie:{
 
 ### 请求类型：POST
 
-### 输入数据：
+### Header：Authorization
 
-```json
-{
-    "uid": uid
-}
-```
+### 输入数据：无
 
 ### 返回数据：
 
@@ -250,13 +247,9 @@ cookie:{
 
 ### 请求类型：GET
 
-### 输入数据：
+### Header：Authorization
 
-```json
-{
-    "uid": uid
-}
-```
+### 输入数据：无
 
 ### 返回数据：
 
@@ -268,7 +261,9 @@ cookie:{
             "user_id": user.user_id,
             "user_name": user.user_name,
             "user_password": user.user_password,
+            "user_signature": self.user_signature,
             "user_email": user.user_email,
+            "user_tel": self.user_tel,
             "user_status": user.user_status
     }
 }
@@ -308,14 +303,16 @@ cookie:{
 
 ### 请求类型：POST
 
+### Header：Authorization
+
 ### 输入数据：
 
 ```json
 {
-    "uid": uid,
     "username": username,
     "password1": password1,
     "password2": password2,
+    "signature": signature,
     "email": email*,
     "tel": tel*
 }
@@ -344,14 +341,16 @@ cookie:{
 
 ### 请求类型：POST
 
+### Header：Authorization
+
 ### 输入数据：
 
 ```json
 {
-    "uid": uid,
     "username": username,
     "password1": password1,
     "password2": password2,
+    "signature": signature,
     "email": email*,
     "tel": tel*
 }
@@ -378,16 +377,13 @@ cookie:{
 
 ## 112 check_questionnaire_list
 
+### URL：check_questionnaire_list/<qn_list_type>?uid=uid
+
 ### 请求类型：GET
 
-### 输入数据：
+### Header：Authorization
 
-```json
-{
-    "uid": uid,
-    "type": type("created", "filled", "deleted")
-}
-```
+### 输入数据：无
 
 ### 返回数据：
 
@@ -507,6 +503,7 @@ class Questionnaire(Model):
     qn_refillable = BooleanField(default=True)
     qn_questions = ManyToManyField(Question)
     qn_answersheets = ManyToManyField(AnswerSheet)
+    qn_data_json = JSONField(default=None, null=True)
 ```
 
 ## 200 system
@@ -517,16 +514,13 @@ class Questionnaire(Model):
 
 ### 描述：点击问卷链接时调用，创建新的答卷人或查找已存在答卷人，并创建新的答卷
 
+### URL：fill_questionnaire/<qn_id>
+
 ### 请求类型：POST
 
-### 输入数据：
+### Header：Authorization
 
-```json
-{
-    "uid": uid*,
-    "qn_id": 问卷id
-}
-```
+### 输入数据：无
 
 ### 返回数据：
 
@@ -539,7 +533,9 @@ class Questionnaire(Model):
 }
 ```
 
-### 错误码：无
+### 错误码：
+
+2011：问卷不存在
 
 ## 202 save_answers
 
@@ -551,7 +547,6 @@ class Questionnaire(Model):
 
 ```json
 {
-    "qn_id": qn_id,
     "as_id": 答卷id,
     "answer_data": 答卷内容
 }
@@ -572,7 +567,9 @@ else
 }
 ```
 
-### 错误码：无
+### 错误码：
+
+2021：答卷不存在
 
 ## 203 submit_answers
 
@@ -584,7 +581,6 @@ else
 
 ```json
 {
-    "qn_id": qn_id,
     "as_id": 答卷id,
     "answer_data": 答卷内容
 }
@@ -599,7 +595,9 @@ else
 }
 ```
 
-### 错误码：无
+### 错误码：
+
+2031：答卷不存在
 
 ## 204 create_questionnaire
 
@@ -607,13 +605,9 @@ else
 
 ### 请求类型：POST
 
-### 输入数据：
+### Header：Authorization
 
-```json
-{
-    "uid": 用户id
-}
-```
+### 输入数据：无
 
 ### 返回数据：
 
@@ -633,11 +627,12 @@ else
 
 ### 请求类型：POST
 
+### Header：Authorization
+
 ### 输入数据：
 
 ```json
 {
-    "uid": 用户id,
     "qn_id": 问卷id,
     "qn_title": 问卷标题,
     "qn_description": 问卷描述,
@@ -674,22 +669,16 @@ else
 
 ### 描述：查看问卷
 
+### URL：check_questionnaire/<qn_id>
+
 ### 请求类型：GET
 
-### 输入数据：
-
-```json
-{
-    "uid": 用户id,
-    "qn_id": 问卷id
-}
-```
+### 输入数据：无
 
 ### 返回数据：
 
 ```json
 {
-    "uid": 用户id,
     "qn_id": 问卷id,
     "qn_title": 问卷标题,
     "qn_description": 问卷描述,
@@ -719,11 +708,12 @@ else
 
 ### 请求类型：POST
 
+### Header：Authorization
+
 ### 输入数据：
 
 ```json
 {
-    "uid": 用户id,
     "qn_id": 问卷id
 }
 ```

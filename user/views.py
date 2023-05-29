@@ -223,7 +223,6 @@ def logout(request, user):
 @login_required
 @require_http_methods(['POST'])
 def cancel_account(request, user):
-    UserToken.objects.filter(user=user).delete()
     user.delete()
     return JsonResponse({'errno': 0, 'msg': "注销成功"})
 
@@ -232,8 +231,6 @@ def cancel_account(request, user):
 @login_required
 @require_http_methods(['GET'])
 def check_profile(request, user):
-    uid = request.GET.get('uid')
-    user = User.objects.get(user_id=uid)
     user_info = user.to_json()
     return JsonResponse({'errno': 0, 'msg': '返回用户信息成功', 'user_info': user_info})
 

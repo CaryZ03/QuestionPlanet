@@ -11,7 +11,7 @@ urlpatterns = [
     path('save_questionnaire', save_questionnaire),
     # 管理问卷
     path('create_questionnaire', create_questionnaire),
-    path('check_questionnaire', check_questionnaire),
+    path('check_questionnaire/<int:qn_id>', check_questionnaire),
     path('delete_questionnaire', delete_questionnaire),
     # 管理员操作
     path('change_questionnaire_status', change_questionnaire_status),

@@ -31,6 +31,7 @@ class User(Model):
             "user_id": self.user_id,
             "user_name": self.user_name,
             "user_password": self.user_password,
+            "user_signature": self.user_signature,
             "user_email": self.user_email,
             "user_tel": self.user_tel,
             "user_status": self.user_status
