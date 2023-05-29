@@ -34,12 +34,7 @@ def check_identity(view_func):
             if token is None or token.expire_time < now():
                 return JsonResponse({'errno': 3002, 'msg': "登录信息已过期"})
             elif not token.is_admin:
-                user_id = data.get('uid')
-                if token.user.user_id != user_id:
-                    return JsonResponse({'errno': 3003, 'msg': "用户不一致"})
-                if not User.objects.filter(user_id=user_id).exists():
-                    return JsonResponse({'errno': 3004, 'msg': "用户不存在"})
-                user = User.objects.get(user_id=user_id)
+                user = token.user
                 if 'qn_id' in data:
                     qn_id = data.get('qn_id')
                     if not Questionnaire.objects.filter(qn_id=qn_id).exists():
@@ -64,13 +59,10 @@ def check_identity(view_func):
                     questionnaire = question.q_questionnaire
                     if questionnaire not in user.user_created_questionnaires.all():
                         return JsonResponse({'errno': 3008, 'msg': '用户没有权限进行该操作'})
-                return view_func(request, *args, **kwargs)
+                return view_func(request, *args, user=user, **kwargs)
             else:
-                admin_id = data.get('uid')
-                if token.admin.admin_id != admin_id:
-                    return JsonResponse({'errno': 3003, 'msg': "用户不一致"})
-                else:
-                    return view_func(request, *args, **kwargs)
+                admin = token.admin
+                return view_func(request, *args, admin=admin, **kwargs)
         else:
             return JsonResponse({'errno': 3001, 'msg': "未登录"})
 
@@ -133,8 +125,7 @@ def calculate_score(answer_sheet):
 @csrf_exempt
 @check_identity
 @require_http_methods(['GET'])
-def questionnaire_export(request):
-    qn_id = json.loads(request.body.decode('utf-8')).get('qn_id')
+def questionnaire_export(request, qn_id):
     questionnaire = Questionnaire.objects.get(qn_id=qn_id)
     questions_count = Question.objects.filter(q_questionnaire=questionnaire).count()
     answer_sheet_count = AnswerSheet.objects.filter(as_questionnaire=questionnaire).count()
@@ -169,8 +160,7 @@ def questionnaire_export(request):
 @csrf_exempt
 @check_identity
 @require_http_methods(['GET'])
-def questionnaire_export_file(request):
-    qn_id = json.loads(request.body.decode('utf-8')).get('qn_id')
+def questionnaire_export_file(request, qn_id):
     questionnaire = Questionnaire.objects.get(qn_id=qn_id)
     questions_count = Question.objects.filter(q_questionnaire=questionnaire).count()
     answer_sheet_count = AnswerSheet.objects.filter(as_questionnaire=questionnaire).count()
@@ -206,8 +196,7 @@ def questionnaire_export_file(request):
 @csrf_exempt
 @check_identity
 @require_http_methods('GET')
-def questionnaire_analysis(request):
-    qn_id = json.loads(request.body.decode('utf-8')).get('qn_id')
+def questionnaire_analysis(request, qn_id):
     questionnaire = Questionnaire.objects.get(qn_id=qn_id)
     questions_count = Question.objects.filter(q_questionnaire=questionnaire).count()
     questions = Question.objects.filter(q_questionnaire=questionnaire)
@@ -251,9 +240,7 @@ def questionnaire_analysis(request):
 @csrf_exempt
 @check_identity
 @require_http_methods(['GET'])
-def get_questions_by_questionnaire(request):
-    qn_id = json.loads(request.body.decode('utf-8')).get('qn_id')
-
+def get_questions_by_questionnaire(request, qn_id):
     try:
         questionnaire = Questionnaire.objects.get(qn_id=qn_id)
     except Questionnaire.DoesNotExist:
@@ -274,9 +261,7 @@ def get_questions_by_questionnaire(request):
 @csrf_exempt
 @check_identity
 @require_http_methods(['GET'])
-def get_answers_by_question(request):
-    q_id = json.loads(request.body.decode('utf-8')).get('q_id')
-
+def get_answers_by_question(request, q_id):
     try:
         question = Question.objects.get(q_id=q_id)
     except Question.DoesNotExist:
@@ -315,8 +300,7 @@ def delete_answer(request):
 @csrf_exempt
 @check_identity
 @require_http_methods(['GET'])
-def generate_chart(request):
-    qn_id = json.loads(request.body.decode('utf-8')).get('qn_id')
+def generate_chart(request, qn_id):
     questionnaires = Question.objects.filter(qn_id=qn_id).prefetch_related('q_questions')
     questions = questionnaires.first().q_questions.all()
 
