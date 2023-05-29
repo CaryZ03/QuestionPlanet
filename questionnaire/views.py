@@ -86,12 +86,11 @@ def submit_answers(request):
     # 获取请求参数
     data_json = json.loads(request.body)
     as_id = data_json.get('as_id')
-    answer_data = data_json.get('answer_data')
+    answer_list = data_json.get('answer_data')
 
     answer_sheet = AnswerSheet.objects.get(as_id=as_id)
     answer_sheet.as_answers.all().delete()
     # 解析答案数据，创建答案对象
-    answer_list = json.loads(answer_data)
     for a_data in answer_list:
         a_data_json = json.loads(a_data)
         q_id = a_data_json.get('q_id')
