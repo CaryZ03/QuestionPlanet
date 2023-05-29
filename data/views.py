@@ -23,7 +23,7 @@ def get_session(session_id):
     return session_id
 
 
-def check_identity(view_func):
+def check_identity_get(view_func):
     def wrapper(request, *args, **kwargs):
         token_key = request.headers.get('Authorization')
         if token_key:
@@ -121,9 +121,9 @@ def calculate_score(answer_sheet):
 
 
 @csrf_exempt
-@check_identity
+@check_identity_get
 @require_http_methods(['GET'])
-def questionnaire_export(request, qn_id):
+def questionnaire_export(request, user, qn_id):
     questionnaire = Questionnaire.objects.get(qn_id=qn_id)
     questions_count = Question.objects.filter(q_questionnaire=questionnaire).count()
     answer_sheet_count = AnswerSheet.objects.filter(as_questionnaire=questionnaire).count()
@@ -156,9 +156,9 @@ def questionnaire_export(request, qn_id):
 
 
 @csrf_exempt
-@check_identity
+@check_identity_get
 @require_http_methods(['GET'])
-def questionnaire_export_file(request, qn_id):
+def questionnaire_export_file(request, user, qn_id):
     questionnaire = Questionnaire.objects.get(qn_id=qn_id)
     questions_count = Question.objects.filter(q_questionnaire=questionnaire).count()
     answer_sheet_count = AnswerSheet.objects.filter(as_questionnaire=questionnaire).count()
@@ -192,9 +192,9 @@ def questionnaire_export_file(request, qn_id):
 
 
 @csrf_exempt
-@check_identity
+@check_identity_get
 @require_http_methods('GET')
-def questionnaire_analysis(request, qn_id):
+def questionnaire_analysis(request, user, qn_id):
     questionnaire = Questionnaire.objects.get(qn_id=qn_id)
     questions_count = Question.objects.filter(q_questionnaire=questionnaire).count()
     questions = Question.objects.filter(q_questionnaire=questionnaire)
@@ -236,9 +236,9 @@ def questionnaire_analysis(request, qn_id):
 
 
 @csrf_exempt
-@check_identity
+@check_identity_get
 @require_http_methods(['GET'])
-def get_questions_by_questionnaire(request, qn_id):
+def get_questions_by_questionnaire(request, user, qn_id):
     try:
         questionnaire = Questionnaire.objects.get(qn_id=qn_id)
     except Questionnaire.DoesNotExist:
@@ -257,9 +257,9 @@ def get_questions_by_questionnaire(request, qn_id):
 
 
 @csrf_exempt
-@check_identity
+@check_identity_get
 @require_http_methods(['GET'])
-def get_answers_by_question(request, q_id):
+def get_answers_by_question(request, user, q_id):
     try:
         question = Question.objects.get(q_id=q_id)
     except Question.DoesNotExist:
@@ -278,7 +278,7 @@ def get_answers_by_question(request, q_id):
 
 
 @csrf_exempt
-@check_identity
+@check_identity_get
 @require_http_methods(['POST'])
 def delete_answer(request):
     a_id = json.loads(request.body.decode('utf-8')).get('a_id')
@@ -296,9 +296,9 @@ def delete_answer(request):
 
 
 @csrf_exempt
-@check_identity
+@check_identity_get
 @require_http_methods(['GET'])
-def generate_chart(request, qn_id):
+def generate_chart(request, user, qn_id):
     questionnaires = Question.objects.filter(qn_id=qn_id).prefetch_related('q_questions')
     questions = questionnaires.first().q_questions.all()
 
