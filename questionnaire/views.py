@@ -49,13 +49,12 @@ def fill_questionnaire(request):
         filler = Filler.objects.get(filler_uid=uid)
     questionnaire = Questionnaire.objects.get(qn_id=qn_id)
     if AnswerSheet.objects.filter(as_questionnaire=questionnaire, as_filler=filler).exists():
-        answer_sheet = AnswerSheet.objects.get(as_filler=filler)
+        answer_sheet = AnswerSheet.objects.get(as_questionnaire=questionnaire, as_filler=filler)
     else:
         answer_sheet = AnswerSheet.objects.create(as_questionnaire=questionnaire, as_filler=filler)
         answer_sheet.save()
         if filler.filler_is_user:
-            qn = Questionnaire.objects.get(qn_id=qn_id)
-            filler.filler_user.user_filled_questionnaire.add(qn)
+            filler.filler_user.user_filled_questionnaire.add(questionnaire)
     temp_save = answer_sheet.as_temporary_save
     return JsonResponse({'errno': 0, 'msg': "答卷创建成功", 'as_id': answer_sheet.as_id, 'temp_save': temp_save})
 
