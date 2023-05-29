@@ -462,7 +462,7 @@ class Question(Model):
         ('grade', "打分")
     )
     q_type = CharField(max_length=20, choices=question_types, default='single')
-    q_manditory = BooleanField(default=False)
+    q_mandatory = BooleanField(default=False)
     q_title = TextField(null=True)
     q_description = TextField(null=True)
     q_option_count = IntegerField(default=1)
