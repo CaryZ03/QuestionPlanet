@@ -6,7 +6,7 @@ Vue.use(Vuex)
 export default new Vuex.Store({
   state: {
     isLogin: false,
-    curUserID: '',
+    curUserID: -1,
     curUsername: '',
     my_naire_num: 0,
     my_bin_num: 0,

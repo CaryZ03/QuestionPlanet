@@ -24,7 +24,7 @@
                     <div class="item">
                         <div class="light"></div>
                         <div class="licon"><span class="iconfont icon-wenjian"></span></div>
-                        <div class="con">Dashboard</div>
+                        <div class="con" @click="createNewQ">从空白创建</div>
                         <div class="ricon"><span class="iconfont icon-shezhi"></span></div>
                     </div>
                     <div class="item">
@@ -95,6 +95,25 @@
 
 <script>
 export default {
+    data() {
+        return {
+
+        }
+    },
+    methods: {
+        createNewQ(){
+            const data={
+                "uid": this.$store.state.curUserID
+            }
+            console.log(data)
+            this.$api.questionnaire.postQuestionnaire_Create(data).then((res)=>{
+                console.log(res.data.errno+res.data.qn_id)
+            }).catch((err)=>{
+                console.log(err)
+            })
+        }
+
+    },
 
 }
 </script>

@@ -53,6 +53,9 @@ def fill_questionnaire(request):
     else:
         answer_sheet = AnswerSheet.objects.create(as_questionnaire=questionnaire, as_filler=filler)
         answer_sheet.save()
+        if filler.filler_is_user:
+            qn = Questionnaire.objects.get(qn_id=qn_id)
+            filler.filler_user.user_filled_questionnaire.add(qn)
     temp_save = answer_sheet.as_temporary_save
     return JsonResponse({'errno': 0, 'msg': "答卷创建成功", 'as_id': answer_sheet.as_id, 'temp_save': temp_save})
 
@@ -127,6 +130,7 @@ def create_questionnaire(request):
     user = User.objects.get(user_id=user_id)
     qn = Questionnaire.objects.create()
     qn.qn_creator = user
+    user.user_created_questionnaires.add(qn)
     qn.save()
     # 返回问卷创建成功的响应
     return JsonResponse({'errno': 0, 'message': '问卷创建成功', 'qn_id': qn.qn_id})
