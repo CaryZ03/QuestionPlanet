@@ -58,9 +58,9 @@ export function postUserInfo_CancelAccount(data) {
 }
 
 // check_profile,获取用户信息
-export function postUserInfo_GetUserInfo(data) {
+export function getUserInfo_GetUserInfo(data) {
     return request({
-        method: 'POST',
+        method: 'GET',
         url:  '/user/check_profile',
         data: data
     })

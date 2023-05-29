@@ -7,7 +7,7 @@
         <nav class="navigation">
           <a href="" @click.prevent="pushHome">主页</a>
           <a href="" @click.prevent="pushAbout">关于 </a>
-          <a href="" @click.prevent="">问卷管理</a>
+          <a href="" @click.prevent="pushManage">问卷管理</a>
           <!-- <a href="" @click.prevent="">Contact</a> -->
           <a href="" @click.prevent="pushUserInfo">用户信息</a>
           <button class="btnLogin-popup">登录/注册</button>
@@ -34,18 +34,6 @@ export default {
 
 
   methods: {
-    pushHome() {
-      if(this.$store.state.isLogin==false){
-        this.$router.push({
-        name: 'Login',
-      })
-        return;
-      }
-      this.$router.push({
-        name: 'home',
-      }),
-        alert("my new ")
-    },
     pushUserInfo() {
       if(this.$store.state.isLogin==false){
         this.$router.push({
