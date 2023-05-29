@@ -19,7 +19,7 @@
               <div class="questionnaire_body">
                 <el-button round style="background-color:rgba(227, 227, 227, 0.1);;">设计问卷</el-button>
                 <el-button round style="background-color:rgba(227, 227, 227, 0.1);;">发送问卷</el-button>
-                <el-button round style="background-color:rgba(227, 227, 227, 0.1);;">分析问卷</el-button>
+                <el-button @click="getManagerQuestionnaireList" round style="background-color:rgba(227, 227, 227, 0.1);;">分析问卷</el-button>
               </div>
 
             </el-row>
@@ -67,7 +67,7 @@ export default {
       }
       console.log(this.$store.state.token_key)
       this.$api.userInfo.postUserInfo_GetQList(data).then((res) => {
-        console.log(res.data)
+        console.log(res.data['qn_info'])
       })
 
     },

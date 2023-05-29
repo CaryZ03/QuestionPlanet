@@ -1,18 +1,19 @@
 <template>
   <body>
     <el-header>
-        <header>
+      <header>
 
-          <h2 class="logo">logo</h2>
-          <nav class="navigation">
-            <a href="#">Home</a>
-            <a href="#">About </a>
-            <a href="#">Service</a>
-            <a href="#">Contact</a>
-            <button class="btnLogin-popup">Login</button>
-          </nav>
-        </header>
-      </el-header>
+        <h2 class="logo">logo</h2>
+        <nav class="navigation">
+          <a href="" @click.prevent="pushHome">主页</a>
+          <a href="" @click.prevent="pushAbout">关于 </a>
+          <a href="" @click.prevent="">问卷管理</a>
+          <!-- <a href="" @click.prevent="">Contact</a> -->
+          <a href="" @click.prevent="pushUserInfo">用户信息</a>
+          <button class="btnLogin-popup">登录/注册</button>
+        </nav>
+      </header>
+    </el-header>
     <div class="app-wrapper">
       <router-view></router-view>
     </div>
@@ -22,9 +23,6 @@
 </template>
 
 <script>
-import axios from 'axios'
-import StepSlideVue from './components/StepSlide.vue'
-import LoginAndRegister from './components/LoginAndRegister.vue'
 
 export default {
 
@@ -34,16 +32,65 @@ export default {
     }
   },
 
+
   methods: {
-    pushNew() {
+    pushHome() {
+      if(this.$store.state.isLogin==false){
+        this.$router.push({
+        name: 'Login',
+      })
+        return;
+      }
       this.$router.push({
-        name: 'New',
+        name: 'home',
+      }),
+        alert("my new ")
+    },
+    pushUserInfo() {
+      if(this.$store.state.isLogin==false){
+        this.$router.push({
+        name: 'Login',
+      })
+        return;
+      }
+      this.$router.push({
+        name: 'UserInfo',
         params: {
           userID: this.$store.state.curUserID,
         }
       }),
         alert("my new ")
     },
+    pushManage() {
+      if(this.$store.state.isLogin==false){
+        this.$router.push({
+        name: 'Login',
+      })
+        return;
+      }
+      this.$router.push({
+        name: 'Manager',
+        params: {
+          userID: this.$store.state.curUserID,
+        }
+      }),
+        alert("my new ")
+    },
+    pushLogin() {
+      
+      this.$router.push({
+        name: 'Login',
+      }),
+        alert("my new ")
+    },
+    pushAbout() {
+      
+      this.$router.push({
+        name: 'About',
+      }),
+        alert("my new ")
+    },
+
     show() {
       const udata = {
         "uid": 21373219

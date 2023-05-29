@@ -20,7 +20,6 @@
 
 
 <script>
-import StepSlideVue from "../components/StepSlide.vue"
 
 
 export default ({
