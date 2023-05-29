@@ -1,6 +1,5 @@
 <template>
-  <body>
-    <div>
+  <!-- <div>
     <div>
 
       <div class="box-btn" v-show="!this.$store.state.isLogin">
@@ -14,22 +13,52 @@
       </div>
 
     </div>
+  </div> -->
+  <div class="bg">
+    <newhome></newhome>
   </div>
-  </body>
 </template>
-
 
 <script>
 
 
+import Newhome from '@/components/Newhome.vue';
 export default ({
   name: 'HomeViewVue',
-  data: {
 
-  }
+
+  components: {
+    newhome: Newhome,
+  },
 
 })
 </script>
+
+
+
+<style scoped>
+.bg {
+  /* background-image:  url('../assets/homebackground.jpg'); */
+  /* background-image: url("../assets/-311481de54f03b8f.png.png"); */
+  width: 100%;
+  overflow-y: hidden;
+  position: fixed;
+  left: 0;
+  top: 0;
+  /* background-size: 100% 100%; */
+
+  /* margin: -377px 0px 0 -762px;
+  padding: 0 0 0px 0px; */
+
+  background: transparent;
+}
+
+
+img{
+    background: transparent;
+}
+
+</style>
 <!-- <style scoped>
 .BackGround{
   background-image: url(../assets/BackGround_2.jpg);

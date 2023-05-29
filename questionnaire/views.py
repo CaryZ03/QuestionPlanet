@@ -174,7 +174,7 @@ def save_questionnaire(request, user):
             q_questionnaire=qn,
             q_position=i,
             q_type=q_data.get('q_type'),
-            q_manditory=q_data.get('q_manditory'),
+            q_mandatory=q_data.get('q_mandatory'),
             q_title=q_data.get('q_title'),
             q_description=q_data.get('q_description'),
             q_option_count=q_data.get('q_option_count'),
@@ -193,9 +193,11 @@ def save_questionnaire(request, user):
 def check_questionnaire(request, qn_id):
     if not Questionnaire.objects.filter(qn_id=qn_id).exists():
         return JsonResponse({'code': 2061, 'message': '问卷不存在'})
-    qn = Questionnaire.objects.get(qn_id=qn_id)
-    # 返回问卷创建成功的响应
-    return JsonResponse({'code': 0, 'message': '问卷查看成功', 'qn_data_json': qn.qn_data_json})
+    questionnaire = Questionnaire.objects.get(qn_id=qn_id)
+    question_list = []
+    for q in questionnaire.qn_questions:
+        question_list.append(q.to_json())
+    return JsonResponse({'errno': 0, 'msg': '问卷查看成功', 'qn_info': questionnaire.to_json(), 'question_list': question_list})
 
 
 @csrf_exempt

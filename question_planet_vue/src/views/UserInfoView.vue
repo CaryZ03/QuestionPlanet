@@ -267,10 +267,10 @@ export default {
     
     data(){
         return{
-            address:114 ,
+            address:null ,
             addressIsBind: false,
             phoneIsBind: false,
-            phone: 321321321,
+            phone: null,
 
             userKey:114514,
             sign: '还没有签名捏',
@@ -303,8 +303,11 @@ export default {
           this.userName = userObj.user_name;
           this.userKey  = userObj.user_password;
           this.address  = userObj.user_email;
+          this.phone  = userObj.user_tel;
           if( this.address != null)
             this.addressIsBind = true;
+          if( this.phone != null)
+            this.phoneIsBind = true;
         }
       }).catch(error => {
         alert("获取用户信息失败")

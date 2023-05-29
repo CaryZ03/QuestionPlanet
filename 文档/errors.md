@@ -677,21 +677,29 @@ else
 
 ```json
 {
-    "qn_id": 问卷id,
-    "qn_title": 问卷标题,
-    "qn_description": 问卷描述,
-    "qn_end_time": 问卷截止时间,
-    "qn_refillable": 是否可重填,
+    "qn_info":{
+        "qn_id": self.qn_id,
+        "qn_title": self.qn_title,
+        "qn_description": self.qn_description,
+        "qn_createTime": str(self.qn_createTime),
+        "qn_endTime": str(self.qn_endTime),
+        "qn_status": self.qn_status,
+        "qn_refillable": self.qn_refillable,
+        "qn_answersheet_count": self.qn_answersheets.count()
+    },
     "question_list": [
         {
-            "q_type": 问题类型,
-            "q_manditory": 是否必填,
-            "q_title": 问题标题,
-            "q_description": 问题描述,
-            "q_option_count": 选项数,
-            "q_options": 选项数据([选项1, ...]),
-            "q_correct_answer": 正确答案,
-            "q_score": 分数
+            "q_id": self.q_id,
+            "q_questionnaire": self.q_questionnaire,
+            "q_position": self.q_position,
+            "q_type": self.q_type,
+            "q_mandatory": self.q_mandatory,
+            "q_title": self.q_title,
+            "q_description": self.q_description,
+            "q_option_count": self.q_option_count,
+            "q_options": self.q_options,
+            "q_correct_answer": self.q_correct_answer,
+            "q_score": self.q_score
         }，
         ...
     ]
