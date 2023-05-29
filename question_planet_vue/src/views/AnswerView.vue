@@ -133,7 +133,7 @@ export default {
             const dataObject = { 
                 qn_id: 3,
                 as_id: 3,
-                answer_data: this.answer_sheet
+                answer_data: JSON.stringify(this.answer_sheet)
             };
             const jsonString = JSON.stringify(dataObject);
             console.log(jsonString);

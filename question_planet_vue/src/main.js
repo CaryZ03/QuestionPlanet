@@ -7,7 +7,6 @@ import axios from 'axios'
 import ElementUI from 'element-ui';
 import 'element-ui/lib/theme-chalk/index.css';
 import api from './api';
-import Cookies from 'js-cookie'
 
 import AllIosIcon from "vue-ionicons/dist/ionicons-ios.js";
 //全局使用ionicons图标
