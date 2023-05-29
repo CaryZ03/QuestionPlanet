@@ -129,6 +129,7 @@ header {
   align-items: center;
   z-index: 200;
   /* 设置一个背景色便于观察 */
+  /* box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px; */
 }
 
 aside {
@@ -185,6 +186,7 @@ body {
 
   background-size: cover;
   background-position: center;
+  z-index: 100;
 }
 
 

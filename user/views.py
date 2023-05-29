@@ -1,16 +1,11 @@
 import re
-from datetime import datetime
-
-from django.http import JsonResponse
-from django.utils.timezone import make_aware, utc, now
+from django.db.models import Q
+from django.utils.timezone import now
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_http_methods
 from django.http.response import JsonResponse
-from django.contrib.sessions.models import Session
-from rest_framework.authtoken.models import Token
-from datetime import datetime, timedelta
+from datetime import timedelta
 from django.core.management.utils import get_random_secret_key
-from django.utils import timezone
 import json
 
 from user.models import User, Admin, Filler, UserToken
@@ -67,11 +62,11 @@ def login_required(view_func):
         token_key = request.headers.get('Authorization')
         if token_key:
             # 使用 Token 模型的 objects.get 方法查找令牌
-            token = UserToken.objects.get(key=token_key)
+            token = UserToken.objects.filter(key=token_key).first()
             if token is None or token.expire_time < now():
                 return JsonResponse({'errno': 1002, 'msg': "登录信息已过期"})
             else:
-                user = token.user
+                # user = token.user
                 # if (request.method == 'POST' and user.user_id != json.loads(request.body).get('uid')) \
                 #         or (request.method == 'GET' and user.user_id != request.GET.get('uid')):
                 #     return JsonResponse({'errno': 1003, 'msg': "用户不一致"})
@@ -121,9 +116,7 @@ def user_register(request):
     username = data_json.get('username')
     password1 = data_json.get('password1')
     password2 = data_json.get('password2')
-    email = data_json.get('email')
-    tel = data_json.get('tel')
-    if not bool(re.match("^[A-Za-z0-9][A-Za-z0-9_]{2,20}$", str(username))):
+    if not bool(re.match("^[A-Za-z0-9][A-Za-z0-9_]{2,29}$", str(username))):
         return JsonResponse({'errno': 1011, 'msg': "用户名不合法"})
     elif User.objects.filter(user_name=username).exists():
         return JsonResponse({'errno': 1012, 'msg': "用户名已存在"})
@@ -132,7 +125,7 @@ def user_register(request):
     elif not bool(re.match('^(?=.*\\d)(?=.*[a-zA-Z]).{6,20}$', str(password1))):
         return JsonResponse({'errno': 1014, 'msg': "密码不合法"})
     else:
-        new_user = User.objects.create(user_name=username, user_password=password1, user_email=email, user_tel=tel)
+        new_user = User.objects.create(user_name=username, user_password=password1)
         new_user.save()
         filler_ip = get_client_ip(request)
         new_filler = Filler.objects.create(filler_ip=filler_ip, filler_is_user=True, filler_user=new_user)
@@ -268,11 +261,12 @@ def change_profile(request):
     username = data_json.get('username')
     password1 = data_json.get('password1')
     password2 = data_json.get('password2')
-    mail = data_json.get('email')
+    signature = data_json.get('signature')
+    email = data_json.get('email')
     tel = data_json.get('tel')
-    if not bool(re.match("^[A-Za-z0-9][A-Za-z0-9_]{2,20}$", str(username))):
+    if not bool(re.match("^[A-Za-z0-9][A-Za-z0-9_]{2,29}$", str(username))):
         return JsonResponse({'errno': 1101, 'msg': "用户名不合法"})
-    elif User.objects.filter(user_id__ne=uid, user_name=username).exists():
+    elif User.objects.filter(~Q(user_id=uid) & Q(user_name=username)).exists():
         return JsonResponse({'errno': 1102, 'msg': "用户名已存在"})
     elif password1 != password2:
         return JsonResponse({'errno': 1103, 'msg': "两次输入的密码不同"})
@@ -282,7 +276,8 @@ def change_profile(request):
         user = User.objects.get(user_id=uid)
         user.user_name = username
         user.user_password = password1
-        user.user_mail = mail
+        user.user_signature = signature
+        user.user_email = email
         user.user_tel = tel
         user.save()
         return JsonResponse({'errno': 0, 'msg': '修改用户信息成功'})
@@ -297,11 +292,12 @@ def change_profile_admin(request):
     username = data_json.get('username')
     password1 = data_json.get('password1')
     password2 = data_json.get('password2')
-    mail = data_json.get('email')
+    signature = data_json.get('signature')
+    email = data_json.get('email')
     tel = data_json.get('tel')
-    if not bool(re.match("^[A-Za-z0-9][A-Za-z0-9_]{2,20}$", str(username))):
+    if not bool(re.match("^[A-Za-z0-9][A-Za-z0-9_]{2,29}$", str(username))):
         return JsonResponse({'errno': 1111, 'msg': "用户名不合法"})
-    elif User.objects.filter(user_id__ne=uid, user_name=username).exists():
+    elif User.objects.filter(~Q(user_id=uid) & Q(user_name=username)).exists():
         return JsonResponse({'errno': 1112, 'msg': "用户名已存在"})
     elif password1 != password2:
         return JsonResponse({'errno': 1113, 'msg': "两次输入的密码不同"})
@@ -311,7 +307,8 @@ def change_profile_admin(request):
         user = User.objects.get(user_id=uid)
         user.user_name = username
         user.user_password = password1
-        user.user_mail = mail
+        user.user_signature = signature
+        user.user_email = email
         user.user_tel = tel
         user.save()
         return JsonResponse({'errno': 0, 'msg': '修改用户信息成功'})
@@ -319,11 +316,9 @@ def change_profile_admin(request):
 
 @csrf_exempt
 @login_required
-@require_http_methods(['POST'])
-def check_questionnaire_list(request):
-    data_json = json.loads(request.body)
-    uid = data_json.get('uid')
-    qn_list_type = data_json.get('type')
+@require_http_methods(['GET'])
+def check_questionnaire_list(request, qn_list_type):
+    uid = request.GET.get('uid')
     user = User.objects.get(user_id=uid)
     if qn_list_type == 'created' or qn_list_type == 'deleted':
         questionnaires = user.user_created_questionnaires.all()
@@ -362,4 +357,4 @@ def change_user_status(request):
 @csrf_exempt
 @require_http_methods(['POST'])
 def deploy_test(request):
-    return JsonResponse({'errno': 0, 'ver': "7"})
+    return JsonResponse({'errno': 0, 'ver': "5", 'cur_time': now()})
