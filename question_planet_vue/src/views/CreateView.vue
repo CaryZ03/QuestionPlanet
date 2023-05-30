@@ -545,7 +545,7 @@ export default {
     padding: 1rem;
     width: 30%;
     overflow-y: scroll;
-    background-color: #d4dbe0;
+    background-color: rgba(212, 219, 224, .18) !important;
 
     /* color: #409EFF; */
 
@@ -628,14 +628,13 @@ export default {
     width: 90%;
     /* background-color: #9b5d5d; */
 }
-
 .tool {
     box-shadow: none !important;
     border: 1px solid #dee2e6 !important;
     border-radius: 0.25rem !important;
     margin: 0.5rem;
     width: 95%;
-    background-color: #ffffff;
+    background-color: rgba(255, 225, 255, .55);
     /* height: 10rem; */
 }
 
