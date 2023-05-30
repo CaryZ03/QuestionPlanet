@@ -111,6 +111,7 @@ export default {
       var id=data.qn_id
       console.log("data!!!!!!"+data)
       this.$store.state.isAnalyzing = true
+      this.$store.state.analyzingNumID =id
       this.$router.push({
           name: 'Analyze',
           params:{
