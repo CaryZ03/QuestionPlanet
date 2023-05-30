@@ -10,7 +10,7 @@ from django.http.response import JsonResponse
 import json
 from user.models import User, Admin, Filler, UserToken
 from questionnaire.models import Questionnaire, AnswerSheet, Question, Answer
-from user.views import login_required, admin_required
+from user.views import login_required, admin_required, create_token
 
 
 def questionnaire_exists(view_func):
@@ -41,10 +41,9 @@ def get_client_ip(request):
 @require_http_methods(['POST'])
 def fill_questionnaire(request, qn_id):
     token_key = request.headers.get('Authorization')
-    if token_key and UserToken.objects.filter(Q(key=token_key) & Q(expire_time__gte=now())).exists():
+    if token_key:
         token = UserToken.objects.get(key=token_key)
-        user = token.user
-        filler = Filler.objects.get(filler_user=user)
+        filler = token.filler
     else:
         filler_ip = get_client_ip(request)
         if Filler.objects.filter(filler_ip=filler_ip).exists():
@@ -52,6 +51,7 @@ def fill_questionnaire(request, qn_id):
         else:
             filler = Filler.objects.create(filler_ip=filler_ip)
             filler.save()
+        token_key = create_token(filler.filler_id, False)
     questionnaire = Questionnaire.objects.get(qn_id=qn_id)
     if AnswerSheet.objects.filter(as_questionnaire=questionnaire, as_filler=filler).exists():
         answer_sheet = AnswerSheet.objects.get(as_questionnaire=questionnaire, as_filler=filler)
@@ -62,7 +62,7 @@ def fill_questionnaire(request, qn_id):
             filler.filler_user.user_filled_questionnaire.add(questionnaire)
             filler.filler_user.save()
     temp_save = answer_sheet.as_temporary_save
-    return JsonResponse({'errno': 0, 'msg': "答卷创建成功", 'as_id': answer_sheet.as_id, 'temp_save': temp_save})
+    return JsonResponse({'errno': 0, 'msg': "答卷创建成功", 'as_id': answer_sheet.as_id, 'temp_save': temp_save, 'token_key': token_key})
 
 
 # path('save_answers', save_answers),

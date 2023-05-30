@@ -50,8 +50,8 @@ def create_token(uid, is_admin):
         admin = Admin.objects.get(admin_id=uid)
         token = UserToken(key=token_key, is_admin=is_admin, admin=admin, expire_time=expiry_time)
     else:
-        user = User.objects.get(user_id=uid)
-        token = UserToken(key=token_key, is_admin=is_admin, user=user, expire_time=expiry_time)
+        filler = Filler.objects.get(filler_id=uid)
+        token = UserToken(key=token_key, is_admin=is_admin, filler=filler, expire_time=expiry_time)
     token.save()
 
     return token.key
@@ -60,13 +60,12 @@ def create_token(uid, is_admin):
 def login_required(view_func):
     def wrapper(request, *args, **kwargs):
         token_key = request.headers.get('Authorization')
-        if token_key:
-            # 使用 Token 模型的 objects.get 方法查找令牌
-            token = UserToken.objects.filter(key=token_key).first()
-            if token is None or token.expire_time < now():
+        token = UserToken.objects.filter(key=token_key).first()
+        if token and token.filler.filler_is_user:
+            if token.expire_time < now():
                 return JsonResponse({'errno': 1002, 'msg': "登录信息已过期"})
             else:
-                user = token.user
+                user = token.filler.filler_user
                 return view_func(request, *args, user=user, **kwargs)
         else:
             return JsonResponse({'errno': 1001, 'msg': "未登录"})
@@ -136,8 +135,15 @@ def user_login(request):
     if User.objects.filter(user_name=username).exists():
         user = User.objects.get(user_name=username)
         if user.user_password == password:
-            # UserToken.objects.filter(user=user).delete()
-            token_key = create_token(user.user_id, False)
+            filler = Filler.objects.get(filler_user=user)
+            token_key = request.headers.get('Authorization')
+            if token_key:
+                token = UserToken.objects.get(key=token_key)
+                token.is_admin = False
+                token.filler = filler
+                token.save()
+            else:
+                token_key = create_token(filler.filler_id, False)
             return JsonResponse({'errno': 0, 'msg': "登录成功", 'uid': user.user_id, 'token_key': token_key})
         else:
             return JsonResponse({'errno': 1022, 'msg': "密码错误"})
