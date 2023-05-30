@@ -167,6 +167,8 @@ export default {
         const btnLogin = document.querySelector('.btnLogin-popup')
         const iconClose = document.querySelector('.icon-close')
 
+        wrapper.classList.add('active-popup');
+
         registerLink.addEventListener('click', () => {
             wrapper.classList.add('active');
         });

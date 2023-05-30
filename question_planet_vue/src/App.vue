@@ -7,10 +7,15 @@
         <nav class="navigation">
           <a href="" @click.prevent="pushHome">主页</a>
           <a href="" @click.prevent="pushAbout">关于 </a>
-          <a href="" @click.prevent="pushManage">问卷管理</a>
+
+          <a href="" v-if="this.$store.state.isLogin" @click.prevent="pushManage">问卷管理</a>
+          <a href="" v-else @click.prevent="pushLogin">问卷管理</a>
+
           <!-- <a href="" @click.prevent="">Contact</a> -->
-          <a href="" @click.prevent="pushUserInfo">用户信息</a>
-          <button v-if="!this.$store.state.isLogin" class="btnLogin-popup">登录/注册</button>
+          <a href="" v-if="this.$store.state.isLogin" @click.prevent="pushUserInfo">用户信息</a>
+          <a href="" v-else @click.prevent="pushLogin">用户信息</a>
+
+          <button v-if="!this.$store.state.isLogin"  @click.prevent="pushLogin" class="btnLogin-popup">登录/注册</button>
           <a href="" v-else @click.prevent="logout">退出登录</a>
         </nav>
       </header>
@@ -18,7 +23,7 @@
     <div class="app-wrapper">
       <router-view></router-view>
     </div>
-    
+
   </body>
 </template>
 
@@ -52,10 +57,12 @@ export default {
         params: {
           userID: this.$store.state.curUserID,
         }
-      }),
-        alert("my new ")
+      })
+        // alert("my new ")
     },
     pushManage() {
+      this.$store.state.isAnalyzing = false
+      this.$store.state.is_creating = false
       if (this.$store.state.isLogin == false) {
         this.$router.push({
           name: 'Login',
@@ -67,22 +74,31 @@ export default {
         params: {
           userID: this.$store.state.curUserID,
         }
-      }),
-        alert("my new ")
+      })
+        // alert("my new ")
     },
     pushLogin() {
+      // const wrapper = document.querySelector('.wrapper')
+      // const btnLogin = document.querySelector('.btnLogin-popup')
+      // wrapper.classList.add('active-popup');
+
+      const elements = document.getElementsByClassName('wrapper');
+      console.log(elements)
+      for (let i = 0; i < elements.length; i++) {
+        elements[i].classList.add('active-popup');
+      }
 
       this.$router.push({
         name: 'Login',
-      }),
-        alert("my new ")
+      })
+        // alert("my new ")
     },
     pushAbout() {
 
       this.$router.push({
         name: 'About',
-      }),
-        alert("my new ")
+      })
+        // alert("my new ")
     },
     logout() {
       this.$store.isLogin = false
@@ -101,8 +117,8 @@ export default {
       }
     },
   },
-  components:{
-      newhome: Newhome,
+  components: {
+    newhome: Newhome,
   },
 }
 </script>
@@ -185,7 +201,7 @@ body {
   align-items: center;
   min-height: 100vh;
   /* background: url('./assets/background2.jpg'); */
-  background:  url('./assets/homebackground.jpg');
+  background: url('./assets/homebackground.jpg');
 
   background-size: cover;
   background-position: center;
