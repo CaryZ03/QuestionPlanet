@@ -32,8 +32,9 @@ const routes = [
     component: () => import(/* webpackChunkName: "about" */ '../views/ManageView.vue'),
     children:[
       {
+        path:'questionnaire_create/:qn_id',
         name:'questionnaire_create', //问卷管理
-        path:'questionnaire_create',
+        
         component: CreateQuestionnaireView
       },
       {
@@ -48,6 +49,11 @@ const routes = [
         name:'questionnaire_check',
         path:'questionnaire_check',
       },
+      {
+        path: '/Analyze/:qn_id',
+        name: 'Analyze',
+        component: Analyze
+      }
 
     ]
   },
@@ -75,11 +81,7 @@ const routes = [
     // which is lazy-loaded when the route is visited.
     component:UserInfoView
   },
-  {
-    path: '/Analyze/:qn_id',
-    name: 'Analyze',
-    component: Analyze
-  }
+
 
 ]
 

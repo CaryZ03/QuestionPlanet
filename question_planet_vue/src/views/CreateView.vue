@@ -13,18 +13,6 @@
                         <el-button type="primary" class="btn btn-primary btn-sm" icon="el-icon-circle-plus" size="small"
                             @click="addQuestion('single')" round>添加单选题</el-button>
                     </el-tooltip>
-                    <el-tooltip class="item" effect="dark" content="问卷中用户只能选中一个选项作为答案。" placement="bottom">
-                        <el-button type="primary" class="btn btn-primary btn-sm" icon="el-icon-circle-plus" size="small"
-                            @click="addQuestion('single')" round>添加单选题</el-button>
-                    </el-tooltip>
-                    <el-tooltip class="item" effect="dark" content="问卷中用户只能选中一个选项作为答案。" placement="bottom">
-                        <el-button type="primary" class="btn btn-primary btn-sm" icon="el-icon-circle-plus" size="small"
-                            @click="addQuestion('single')" round>添加单选题</el-button>
-                    </el-tooltip>
-                    <el-tooltip class="item" effect="dark" content="问卷中用户只能选中一个选项作为答案。" placement="bottom">
-                        <el-button type="primary" class="btn btn-primary btn-sm" icon="el-icon-circle-plus" size="small"
-                            @click="addQuestion('single')" round>添加单选题</el-button>
-                    </el-tooltip>
                 </div>
             </el-collapse-item>
 
@@ -139,12 +127,12 @@
             <div v-for="(question, index) in questions" :key="index" class="card mb-2" v-bind:id="question.id">
                 <el-container style="box-shadow: 0 2px 4px rgba(0, 0, 0, .12), 0 0 6px rgba(0, 0, 0, .04)">
                     <el-main v-if="question.isEdit">
-                        <span class="red_star" v-if="question.isManditory">*&nbsp;</span>
+                        <span class="red_star" v-if="question.isMandatory">*&nbsp;</span>
                         <span class="red_star" v-else></span>
 
-                        <span v-if="question.type === 'single'">{{ index + 1 }}.单选题</span>
-                        <span v-if="question.type === 'multiple'">{{ index + 1 }}.多选题</span>
-                        <span v-if="question.type === 'text'">{{ index + 1 }}.填空题</span>
+                        <span v-if="question.type === 'single'" style="color: #F3F2F2;">{{ index + 1 }}.单选题</span>
+                        <span v-if="question.type === 'multiple'" style="color: #F3F2F2;">{{ index + 1 }}.多选题</span>
+                        <span v-if="question.type === 'text'" style="color: #F3F2F2;">{{ index + 1 }}.填空题</span>
                         <div style="line-height: 30px;">&emsp;</div>
 
                         <div class="title">标题</div>
@@ -190,15 +178,15 @@
 
                         <el-row>
                             <el-col :span="21">
-                                <div style="line-height: 200%; color: #000;">此题目必须回答</div>
+                                <div style="line-height: 200%; color: #F3F2F2;">此题目必须回答</div>
                             </el-col>
-                            <el-col :span="3"><el-switch v-model="question.isManditory" active-color="#0099ff"
+                            <el-col :span="3"><el-switch v-model="question.isMandatory" active-color="#0099ff"
                                     inactive-color="#c2bdbd"></el-switch></el-col>
                         </el-row>
                     </el-main>
 
                     <el-main v-else>
-                        <span class="red_star" v-if="question.isManditory">*&nbsp;</span>
+                        <span class="red_star" v-if="question.isMandatory">*&nbsp;</span>
                         <span class="red_star" v-else></span>
                         <span v-if="question.type === 'single'">{{ index + 1 }}.单选题</span>
                         <span v-if="question.type === 'multiple'">{{ index + 1 }}.多选题</span>
@@ -248,7 +236,7 @@
                 <div style="line-height: 30px;">&emsp;</div>
 
             </div>
-            <el-button type="success" style="margin: 0 0 0 -66px" round v-on:click="save_handler()">保存问卷</el-button>
+            <el-button type="success" style="margin: 0 0 0 214px" round v-on:click="save_handler()">保存问卷</el-button>
             <el-button type="primary" round v-on:click="commitQuestionnaire()">提交问卷</el-button>
             
         </div>
@@ -272,7 +260,6 @@
 </template>
   
 <script>
-import axios from 'axios';
 // const vm = new Vue({
 //   el: '#question-list',
 //   data:{
@@ -301,7 +288,7 @@ export default {
             let question = {
                 type: type,
                 isEdit: true,
-                isManditory: true,
+                isMandatory: true,
                 title: "",
                 options: [],
                 q_description: "",
@@ -335,7 +322,7 @@ export default {
             // 选择要包含在 JSON 数据中的属性
             return {
                 q_type: question.type,
-                q_manditory: question.isManditory,
+                q_mandatory: question.isMandatory,
                 q_title: question.title,
                 q_description: question.q_description,
                 q_option_count: question.options.length,
@@ -354,8 +341,8 @@ export default {
             const formattedDate = `${dateString.split('-').reverse().join('-')} ${timeString}`;
 
             const dataObject = { 
-                uid: this.$store.state.curUserID,
-                qn_id: 3,
+                uid: 7,
+                qn_id: 65,
                 qn_title: this.qn_title,
                 qn_description: this.qn_description,
                 qn_end_time: formattedDate,
@@ -546,7 +533,7 @@ export default {
     padding: 1rem;
     width: 30%;
     overflow-y: scroll;
-    background-color: #d4dbe0;
+    background-color: rgba(212, 219, 224, .18) !important;
 
     /* color: #409EFF; */
 
@@ -564,6 +551,13 @@ export default {
 
 }
 
+.el-collapse-item__header.is-active{
+    background-color: #0069d9;
+}
+
+.sidebar::-webkit-scrollbar {
+    display: none;
+}
 .outline-area {
     position: fixed;
     top: 4rem;
@@ -572,7 +566,7 @@ export default {
     z-index: 100;
     padding: 1rem;
     width: 20%;
-    background-color: #d8e5f3;
+    background-color: #d8e5f327;
     /* overflow-y: scroll;
     background-color: #ccd2d8;
     display: flex;
@@ -582,6 +576,9 @@ export default {
     box-shadow: rgba(0, 0, 0, 0.02) 0 1px 3px 0, rgba(27, 31, 35, 0.15) 0 0 0 1px;
 }
 
+.outline-list::-webkit-scrollbar {
+    display: none;
+}
 .outline-list {
 
     top: 6rem;
@@ -593,10 +590,10 @@ export default {
     padding: 1rem;
     width: 90%;
     overflow-y: scroll;
-    background-color: #ffffff;
+    background-color: #ffffff48;
     /* background-color: #aebac5; */
 
-
+    color: #e9ecef;
     /* display: flex;
     justify-content: space-between;
     flex-direction: row;
@@ -606,11 +603,13 @@ export default {
 
 .outline-title {
     border-radius: 4px;
-    background-color: white;
+    background-color: rgba(255, 255, 255, 0.274);
     left: 10%;
     width: 90%;
     box-shadow: rgba(0, 0, 0, 0.02) 0 1px 3px 0, rgba(27, 31, 35, 0.15) 0 0 0 1px;
-    font-size: 14px;
+    font-size: 16px;
+    text-align: center;
+    color: #fff;
 }
 
 .outline-item {
@@ -619,21 +618,20 @@ export default {
     border-radius: 0.25rem !important;
     margin: 0rem;
 
-
+    color: #fff;
     display: block;
     padding: 0.5rem;
     text-align: left !important;
     width: 90%;
     /* background-color: #9b5d5d; */
 }
-
 .tool {
     box-shadow: none !important;
     border: 1px solid #dee2e6 !important;
     border-radius: 0.25rem !important;
     margin: 0.5rem;
     width: 95%;
-    background-color: #ffffff;
+    background-color: rgba(0, 0, 0, 0.55);
     /* height: 10rem; */
 }
 
@@ -643,6 +641,7 @@ export default {
     justify-content: space-between;
     flex-direction: row;
     flex-wrap: wrap;
+    background-color: rgba(255, 255, 255, 0.103);
 }
 
 .tool-title {
@@ -668,6 +667,9 @@ export default {
     
 }
 
+.question-card::-webkit-scrollbar {
+    display: none;
+}
 .card {
     box-shadow: none !important;
 
@@ -777,7 +779,7 @@ export default {
 }
 
 .title {
-    color: #857e7e;
+    color: #F3F2F2;
     font-size: 13px;
 }
 
@@ -792,7 +794,7 @@ export default {
 
 .el-header,
 .el-footer {
-    background-color: #dbe1e9;
+    background-color: rgba(219, 225, 233, .73) !important;
     color: #333;
     text-align: center;
     line-height: 60px;
@@ -806,7 +808,7 @@ export default {
 }
 
 .el-main {
-    background-color: #E9EEF3;
+    background-color: rgba(233, 238, 243, .27) !important;
     color: #333;
     text-align: left;
 }
@@ -823,4 +825,7 @@ body>.el-container {
 
 .el-container:nth-child(7) .el-aside {
     line-height: 320px;
-}</style>
+}
+
+</style>
+

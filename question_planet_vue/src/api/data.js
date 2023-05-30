@@ -63,3 +63,11 @@ export function postQuestionnaire_Import(data) {
         data,
     })
 }
+
+//分析问卷
+export function getQuestionnaire_Analyze(qn_id) {
+    return request({
+        method: 'GET',
+        url: `/data/questionnaire_analysis/${qn_id}`,
+    })
+}

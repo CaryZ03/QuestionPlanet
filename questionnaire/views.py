@@ -220,7 +220,7 @@ def change_questionnaire_status(request, user):
     qn_id = data_json.get('qn_id')
     status = data_json.get('status')
     qn = Questionnaire.objects.get(qn_id=qn_id)
-    qn.status = status
+    qn.qn_status = status
     qn.save()
     return JsonResponse({'errno': 0, 'msg': "问卷状态更改成功"})
 

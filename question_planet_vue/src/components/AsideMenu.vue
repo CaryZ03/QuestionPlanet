@@ -30,15 +30,21 @@
                     <div class="item">
                         <div class="light"></div>
                         <div class="licon"><span class="iconfont icon-qipao1"></span></div>
-                        <div class="con">Products</div>
+                        <div class="con" >从模板创建</div>
+                        <div class="ricon"></div>
+                    </div>
+                    <div class="item">
+                        <div class="light"></div>
+                        <div class="licon"><span class="iconfont icon-qipao1"></span></div>
+                        <div class="con" @click="triggerParentEvent(0)">已创建问卷</div>
                         <div class="ricon"></div>
                     </div>
                     <div class="item">
                         <div class="light"></div>
                         <div class="licon">
-                            <span class="iconfont icon-xiaolian"></span>
+                            <span class ="iconfont icon-xiaolian"></span>
                         </div>
-                        <div class="con">Sales</div>
+                        <div class="con" @click="triggerParentEvent(1)">已填写问卷</div>
                         <div class="ricon"><span class="iconfont icon-caidan1"></span></div>
                     </div>
                     <div class="item">
@@ -46,15 +52,7 @@
                         <div class="licon">
                             <span class="iconfont icon-shexiang"></span>
                         </div>
-                        <div class="con">Discount</div>
-                        <div class="ricon"></div>
-                    </div>
-                    <div class="item">
-                        <div class="light"></div>
-                        <div class="licon">
-                            <span class="iconfont icon-wenjian1"></span>
-                        </div>
-                        <div class="con">Payouts</div>
+                        <div class="con" @click="triggerParentEvent(2)">垃圾箱</div>
                         <div class="ricon"></div>
                     </div>
                 </div>
@@ -97,20 +95,25 @@
 export default {
     data() {
         return {
-
+            menuState:0
         }
     },
     methods: {
-        createNewQ(){
-            const data={
+        createNewQ() {
+            const data = {
                 "uid": this.$store.state.curUserID
             }
             console.log(data)
-            this.$api.questionnaire.postQuestionnaire_Create(data).then((res)=>{
-                console.log(res.data.errno+res.data.qn_id)
-            }).catch((err)=>{
+            this.$api.questionnaire.postQuestionnaire_Create(data).then((res) => {
+                console.log(res.data.errno + res.data.qn_id)
+            }).catch((err) => {
                 console.log(err)
             })
+        },
+        triggerParentEvent(state) {
+            console.log("state:"+state)
+            this.menuState=state
+            this.$emit('childEvent', this.menuState)
         }
 
     },
