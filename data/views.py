@@ -215,7 +215,7 @@ def questionnaire_analysis(request, user, qn_id):
                     if option['choose'] in a_content:
                         option['num'] += 1
         elif question.q_type == 'judge':
-            q_result['q_options'] = [{'choose': '0', 'label': 'False', 'num': 0}, {'choose': '1', 'label': 'True', 'num': 0}]
+            q_result['q_options'] = [{'choose': '0', 'label': '错误', 'num': 0}, {'choose': '1', 'label': '正确', 'num': 0}]
             for answer in answers:
                 a_content = answer.a_content.capitalize()
                 for option in q_result['q_options']:

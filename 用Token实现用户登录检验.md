@@ -19,16 +19,15 @@ key是一个随机生成的key，在用户登录时生成并传递给前端并�
 from django.core.management.utils import get_random_secret_key
 from datetime import timedelta
 from django.utils.timezone import now
-
 def create_token(uid, is_admin):
     token_key = get_random_secret_key()
     expiry_time = now() + timedelta(minutes=20)
     if is_admin:
         admin = Admin.objects.get(admin_id=uid)
-        token = UserToken(key=token_key, is_admin=is_admin, admin=admin, expire_time=expiry_time)
+        token = UserToken(key=token_key, admin=admin, expire_time=expiry_time)
     else:
         user = User.objects.get(user_id=uid)
-        token = UserToken(key=token_key, is_admin=is_admin, user=user, expire_time=expiry_time)
+        token = UserToken(key=token_key, user=user, expire_time=expiry_time)
     token.save()
 
     return token.key
@@ -48,7 +47,6 @@ def user_login(request):
     if User.objects.filter(user_name=username).exists():
         user = User.objects.get(user_name=username)
         if user.user_password == password:
-            UserToken.objects.filter(user=user).delete()
             token_key = create_token(user.user_id, False)
             return JsonResponse({'errno': 0, 'msg': "登录成功", 'uid': user.user_id, 'token_key': token_key})
         else:
