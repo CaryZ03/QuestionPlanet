@@ -5,7 +5,7 @@
 
         <h2 class="logo">logo</h2>
         <nav class="navigation">
-          <a href=""  @click.prevent="pushHome">主页</a>
+          <a href="" @click.prevent="pushHome">主页</a>
           <a href="" @click.prevent="pushAbout">关于 </a>
 
           <a href="" v-if="this.$store.state.isLogin" @click.prevent="pushManage">问卷管理</a>
@@ -23,7 +23,7 @@
     <div class="app-wrapper">
       <router-view></router-view>
     </div>
-    
+
   </body>
 </template>
 
@@ -78,10 +78,16 @@ export default {
         alert("my new ")
     },
     pushLogin() {
-      const wrapper = document.querySelector('.wrapper')
-      const btnLogin = document.querySelector('.btnLogin-popup')
-      wrapper.classList.add('active-popup');
-      
+      // const wrapper = document.querySelector('.wrapper')
+      // const btnLogin = document.querySelector('.btnLogin-popup')
+      // wrapper.classList.add('active-popup');
+
+      const elements = document.getElementsByClassName('wrapper');
+      console.log(elements)
+      for (let i = 0; i < elements.length; i++) {
+        elements[i].classList.add('active-popup');
+      }
+
       this.$router.push({
         name: 'Login',
       }),
@@ -111,8 +117,8 @@ export default {
       }
     },
   },
-  components:{
-      newhome: Newhome,
+  components: {
+    newhome: Newhome,
   },
 }
 </script>
@@ -195,7 +201,7 @@ body {
   align-items: center;
   min-height: 100vh;
   /* background: url('./assets/background2.jpg'); */
-  background:  url('./assets/homebackground.jpg');
+  background: url('./assets/homebackground.jpg');
 
   background-size: cover;
   background-position: center;
