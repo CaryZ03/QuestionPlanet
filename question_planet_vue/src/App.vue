@@ -15,7 +15,7 @@
           <a href="" v-if="this.$store.state.isLogin" @click.prevent="pushUserInfo">用户信息</a>
           <a href="" v-else @click.prevent="pushLogin">用户信息</a>
 
-          <button v-if="!this.$store.state.isLogin" class="btnLogin-popup">登录/注册</button>
+          <button v-if="!this.$store.state.isLogin"  @click.prevent="pushLogin" class="btnLogin-popup">登录/注册</button>
           <a href="" v-else @click.prevent="logout">退出登录</a>
         </nav>
       </header>
@@ -57,8 +57,8 @@ export default {
         params: {
           userID: this.$store.state.curUserID,
         }
-      }),
-        alert("my new ")
+      })
+        // alert("my new ")
     },
     pushManage() {
       this.$store.state.isAnalyzing = false
@@ -74,8 +74,8 @@ export default {
         params: {
           userID: this.$store.state.curUserID,
         }
-      }),
-        alert("my new ")
+      })
+        // alert("my new ")
     },
     pushLogin() {
       // const wrapper = document.querySelector('.wrapper')
@@ -90,15 +90,15 @@ export default {
 
       this.$router.push({
         name: 'Login',
-      }),
-        alert("my new ")
+      })
+        // alert("my new ")
     },
     pushAbout() {
 
       this.$router.push({
         name: 'About',
-      }),
-        alert("my new ")
+      })
+        // alert("my new ")
     },
     logout() {
       this.$store.isLogin = false
