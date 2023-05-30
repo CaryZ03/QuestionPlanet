@@ -7,6 +7,7 @@ const Register = () => import('../views/RegisterView.vue');
 const CreateQuestionnaireView = () => import('../views/CreateView.vue');
 const UserInfoView = () => import('../views/UserInfoView.vue')
 const Analyze = () => import('../views/AnalyzeView.vue')
+const Answer = () => import('@/views/AnswerView.vue')
 Vue.use(VueRouter)
 
 const routes = [
@@ -30,24 +31,24 @@ const routes = [
     // this generates a separate chunk (about.[hash].js) for this route
     // which is lazy-loaded when the route is visited.
     component: () => import(/* webpackChunkName: "about" */ '../views/ManageView.vue'),
-    children:[
+    children: [
       {
-        path:'questionnaire_create/:qn_id',
-        name:'questionnaire_create', //问卷管理
-        
+        path: 'questionnaire_create/:qn_id',
+        name: 'questionnaire_create', //问卷管理
+
         component: CreateQuestionnaireView
       },
       {
-        name:'questionnaire_bin',//垃圾箱
-        path:'questionnaire_bin',
+        name: 'questionnaire_bin',//垃圾箱
+        path: 'questionnaire_bin',
       },
       {
-        name:'questionnaire_model',
-        path:'questionnaire_model',
+        name: 'questionnaire_model',
+        path: 'questionnaire_model',
       },
       {
-        name:'questionnaire_check',
-        path:'questionnaire_check',
+        name: 'questionnaire_check',
+        path: 'questionnaire_check',
       },
       {
         path: '/Analyze/:qn_id',
@@ -63,7 +64,7 @@ const routes = [
     // route level code-splitting
     // this generates a separate chunk (about.[hash].js) for this route
     // which is lazy-loaded when the route is visited.
-    component:Login
+    component: Login
   },
   {
     path: '/register',
@@ -71,7 +72,7 @@ const routes = [
     // route level code-splitting
     // this generates a separate chunk (about.[hash].js) for this route
     // which is lazy-loaded when the route is visited.
-    component:Register
+    component: Register
   },
   {
     path: '/userInfo/:userID',
@@ -79,7 +80,12 @@ const routes = [
     // route level code-splitting
     // this generates a separate chunk (about.[hash].js) for this route
     // which is lazy-loaded when the route is visited.
-    component:UserInfoView
+    component: UserInfoView
+  },
+  {
+    path: '/answer/:qn_id',
+    name: 'Answer',
+    component: Answer
   },
 
 
