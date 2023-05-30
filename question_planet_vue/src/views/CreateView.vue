@@ -13,18 +13,6 @@
                         <el-button type="primary" class="btn btn-primary btn-sm" icon="el-icon-circle-plus" size="small"
                             @click="addQuestion('single')" round>添加单选题</el-button>
                     </el-tooltip>
-                    <el-tooltip class="item" effect="dark" content="问卷中用户只能选中一个选项作为答案。" placement="bottom">
-                        <el-button type="primary" class="btn btn-primary btn-sm" icon="el-icon-circle-plus" size="small"
-                            @click="addQuestion('single')" round>添加单选题</el-button>
-                    </el-tooltip>
-                    <el-tooltip class="item" effect="dark" content="问卷中用户只能选中一个选项作为答案。" placement="bottom">
-                        <el-button type="primary" class="btn btn-primary btn-sm" icon="el-icon-circle-plus" size="small"
-                            @click="addQuestion('single')" round>添加单选题</el-button>
-                    </el-tooltip>
-                    <el-tooltip class="item" effect="dark" content="问卷中用户只能选中一个选项作为答案。" placement="bottom">
-                        <el-button type="primary" class="btn btn-primary btn-sm" icon="el-icon-circle-plus" size="small"
-                            @click="addQuestion('single')" round>添加单选题</el-button>
-                    </el-tooltip>
                 </div>
             </el-collapse-item>
 
@@ -142,9 +130,9 @@
                         <span class="red_star" v-if="question.isMandatory">*&nbsp;</span>
                         <span class="red_star" v-else></span>
 
-                        <span v-if="question.type === 'single'">{{ index + 1 }}.单选题</span>
-                        <span v-if="question.type === 'multiple'">{{ index + 1 }}.多选题</span>
-                        <span v-if="question.type === 'text'">{{ index + 1 }}.填空题</span>
+                        <span v-if="question.type === 'single'" style="color: #F3F2F2;">{{ index + 1 }}.单选题</span>
+                        <span v-if="question.type === 'multiple'" style="color: #F3F2F2;">{{ index + 1 }}.多选题</span>
+                        <span v-if="question.type === 'text'" style="color: #F3F2F2;">{{ index + 1 }}.填空题</span>
                         <div style="line-height: 30px;">&emsp;</div>
 
                         <div class="title">标题</div>
@@ -190,7 +178,7 @@
 
                         <el-row>
                             <el-col :span="21">
-                                <div style="line-height: 200%; color: #000;">此题目必须回答</div>
+                                <div style="line-height: 200%; color: #F3F2F2;">此题目必须回答</div>
                             </el-col>
                             <el-col :span="3"><el-switch v-model="question.isMandatory" active-color="#0099ff"
                                     inactive-color="#c2bdbd"></el-switch></el-col>
@@ -563,6 +551,10 @@ export default {
 
 }
 
+.el-collapse-item__header.is-active{
+    background-color: #0069d9;
+}
+
 .sidebar::-webkit-scrollbar {
     display: none;
 }
@@ -574,7 +566,7 @@ export default {
     z-index: 100;
     padding: 1rem;
     width: 20%;
-    background-color: #d8e5f3;
+    background-color: #d8e5f327;
     /* overflow-y: scroll;
     background-color: #ccd2d8;
     display: flex;
@@ -584,6 +576,9 @@ export default {
     box-shadow: rgba(0, 0, 0, 0.02) 0 1px 3px 0, rgba(27, 31, 35, 0.15) 0 0 0 1px;
 }
 
+.outline-list::-webkit-scrollbar {
+    display: none;
+}
 .outline-list {
 
     top: 6rem;
@@ -595,10 +590,10 @@ export default {
     padding: 1rem;
     width: 90%;
     overflow-y: scroll;
-    background-color: #ffffff;
+    background-color: #ffffff48;
     /* background-color: #aebac5; */
 
-
+    color: #e9ecef;
     /* display: flex;
     justify-content: space-between;
     flex-direction: row;
@@ -608,11 +603,13 @@ export default {
 
 .outline-title {
     border-radius: 4px;
-    background-color: white;
+    background-color: rgba(255, 255, 255, 0.274);
     left: 10%;
     width: 90%;
     box-shadow: rgba(0, 0, 0, 0.02) 0 1px 3px 0, rgba(27, 31, 35, 0.15) 0 0 0 1px;
-    font-size: 14px;
+    font-size: 16px;
+    text-align: center;
+    color: #fff;
 }
 
 .outline-item {
@@ -621,7 +618,7 @@ export default {
     border-radius: 0.25rem !important;
     margin: 0rem;
 
-
+    color: #fff;
     display: block;
     padding: 0.5rem;
     text-align: left !important;
@@ -634,7 +631,7 @@ export default {
     border-radius: 0.25rem !important;
     margin: 0.5rem;
     width: 95%;
-    background-color: rgba(255, 225, 255, .55);
+    background-color: rgba(0, 0, 0, 0.55);
     /* height: 10rem; */
 }
 
@@ -644,6 +641,7 @@ export default {
     justify-content: space-between;
     flex-direction: row;
     flex-wrap: wrap;
+    background-color: rgba(255, 255, 255, 0.103);
 }
 
 .tool-title {
@@ -827,4 +825,7 @@ body>.el-container {
 
 .el-container:nth-child(7) .el-aside {
     line-height: 320px;
-}</style>
+}
+
+</style>
+
