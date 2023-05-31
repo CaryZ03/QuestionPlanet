@@ -141,6 +141,7 @@ def user_login(request):
                 token = UserToken.objects.get(key=token_key)
                 token.is_admin = False
                 token.filler = filler
+                token.expire_time = now() + timedelta(days=1)
                 token.save()
             else:
                 token_key = create_token(filler.filler_id, False)
