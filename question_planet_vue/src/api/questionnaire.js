@@ -57,10 +57,9 @@ export function postQuestionnaire_ChangeStatus(data) {
     })
 }
 
-export function getQuestionnaire_Check(data) {
+export function getQuestionnaire_Check(qn_id) {
     return request({
         method: 'GET',
-        url: '/questionnaire/check_questionnaire',
-        data: data
+        url: `/questionnaire/check_questionnaire/${qn_id}`
     })
 }
