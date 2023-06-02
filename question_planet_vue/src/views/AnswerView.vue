@@ -19,6 +19,7 @@
                         <span v-if="question.q_type === 'single'">{{ index + 1 }}.单选题</span>
                         <span v-if="question.q_type === 'multiple'">{{ index + 1 }}.多选题</span>
                         <span v-if="question.q_type === 'text'">{{ index + 1 }}.填空题</span>
+                        <span v-if="question.q_type === 'judge'">{{ index + 1 }}.判断题</span>
                         <div style="line-height: 30px;">&emsp;</div>
                         <div>题目：{{ question.q_title }}</div>
 
