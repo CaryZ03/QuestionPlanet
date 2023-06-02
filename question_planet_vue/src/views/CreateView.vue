@@ -59,13 +59,13 @@
             <!-- 排序题工具 -->
             <el-collapse-item  name="5" class="tool mb-2">
               <template slot="title">
-                <i class="el-icon-s-data"></i>排序题
+                <i class="el-icon-s-data"></i>判断题
               </template>
                 <div class="tool-body">
                     <!-- <h5 class="tool-title"><i class="el-icon-s-data"></i>排序题</h5> -->
                     <!-- <p class="tool-text">问卷中用户需要将一组选项按照自己的喜好进行排序。</p> -->
                     <el-button type="primary" class="btn btn-primary btn-sm" icon="el-icon-circle-plus" size="small"
-                        @click="addQuestion('sorting')" round>添加排序题</el-button>
+                        @click="addQuestion('judge')" round>添加判断题</el-button>
                 </div>
             </el-collapse-item>
 
@@ -133,6 +133,7 @@
                         <span v-if="question.type === 'single'" style="color: #F3F2F2;">{{ index + 1 }}.单选题</span>
                         <span v-if="question.type === 'multiple'" style="color: #F3F2F2;">{{ index + 1 }}.多选题</span>
                         <span v-if="question.type === 'text'" style="color: #F3F2F2;">{{ index + 1 }}.填空题</span>
+                        <span v-if="question.type === 'judge'" style="color: #F3F2F2;">{{ index + 1 }}.判断题</span>
                         <div style="line-height: 30px;">&emsp;</div>
 
                         <div class="title">标题</div>
@@ -171,7 +172,13 @@
                             <el-input type="textarea" autosize placeholder="请输入内容" v-model="question.a_content"></el-input>
                         </div>
 
-
+                        <div v-else-if="question.type === 'judge'">
+                            <div class="division"><span class="title">选项</span></div>
+                            <el-radio-group v-model="question.a_content">
+                                <el-radio :label="0">错误</el-radio>
+                                <el-radio :label="1">正确</el-radio>
+                            </el-radio-group>
+                        </div>
 
                         <div style="line-height: 30px;">&emsp;</div>
                         <div class="division"><span class="title">设置</span></div>
@@ -191,6 +198,7 @@
                         <span v-if="question.type === 'single'">{{ index + 1 }}.单选题</span>
                         <span v-if="question.type === 'multiple'">{{ index + 1 }}.多选题</span>
                         <span v-if="question.type === 'text'">{{ index + 1 }}.填空题</span>
+                        <span v-if="question.type === 'judge'">{{ index + 1 }}.判断题</span>
                         <div style="line-height: 30px;">&emsp;</div>
                         <div>题目：{{ question.title }}</div>
 
@@ -217,6 +225,14 @@
                         <div v-else-if="question.type === 'text'">
                             <div class="division"><span class="title">内容</span></div>
                             <el-input type="textarea" autosize placeholder="请输入内容" v-model="question.a_content"></el-input>
+                        </div>
+
+                        <div v-else-if="question.type === 'judge'">
+                            <div class="division"><span class="title">选项</span></div>
+                            <el-radio-group v-model="question.a_content">
+                                <el-radio :label="0">错误</el-radio>
+                                <el-radio :label="1">正确</el-radio>
+                            </el-radio-group>
                         </div>
 
                     </el-main>
