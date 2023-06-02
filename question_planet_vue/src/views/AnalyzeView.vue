@@ -14,6 +14,7 @@
             <span v-if="question.q_type === 'single'" class="question-type">[单选题]</span>
             <span v-if="question.q_type === 'multiple'" class="question-type">[多选题]</span>
             <span v-if="question.q_type === 'text'" class="question-type">[填空题]</span>
+            <span v-if="question.q_type === 'judge'" class="question-type">[判断题]</span>
             <div style="line-height: 30px;">&emsp;</div>
             
             <el-table
@@ -177,7 +178,7 @@
             //         uid: 1
             //     },
             // })
-            this.$api.data.getQuestionnaire_Analyze(28)
+            this.$api.data.getQuestionnaire_Analyze(this.$store.state.analyzingNumID)
             .then(function (response) {
             console.log(response);
             console.log(response.data.result);
