@@ -136,7 +136,7 @@ def user_login(request):
     if User.objects.filter(user_name=username).exists():
         user = User.objects.get(user_name=username)
         if user.user_password == password:
-            filler = Filler.objects.filter(filler_user=user).first
+            filler = Filler.objects.filter(filler_user=user).first()
             if filler is None:
                 filler_ip = get_client_ip(request)
                 filler = Filler.objects.create(filler_ip=filler_ip, filler_is_user=True, filler_user=user)
