@@ -47,7 +47,7 @@ def fill_questionnaire(request, qn_id):
     else:
         filler_ip = get_client_ip(request)
         if Filler.objects.filter(filler_ip=filler_ip).exists():
-            filler = Filler.objects.get(filler_ip=filler_ip)
+            filler = Filler.objects.filter(filler_ip=filler_ip).last()
         else:
             filler = Filler.objects.create(filler_ip=filler_ip)
             filler.save()
