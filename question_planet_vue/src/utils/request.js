@@ -19,7 +19,9 @@ const request = axios.create({
 
 request.interceptors.request.use(
     config => {
-      const token_key = store.state.token_key;
+      var token_key=''
+      if(store.state.token_key!=='')
+      token_key = store.state.token_key;
       console.log(token_key)
       if (token_key) {
         config.headers['Authorization'] = token_key ;

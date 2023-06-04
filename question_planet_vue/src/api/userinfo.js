@@ -41,11 +41,10 @@ export function postUserInfo_ResetPassword(data) {
     })
 }
 //登出
-export function postUserInfo_Logout(data) {
+export function postUserInfo_Logout() {
     return request({
         method: 'POST',
         url:  '/user/logout',
-        data: user
     })
 }
 //cancel_account

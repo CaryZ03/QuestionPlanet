@@ -105,8 +105,14 @@ export default {
       this.$store.curUserID = -1
       this.$store.curUserName = ''
       this.$store.token_key = ''
-      this.$router.push({
+      
+      this.$api.userInfo.postUserInfo_Logout().then((res)=>{
+        console.log(res)
+      }),
+      this.$nextTick(()=>{
+        this.$router.push({
         name: 'Login',
+      })
       })
 
     },

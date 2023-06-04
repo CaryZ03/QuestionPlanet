@@ -5,7 +5,31 @@
         <AsideMenu @childEvent="handleChildEvent"></AsideMenu>
       </aside>
       <main>
+
+
+
         <el-main style="background: transparent;">
+
+
+
+          <div class="q_nav">
+            <button class="btnSort" @click="sortByCreateIDMax" style="float: right;">最大ID</button>
+            <button class="btnSort" @click="sortByCreateIDMin" style="float: right;">最小ID</button>
+
+            <div class="search-box" style="background: transparent;">
+              <a class="search-btn" style="background: transparent;">
+                <i class="el-icon-search" aria-hidden="true"></i>
+              </a>
+              <input type="text" class="search-txt" placeholder="搜索" />
+              <!-- <div class="search-line"></div> -->
+            </div>
+          </div>
+
+
+
+
+
+
           <el-row class="single_questionnaire_box hvr-grow-shadow">
             <div class="questionnaire_title">
               <div class="pull-left">
@@ -31,27 +55,29 @@
             class="single_questionnaire_box hvr-grow-shadow">
             <div class="questionnaire_title">
               <div class="pull-left">
-                <div class="questionnaire_title">{{ questionnaire.qn_title }}</div>
+                <div class="questionnaire_title">{{ JSON.parse(questionnaire).qn_title }}</div>
               </div>
               <div class="pull-right">
-                <div class="pull-left item-id">ID:{{ questionnaire.qn_id }}</div>
-                <div class="pull-left item-running">Status:{{ questionnaire.qn_status }}</div>
+                <div class="pull-left item-id">ID:{{ JSON.parse(questionnaire).qn_id }}</div>
+                <div class="pull-left item-running">Status:{{ JSON.parse(questionnaire).qn_status }}</div>
                 <div class="pull-left item-data">receive:0</div>
-                <div class="pull-left item-data">创建时间:{{ questionnaire.qn_createTime }}</div>
-                <div class="pull-left item-data">结束时间:{{ questionnaire.qn_endTime }}</div>
+                <div class="pull-left item-data">创建时间:{{ JSON.parse(questionnaire).qn_createTime }}</div>
+                <div class="pull-left item-data">结束时间:{{ JSON.parse(questionnaire).qn_endTime }}</div>
               </div>
             </div>
             <el-divider></el-divider>
             <div class="questionnaire_body">
-              <el-button @click="pushCreate(questionnaire)" round style="background-color:rgba(227, 227, 227, 0.1);;">设计问卷</el-button>
-              <el-button round style="background-color:rgba(227, 227, 227, 0.1);;">发送问卷</el-button>
+              <el-button @click="pushCreate(questionnaire)"  round
+                style="background-color:rgba(227, 227, 227, 0.1);;">设计问卷</el-button>
+              <el-button @click="generateQuestionnaireLink(JSON.parse(questionnaire).qn_id)" class="copyLink" round
+                style="background-color:rgba(227, 227, 227, 0.1);;">发送问卷</el-button>
               <el-button @click="pushAnalyze(questionnaire)" round
                 style="background-color:rgba(227, 227, 227, 0.1);">分析问卷</el-button>
-              <el-button v-show="stateType==0" @click="deleteQuestionnaire(questionnaire)" round
+              <el-button v-show="stateType == 0" @click="deleteQuestionnaire(questionnaire)" round
                 style="background-color:rgba(227, 227, 227, 0.1);">删除问卷</el-button>
-              <el-button v-show="stateType==0" @click="deleteQuestionnaire(questionnaire)" round
+              <el-button v-show="stateType == 0" @click="deleteQuestionnaire(questionnaire)" round
                 style="background-color:rgba(227, 227, 227, 0.1);">移除问卷</el-button>
-              <el-button v-show="stateType==2" @click="deleteQuestionnaire(questionnaire)" round
+              <el-button v-show="stateType == 2" @click="deleteQuestionnaire(questionnaire)" round
                 style="background-color:rgba(227, 227, 227, 0.1);">撤销删除</el-button>
             </div>
 
@@ -67,6 +93,7 @@
 </template>
 
 <script>
+import Clipboard from 'clipboard';
 import AsideMenu from '@/components/AsideMenu.vue'
 export default {
   data() {
@@ -74,7 +101,8 @@ export default {
       stDate: '2023-5-16',
       name: 'Loar',
       type: '考试卷',
-      edDate: '2023-5-16'
+      edDate: '2023-5-16',
+      
     };
     return {
       searchText: '',
@@ -93,31 +121,49 @@ export default {
   },
   methods: {
     pushCreate(questionnaire) {
-      var data=JSON.parse(questionnaire)
-      var id=data.qn_id
+      var data = JSON.parse(questionnaire)
+      var id = data.qn_id
       this.$store.state.is_creating = true,
         this.$router.push({
           name: 'questionnaire_create',
-          params:{
+          params: {
             "qn_id": id
           }
         }),
         alert(this.$store.state.is_creating)
     },
+    // 生成问卷链接
+    generateQuestionnaireLink(qn_id) {
+      var text = `http://localhost:8080/answer/${qn_id}`
+      
+      alert(text)
+      const clipboard = new Clipboard('.copyLink', {
+        text: () => text
+      });
+      clipboard.on('success', () => {
+        alert('文本已复制到剪贴板！');
+        clipboard.destroy();
+      });
+      clipboard.on('error', () => {
+        alert('Failed to copy text');
+        clipboard.destroy();
+      });
+
+    },
 
 
     pushAnalyze(questionnaire) {
-      var data=JSON.parse(questionnaire)
-      var id=data.qn_id
-      console.log("data!!!!!!"+data)
+      var data = JSON.parse(questionnaire)
+      var id = data.qn_id
+      console.log("data!!!!!!" + data)
       this.$store.state.isAnalyzing = true
-      this.$store.state.analyzingNumID =id
+      this.$store.state.analyzingNumID = id
       this.$router.push({
-          name: 'Analyze',
-          params:{
-            "qn_id": id
-          }
-        })
+        name: 'Analyze',
+        params: {
+          "qn_id": id
+        }
+      })
     },
 
     getManagerQuestionnaireList_Create() {
@@ -130,7 +176,7 @@ export default {
       this.$api.userInfo.getUserInfo_GetQList(data).then((res) => {
 
         this.questionnaireList = res.data['qn_info']
-        console.log(typeof (res.data['qn_info'][0]))
+        console.log(typeof (res.data['qn_info']))
       })
       this.stateType = 0
     },
@@ -210,19 +256,439 @@ export default {
         default:
           break;
       }
-    }
+    },
+    // 按发布时间排序
+
+
+    // 按ID排序
+    sortByCreateIDMax() {
+      console.log(this.questionnaireList)
+      this.questionnaireList = this.questionnaireList.sort((a, b) => JSON.parse(b).qn_id - JSON.parse(a).qn_id);
+      console.log(this.questionnaireList)
+      return this.questionnaireList
+    },
+
+    sortByCreateIDMin() {
+      console.log(this.questionnaireList)
+      this.questionnaireList = this.questionnaireList.sort((b, a) => JSON.parse(b).qn_id - JSON.parse(a).qn_id);
+      console.log(this.questionnaireList)
+      return this.questionnaireList
+    },
+    // 创建时间排序
+    sortByCreateTimeMAX() {
+      console.log(this.questionnaireList)
+      this.questionnaireList = this.questionnaireList.sort((a, b) => new Date(JSON.parse(b).qn_createTime) - new Date(JSON.parse(a).qn_createTime));
+      console.log(this.questionnaireList)
+      return this.questionnaireList
+    },
+    sortByCreateTimeMIN() {
+      console.log(this.questionnaireList)
+      this.questionnaireList = this.questionnaireList.sort((b, a) => new Date(JSON.parse(b).qn_createTime) - new Date(JSON.parse(a).qn_createTime));
+      console.log(this.questionnaireList)
+      return this.questionnaireList
+    },
+    // 按endTime排序
+
+
+    // 按问卷回收量排序
+    sortByQuestionnaireCount() {
+      return this.questionnaireList.sort((a, b) => JSON.parse(a).questionnaireCount - JSON.parse(b).questionnaireCount);
+    },
+
+    // 根据当前排序方式显示数据列表
+    sortedItems() {
+      // TODO: 根据当前的排序方式返回排序后的数据
+      return this.items;
+    },
   },
   mounted() {
     this.getManagerQuestionnaireList_Create();
-    this.$store.state.isAnalyzing=false
-    this.$store.state.is_creating=false
+    this.$store.state.isAnalyzing = false
+    this.$store.state.is_creating = false
+  },
+  computed: {
+
   },
   components: {
     AsideMenu
   }
 };
 </script>
+<!-- 下拉栏 -->
+<style scoped>
+.btnSort {
+  width: 130px;
+  height: 50px;
+  background: transparent;
+  border: 2px solid #fff;
+  outline: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 1.1em;
+  color: #fff;
+  font-weight: 500;
+  margin-left: 40px;
+  transition: .3s;
+}
 
+
+.q_nav {
+  position: relative;
+  height: 8vh;
+  width: 100%;
+
+  /* background: transparent; */
+}
+
+.btnSort:hover {
+  background: #fff;
+  color: #162938;
+}
+
+.search-line {
+  position: absolute;
+  left: 62px;
+  bottom: 0px;
+  width: 0px;
+  height: 2px;
+  background-color: rgb(251, 121, 0);
+  transition: 0.3s;
+}
+
+.search-box {
+  -webkit-tap-highlight-color: transparent;
+  background: 0 0;
+  background-color: linear-gradient(90deg, #5A85DC 0, rgba(108, 149, 218, .42) 50%, #3472DE 100%);
+  background-image: linear-gradient(90deg, #5A85DC 0, rgba(108, 149, 218, .42) 50%, #3472DE 100%);
+  background-position: 0 0;
+  border: 3px none #F30000;
+  border-radius: 40px;
+  bottom: 30px;
+  box-shadow: rgba(0, 0, 0, 0.1) 0 2px 25px 0;
+  box-sizing: border-box;
+  color: #333333;
+  display: flex;
+  font-family: "Helvetica Neue", Helvetica, Arial, "PingFang SC", "Microsoft YaHei", "Microsoft YaHei UI", 微软雅黑, sans-serif;
+  font-size: 12px;
+  height: 40px;
+  left: 30px;
+  margin: 0 0 -15px;
+  padding: 0 10px 10px;
+  position: absolute;
+  text-align: left;
+}
+
+.search-txt {
+  -webkit-tap-highlight-color: transparent;
+  background-color: transparent;
+  border-style: none;
+  box-sizing: border-box;
+  color: #222222;
+  font-family: "Helvetica Neue", Helvetica, Arial, "PingFang SC", "Microsoft YaHei", "Microsoft YaHei UI", 微软雅黑, sans-serif;
+  font-size: 16px;
+  font-weight: inherit;
+  line-height: 40px;
+  outline: none;
+  padding: 0 12px;
+  text-align: left;
+  transition: all .4s;
+  width: 200px;
+  margin: 0 0 -15px;
+  transition: 0.4s;
+}
+
+.search-btn {
+  color: #888888;
+  background: transparent;
+  font-size: 24px;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  transition: 0.4s;
+}
+
+.search-box:hover .search-txt {
+  width: 200px;
+  padding: 0 12px;
+}
+
+.search-box:hover .search-btn {
+  background-color: #fff;
+  animation: rotate 0.4s linear;
+}
+
+@keyframes rotate {
+  0% {
+    transform: rotate(0deg);
+  }
+
+  100% {
+    transform: rotate(360deg);
+  }
+}
+</style>
+<style scoped>
+.btnSort {
+  width: 60px;
+  height: 30px;
+  background: transparent;
+  border: 2px solid #fff;
+  outline: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 1.1em;
+  color: #fff;
+  font-weight: 500;
+  margin-left: 40px;
+  transition: .3s;
+}
+
+.inherited-styles-for-exported-element {
+  color: #262626;
+  font-family: "Helvetica Neue", Helvetica, Arial, "PingFang SC", "Microsoft YaHei", "Microsoft YaHei UI", 微软雅黑, sans-serif;
+  font-size: 12px;
+  text-align: left;
+}
+
+input,
+li {
+  margin: 0;
+  padding: 0;
+}
+
+div,
+h2,
+input,
+li,
+ul {
+  -webkit-tap-highlight-color: transparent;
+}
+
+ul {
+  margin-bottom: 0;
+  margin-left: 0;
+  margin-right: 0;
+}
+
+div,
+h2 {
+  margin: 0;
+  padding: 0;
+}
+
+.index_iconfont,
+a {
+  text-decoration: none;
+}
+
+li {
+  list-style: none;
+}
+
+input {
+  font-family: inherit;
+  font-size: inherit;
+  font-weight: inherit;
+  outline: 0;
+}
+
+.index_iconfont {
+  -webkit-font-smoothing: antialiased;
+  -webkit-text-stroke-width: .2px;
+  font-size: 16px;
+  margin-right: 5px;
+}
+
+.caret-inverted {
+  border-left: 4px solid transparent;
+  border-right: 4px solid transparent;
+  height: 0;
+  margin-left: 6px;
+  vertical-align: middle;
+  width: 0;
+}
+
+.fl {
+  float: left;
+}
+
+.fr {
+  float: right;
+}
+
+.vam {
+  vertical-align: middle;
+}
+
+.clearfix {
+  zoom: 1;
+}
+
+.surveyCont_search {
+  margin-bottom: 30px;
+  padding-top: 4px;
+  position: relative;
+  z-index: 200;
+}
+
+.status-box {
+  cursor: pointer;
+}
+
+.mySurvey {
+  color: #000;
+  font-size: 20px;
+  font-weight: 600;
+  line-height: 44px;
+}
+
+.sort-status-cur,
+.status-cur {
+  color: #a6a6a6;
+}
+
+a:active {
+  color: #0085ff;
+  outline: 0;
+}
+
+body .spinner-list {
+  cursor: default;
+  position: relative;
+}
+
+input:-webkit-autofill {
+  -webkit-text-fill-color: #666;
+  box-shadow: #fff 0 0 0 1000px inset;
+}
+
+.clearfix::before {
+  clear: both;
+  content: "";
+  display: block;
+  height: 0;
+  visibility: hidden;
+}
+
+input[type=text]::-ms-clear {
+  display: none;
+}
+
+body .spinner-list ul {
+  background-color: #fff;
+  border: 1px solid #d9d9d9;
+  border-radius: 3px;
+  box-shadow: rgba(0, 0, 0, .1) 0 2px 10px 0;
+  display: none;
+  margin-top: -7px;
+  padding: 6px 0;
+  position: absolute;
+  top: 100%;
+  z-index: 3;
+}
+
+body .spinner-list ul li,
+body .spinner-list ul li a {
+  color: #262626;
+  display: block;
+  font-size: 13px;
+  line-height: 33px;
+  white-space: nowrap;
+}
+
+body .spinner-list ul li {
+  text-align: left;
+}
+
+body .spinner-list ul li a {
+  padding: 0 16px;
+}
+
+.surveyCont_search .create-search {
+  position: relative;
+}
+
+.surveyCont_search .create-search input {
+  background-color: #fff;
+  border-radius: 999px;
+  border-style: initial;
+  border-width: 0;
+  box-shadow: #bfbfbf 0 0 2px 0;
+  color: #bfbfbf;
+  font-size: 14px;
+  height: 20px;
+  padding: 11px 12px 11px 16px;
+  width: 236px;
+}
+
+body .spinner-list ul .caret-inverted {
+  color: #fff;
+  left: 40px;
+  line-height: 0;
+  position: absolute;
+  top: -5px;
+}
+
+body .spinner-list ul>:first-child+li {
+  border-top-left-radius: 3px;
+  border-top-right-radius: 3px;
+}
+
+body .spinner-list ul li:last-child {
+  border-bottom-left-radius: 3px;
+  border-bottom-right-radius: 3px;
+}
+
+body .spinner-list ul li a:hover {
+  background-color: #f7f7f7;
+}
+
+.surveyCont_search .create-search .search-icon {
+  cursor: pointer;
+  font-size: 20px;
+  position: absolute;
+  right: 11px;
+  top: 10px;
+}
+
+.surveyCont_search .create-search input:focus {
+  outline: 0;
+}
+
+.surveyCont_search .create-search .search-icon:hover {
+  color: #0085ff;
+}
+
+.index_iconfont {
+  font-family: index_iconfont !important;
+  font-weight: 400 !important;
+}
+
+.fs14 {
+  font-size: 14px !important;
+}
+
+.mr0 {
+  margin-right: 0 !important;
+}
+
+.status-box {
+  left: -20px !important;
+  width: 100px !important;
+}
+
+.caret-inverted {
+  display: none !important;
+}
+
+.status-box li a {
+  text-align: center !important;
+}
+</style>
 
 <style scoped>
 .wrapper {
@@ -377,33 +843,32 @@ div {
 }
 
 .single_questionnaire_box {
-  left: 2.5%;
-  width: 95%;
-
-  height: 90px;
-  border: 10px;
-  padding-left: 20px;
-  padding-right: 20px;
-  /* padding: 0px;0 */
-  margin-top: 10px;
-  box-shadow: rgb(240, 240, 240) 0px 0px 4px 0px;
-  border-radius: 10px;
-
   backdrop-filter: blur(20px);
-  background: transparent;
-  /* background-color: aqua; */
-  /* border-bottom: 3px solid #000; */
-  font-family: "Helvetica Neue", Helvetica, Arial, "PingFang SC",
-    "Microsoft YaHei", "Microsoft YaHei UI", 微软雅黑, sans-serif;
-  z-index: 100;
-  position: relative;
   border-radius: 4px;
-  box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.3);
-
+  border-style: initial;
+  border-width: 10px;
+  box-shadow: rgba(0, 0, 0, 0.3) 0 2px 12px 0;
+  box-sizing: border-box;
+  color: #333333;
+  display: inline-block;
+  font-family: "Helvetica Neue", Helvetica, Arial, "PingFang SC", "Microsoft YaHei", "Microsoft YaHei UI", 微软雅黑, sans-serif;
   font-size: 12px;
-  line-height: normal;
-  text-align: left;
+  height: 90px;
+  left: 2.5%;
   letter-spacing: normal;
+  line-height: normal;
+  margin: 10px 0 20px;
+  padding: 0 20px;
+  position: relative;
+  text-align: left;
+  transform: perspective(1px) translateZ(0);
+  transition-duration: .3s;
+  transition-property: box-shadow, transform;
+  vertical-align: middle;
+  width: 95%;
+  z-index: 100;
+  background-color: #B38BFF;
+  background-image: linear-gradient(45deg, #0D44E37A 0%, #2DC3EB78 52%, #2BFF882E 90.8%);
 }
 
 .questionnaire_title {
@@ -766,6 +1231,14 @@ div {
   background-color: #E9EEF3;
   color: #333;
   text-align: left;
+  overflow: auto;
+
+
+}
+
+::-webkit-scrollbar {
+  width: 0;
+  height: 0;
 }
 
 body>.el-container {

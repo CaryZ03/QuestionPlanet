@@ -30,7 +30,7 @@
                     <div class="item">
                         <div class="light"></div>
                         <div class="licon"><span class="iconfont icon-qipao1"></span></div>
-                        <div class="con" >从模板创建</div>
+                        <div class="con">从模板创建</div>
                         <div class="ricon"></div>
                     </div>
                     <div class="item">
@@ -42,7 +42,7 @@
                     <div class="item">
                         <div class="light"></div>
                         <div class="licon">
-                            <span class ="iconfont icon-xiaolian"></span>
+                            <span class="iconfont icon-xiaolian"></span>
                         </div>
                         <div class="con" @click="triggerParentEvent(1)">已填写问卷</div>
                         <div class="ricon"><span class="iconfont icon-caidan1"></span></div>
@@ -95,7 +95,7 @@
 export default {
     data() {
         return {
-            menuState:0
+            menuState: 0
         }
     },
     methods: {
@@ -104,18 +104,22 @@ export default {
                 "uid": this.$store.state.curUserID
             }
             console.log(data)
+            // this.triggerParentEvent(0)
+            this.$emit('childEvent', 0)
+
             this.$api.questionnaire.postQuestionnaire_Create(data).then((res) => {
                 console.log(res.data.errno + res.data.qn_id)
+                
             }).catch((err) => {
                 console.log(err)
             })
+            
         },
         triggerParentEvent(state) {
-            console.log("state:"+state)
-            this.menuState=state
+            console.log("state:" + state)
+            this.menuState = state
             this.$emit('childEvent', this.menuState)
         }
-
     },
 
 }
@@ -144,7 +148,6 @@ export default {
 }
 
 .nav {
-    background-color: rgba(0, 0, 0, 0.8);
     border-radius: 20px;
     box-sizing: border-box;
     color: rgba(255, 255, 255, 0.6);
@@ -157,8 +160,9 @@ export default {
     top: 15%;
     transition: all .5s;
     width: 110px;
-    margin: 0 180px -119px -144px;
-    transition: 0.5s;
+    margin: 0 180px -119px 15px;
+    background-color: #0093E9;
+    background-image: linear-gradient(160deg, #6672F2 0%, #E04B5B 98.2%);
 }
 
 .nav:hover {

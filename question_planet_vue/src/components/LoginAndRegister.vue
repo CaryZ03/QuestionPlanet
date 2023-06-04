@@ -1,69 +1,71 @@
 <template>
-    <div class="wrapper">
-        <span class="icon-close"><i class="el-icon-edit"></i></span>
+  <div class="wrapper">
+    <span class="icon-close"><i class="el-icon-edit"></i></span>
 
-        <div class="form-box login">
-            <h2>Login</h2>
-            <form @click.prevent="">
-                <div class="input-box">
-                    <span class="icon"><i class="el-icon-edit"></i></span>
-                    <input type="text" v-model="user.username" required>
-                    <label>Email</label>
-                </div>
-
-                <div class="input-box">
-                    <span class="icon"><i class="el-icon-edit"></i></span>
-                    <input type="password" v-model="user.password" required>
-                    <label>password</label>
-                </div>
-
-                <div class="remember-forgot">
-                    <label><input type="checkbox" v-model="isRemember">Remember Me</label>
-                    <a href="#">Forgot Password</a>
-                </div>
-
-                <button class="btn" @click="login">Login</button>
-                <button class="btn" @click="test">test</button>
-
-                <div class="login-register">
-                    <p>Don't have an account?<a href="#" class="register-link">Register</a></p>
-                </div>
-            </form>
+    <div class="form-box login">
+      <h2 style="color: aliceblue;">Login</h2>
+      <form @click.prevent="">
+        <div class="input-box">
+          <span class="icon"><i class="el-icon-edit"></i></span>
+          <input type="text" v-model="user.username" required>
+          <label style="color: aliceblue;">Email</label>
         </div>
 
-        <div class="form-box register">
-            <h2>Registeration </h2>
-            <form>
-                <div class="input-box">
-                    <span class="icon"><i class="el-icon-edit"></i></span>
-                    <input type="text" v-model="userR.username" required>
-                    <label>Username</label>
-                </div>
-
-                <div class="input-box">
-                    <span class="icon"><i class="el-icon-edit"></i></span>
-                    <input type="password" v-model="userR.password1" required>
-                    <label>password1</label>
-                </div>
-
-                <div class="input-box">
-                    <span class="icon"><i class="el-icon-edit"></i></span>
-                    <input type="password" v-model="userR.password2" required>
-                    <label>password2</label>
-                </div>
-
-                <div class="remember-forgot">
-                    <label><input type="checkbox" v-model="isAgree">agree to the terms & conditions</label>
-                </div>
-
-                <button class="btn" @click="register">Register</button>
-
-                <div class="login-register">
-                    <p>Already have an account?<a href="#" class="login-link">Login</a></p>
-                </div>
-            </form>
+        <div class="input-box">
+          <span class="icon"><i class="el-icon-edit"></i></span>
+          <input type="password" v-model="user.password" required>
+          <label style="color: aliceblue;">password</label>
         </div>
+
+        <div class="remember-forgot">
+          <label><input type="checkbox" v-model="isRemember">Remember Me</label>
+          <a href="#" style="color: aliceblue;">Forgot Password</a>
+        </div>
+
+        <button class="btn" @click="login">Login</button>
+        <button class="btn" @click="test">test</button>
+
+        <div class="login-register">
+          <p style="color: aliceblue;">Don't have an account?<a href="#" class="register-link"
+              style="color: aliceblue;">Register</a></p>
+        </div>
+      </form>
     </div>
+
+    <div class="form-box register">
+      <h2 style="color: aliceblue;">Registeration </h2>
+      <form>
+        <div class="input-box">
+          <span class="icon"><i class="el-icon-edit"></i></span>
+          <input type="text" v-model="userR.username" required>
+          <label style="color: aliceblue;">Username</label>
+        </div>
+
+        <div class="input-box">
+          <span class="icon"><i class="el-icon-edit"></i></span>
+          <input type="password" v-model="userR.password1" required>
+          <label style="color: aliceblue;">password1</label>
+        </div>
+
+        <div class="input-box">
+          <span class="icon"><i class="el-icon-edit"></i></span>
+          <input type="password" v-model="userR.password2" required>
+          <label style="color: aliceblue;">password2</label>
+        </div>
+
+        <div class="remember-forgot">
+          <label style="color: aliceblue;"><input type="checkbox" v-model="isAgree">agree to the terms &
+            conditions</label>
+        </div>
+
+        <button class="btn" @click="register">Register</button>
+
+        <div class="login-register">
+          <p>Already have an account?<a href="#" class="login-link">Login</a></p>
+        </div>
+      </form>
+    </div>
+  </div>
 </template>
 
 <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
@@ -167,24 +169,30 @@ export default {
         const btnLogin = document.querySelector('.btnLogin-popup')
         const iconClose = document.querySelector('.icon-close')
 
+        if(wrapper!=null)
         wrapper.classList.add('active-popup');
 
-        registerLink.addEventListener('click', () => {
+        this.$nextTick(()=>{
+          if(wrapper!=null&&registerLink!=null){
+            registerLink.addEventListener('click', () => {
             wrapper.classList.add('active');
-        });
+          });
+          }
 
+          if(wrapper!=null&&loginLink!=null)
         loginLink.addEventListener('click', () => {
             wrapper.classList.remove('active');
         });
 
-
+        if(wrapper!=null&&btnLogin!=null)
         btnLogin.addEventListener('click', () => {
             wrapper.classList.add('active-popup');
         });
 
-
+        if(wrapper!=null&&iconClose!=null)
         iconClose.addEventListener('click', () => {
             wrapper.classList.remove('active-popup');
+        })
         })
 
         // wrapper.classList.add('active-popup');
@@ -195,7 +203,7 @@ export default {
 input[type="text"],
 input[type="password"],
 input[type="email"] {
-    background: transparent;
+  background: transparent;
 }
 </style>
 <style scoped>
@@ -206,7 +214,15 @@ input[type="email"] {
   font-family: 'Poppins', sans-serif;
 }
 
-
+h2 {
+  box-sizing: border-box;
+  color: #ffffff;
+  font-family: Poppins, sans-serif;
+  font-size: 2em;
+  margin: 0;
+  padding: 0;
+  text-align: center;
+}
 
 header {
   position: fixed;
@@ -399,7 +415,7 @@ header {
   border: none;
   outline: none;
   font-size: 1em;
-  color: #162938;
+  color: #ffffff;
   font-weight: 600;
   padding: 0 35px 0 5px;
 }
@@ -408,13 +424,13 @@ header {
   position: absolute;
   right: 8px;
   font-size: 1.2em;
-  color: #162938;
+  color: #ffffff;
   line-height: 57px;
 }
 
 .remember-forgot {
   font-size: .9em;
-  color: #162938;
+  color: #ffffff;
   font-weight: 500;
   margin: -15px 0 15px;
   display: flex;
@@ -422,7 +438,7 @@ header {
 }
 
 .remember-forgot label input {
-  accent-color: #162938;
+  accent-color: #ffffff;
   margin: 3px;
 }
 
@@ -467,5 +483,4 @@ header {
 .login-register p a:hover {
   text-decoration: underline;
 }
-
 </style>
