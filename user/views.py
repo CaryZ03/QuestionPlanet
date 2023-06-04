@@ -129,13 +129,18 @@ def user_register(request):
 # @not_login_required
 @require_http_methods(['POST'])
 def user_login(request):
+    from questionnaire.views import get_client_ip
     data_json = json.loads(request.body)
     username = data_json.get('username')
     password = data_json.get('password')
     if User.objects.filter(user_name=username).exists():
         user = User.objects.get(user_name=username)
         if user.user_password == password:
-            filler = Filler.objects.get(filler_user=user)
+            if Filler.objects.filter(filler_user=user).exists():
+                filler = Filler.objects.get(filler_user=user)
+            else:
+                filler_ip = get_client_ip(request)
+                filler = Filler.objects.create(filler_ip=filler_ip, filler_is_user=True, filler_user=user)
             token_key = request.headers.get('Authorization')
             if token_key:
                 token = UserToken.objects.get(key=token_key)
@@ -351,4 +356,4 @@ def change_user_status(request):
 @csrf_exempt
 @require_http_methods(['POST'])
 def deploy_test(request):
-    return JsonResponse({'errno': 0, 'ver': "5", 'cur_time': now()})
+    return JsonResponse({'errno': 0, 'ver': "6", 'cur_time': now()})
