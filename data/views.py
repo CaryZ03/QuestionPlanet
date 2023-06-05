@@ -393,11 +393,9 @@ def import_questionnaire(request, user):
         next(reader)
         # 解析CSV文件并创建问卷
         questionnaire_info = next(reader)
-        qn_id = questionnaire_info[0]
         qn_title = questionnaire_info[1]
         qn_description = questionnaire_info[2]
         questionnaire = Questionnaire.objects.create(
-            qn_id=qn_id,
             qn_title=qn_title,
             qn_description=qn_description,
             qn_creator=user
@@ -423,7 +421,6 @@ def import_questionnaire(request, user):
 
             # 创建问题并加入问卷
             question = Question.objects.create(
-                q_id=q_id,
                 q_position=i,
                 q_questionnaire=questionnaire,
                 q_type=q_type,
