@@ -210,7 +210,7 @@ def copy_questionnaire(request, user, qn_id):
 
     new_qn.qn_title = qn_title
     new_qn.qn_description = qn_description
-    new_qn.qn_end_time = datetime.strptime(qn_end_time, '%Y-%m-%d %H:%M:%S')
+    new_qn.qn_end_time = qn_end_time
     new_qn.qn_refillable = qn_refillable
     new_qn.qn_allowed_users = allowed_users
 
