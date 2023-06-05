@@ -51,7 +51,7 @@
               <el-button v-show="stateType == 0" @click="exportQuestionnaire(questionnaire)" round
                 style="background-color:rgba(227, 227, 227, 0.1);">导出问卷</el-button>
 
-              <el-button v-show="stateType == 2" @click="copyQuestionnaire(questionnaire)" round
+              <el-button v-show="stateType == 0" @click="copyQuestionnaire(questionnaire)" round
                 style="background-color:rgba(227, 227, 227, 0.1);">复制问卷</el-button>
 
               <el-button v-show="stateType == 2" @click="deDeleteQuestionnaire(questionnaire)" round
@@ -210,8 +210,9 @@ export default {
     copyQuestionnaire(questionnaire){   
       var qn_id=JSON.parse(questionnaire).qn_id
       this.$api.questionnaire.getQuestionnaire_copy(qn_id).then((res)=>{
-        
+        console.log(res)
       })
+      this.getManagerQuestionnaireList_Create()
     },
     deleteQuestionnaire(questionnaire) {
       console.dir(questionnaire)
