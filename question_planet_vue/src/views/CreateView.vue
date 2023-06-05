@@ -274,8 +274,8 @@
                 <div style="line-height: 30px;">&emsp;</div>
 
             </div>
-            <el-button type="success" style="margin: 0 0 0 214px" round v-on:click="save_handler()">保存问卷</el-button>
-            <el-button type="primary" round v-on:click="commitQuestionnaire()">提交问卷</el-button>
+            <el-button type="success" style="margin: 0 0 0 214px" round v-on:click="save_questionnaire()">保存问卷</el-button>
+            <el-button type="primary" round v-on:click="submit_questionnaire()">提交问卷</el-button>
             
         </div>
 
@@ -377,15 +377,9 @@ export default {
             question.id = 'question-' + (this.questions.length + 1);
             this.questions.push(question);
         },
-        
-        commitQuestionnaire(){
-            this.saveQuestionnaire();
-            this.$router.push({
-                path: "/new/" + this.$store.state.curUserID
-            })
-        },
+
         //保存试卷
-        saveQuestionnaire(){
+        save_handler(){
             const selectedQuestions = this.questions.map(question => {
             // 选择要包含在 JSON 数据中的属性
             return {
@@ -452,11 +446,35 @@ export default {
 
         },
 
-        save_tips() {
-        this.$alert('问卷保存成功！', '保存问卷', {
-          confirmButtonText: '确定',
-        });
-      },
+        save_questionnaire() {
+            this.save_handler();
+            this.$alert('问卷保存成功！', '保存问卷', {
+            confirmButtonText: '确定',
+            });
+        },
+
+        submit_questionnaire() {
+            this.$confirm('是否提交问卷?', '提交问卷', {
+                confirmButtonText: '确定',
+                cancelButtonText: '取消',
+                type: 'warning'
+            }).then(() => {
+                this.saveQuestionnaire();
+                this.$message({
+                    type: 'success',
+                    message: '提交成功!'
+                });
+                this.$router.push({
+                path: "/manage/" + this.$store.state.curUserID
+                });
+            }).catch(() => {
+                this.$message({
+                    type: 'info',
+                    message: '已取消提交'
+                });          
+            });
+        },
+
         // 选择题添加选项
         addNode(index) {
             this.questions[index].q_options.push({ label: "选项", checked: false });
@@ -592,20 +610,6 @@ export default {
 
 
     },
-
-    computed:{
-        save_handler()
-        {
-            return () => {
-            this.saveQuestionnaire();
-            this.save_tips();
-            }
-        },
-    },
-
-
-
-
 
 };
 </script>
