@@ -158,10 +158,29 @@ def questionnaire_export_file(request, user, qn_id):
     writer.writerow(['Questionnaire ID', 'Questionnaire Title', 'Questionnaire Description', 'Questions Count',
                      'Answer Sheet Count', 'Score Average', 'Score Standard Deviation', 'Single Choice Count',
                      'Multiple Choice Count', 'Judge Count', 'Fill Count', 'Essay Count', 'Grade Count'])
-
     writer.writerow([questionnaire.qn_id, questionnaire.qn_title, questionnaire.qn_description, questions_count,
                      answer_sheet_count, score_avg, score_stddev, single_count, multiple_count, judge_count,
                      fill_count, essay_count, grade_count])
+
+    writer.writerow([])
+
+    questions = Question.objects.filter(q_questionnaire=questionnaire)
+    writer.writerow(
+        ['Question ID', 'Question Type', 'Question Title', 'Question Description', 'Option Count', 'Options'])
+    for question in questions:
+        if question.q_type == 'single' or question.q_type == 'multiple':
+            options = ", ".join(option['label'] for option in question.q_options)
+        else:
+            options = ''
+
+        writer.writerow([
+            question.q_id,
+            question.q_type,
+            question.q_title,
+            question.q_description,
+            question.q_option_count,
+            options
+        ])
 
     return response
 
