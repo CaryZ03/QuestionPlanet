@@ -206,13 +206,13 @@ def copy_questionnaire(request, user, qn_id):
     qn_end_time = old_qn.qn_end_time
     qn_refillable = old_qn.qn_refillable
     question_list = old_qn.qn_questions
-    allowed_users = old_qn.qn_allowed_users
+    allowed_users = old_qn.qn_allowed_users.all()
 
     new_qn.qn_title = qn_title
     new_qn.qn_description = qn_description
-    new_qn.qn_end_time = datetime.strptime(qn_end_time, '%Y-%m-%d %H:%M:%S')
+    new_qn.qn_end_time = qn_end_time
     new_qn.qn_refillable = qn_refillable
-    new_qn.qn_allowed_users = allowed_users
+    new_qn.qn_allowed_users.set(allowed_users)
 
     new_qn.qn_data_json = old_qn.qn_data_json
 
