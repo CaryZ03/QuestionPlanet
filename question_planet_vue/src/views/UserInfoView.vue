@@ -463,7 +463,7 @@ a {
   border-radius: 2px;
   box-shadow: #e8e8e8 0 1px 4px 0, rgba(0, 0, 0, .01) 0 0 0 1px;
   font-size: 13px;
-  height: 234px;
+  height: 285px !important;
   padding: 20px 30px;
 
   width: 90%;

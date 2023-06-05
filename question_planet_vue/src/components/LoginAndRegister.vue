@@ -34,7 +34,7 @@
 
     <div class="form-box register">
       <h2 style="color: aliceblue;">Registeration </h2>
-      <form>
+      <form @click.prevent="">
         <div class="input-box">
           <span class="icon"><i class="el-icon-edit"></i></span>
           <input type="text" v-model="userR.username" required>
@@ -71,7 +71,7 @@
 <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
 <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
 <script>
-
+import { Message } from 'element-ui';
 import maxios from '../api'
 export default {
     data() {
@@ -100,7 +100,8 @@ export default {
         if (response.data['errno'] === 0) {
 
 
-          alert("win")
+          //alert("win")
+          Message.success("登录成功")
           console.log(response.data)
 
           this.$store.state.token_key=response.data['token_key']
@@ -120,12 +121,14 @@ export default {
           })
         }
         else {
+          Message.error(response.data.msg)
           console.log(response.data)
           console.log("发生了奇怪的问题")
         }
       }).catch(error => {
+        Message.error("登录失败")
         console.log(error)
-        alert("wa")
+        // alert("wa")
 
 
       })
@@ -137,7 +140,8 @@ export default {
     },
     register() {
         if(this.isAgree==false){
-            alert("请确认用户协议")
+            Message.warning("请确认用户协议")
+            //alert("请确认用户协议")
             return;
         }
       const data = JSON.stringify(this.userR)
@@ -145,11 +149,17 @@ export default {
       this.$api.userInfo.postUserInfo_Register(data).then((response) => {
         console.log(response.data)
         if (response.data.errno == 0) {
-            alert("注册成功")
+            Message.success("注册成功")
+            // alert("注册成功")
           const wrapper = document.querySelector('.wrapper')
         }
+        else{
+          Message.error(response.data.msg)
+          console.log(response.data)
+        }
       }).catch(error => {
-        alert("注册失败")
+        Message.error("注册失败")
+        // alert("注册失败")
         console.log(error)
       })
     },
