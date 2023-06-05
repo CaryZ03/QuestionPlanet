@@ -197,6 +197,17 @@ def questionnaire_analysis(request, user, qn_id):
                 for option in q_result['q_options']:
                     if option['choose'] == a_content:
                         option['num'] += 1
+        elif question.q_type == 'grade':
+            q_result['q_options'] = [{'choose': '1', 'label': '一星', 'num': 0},
+                                     {'choose': '2', 'label': '二星', 'num': 0},
+                                     {'choose': '3', 'label': '三星', 'num': 0},
+                                     {'choose': '4', 'label': '四星', 'num': 0},
+                                     {'choose': '5', 'label': '五星', 'num': 0}]
+            for answer in answers:
+                a_content = answer.a_content.capitalize()
+                for option in q_result['q_options']:
+                    if option['choose'] == a_content:
+                        option['num'] += 1
         q_results.append(q_result)
         i = i + 1
     result = {
