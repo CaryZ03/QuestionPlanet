@@ -49,7 +49,7 @@ class Question(Model):
     def to_json(self):
         info = {
             "q_id": self.q_id,
-            "q_questionnaire": self.q_questionnaire,
+            "q_questionnaire": self.q_questionnaire.qn_id,
             "q_position": self.q_position,
             "q_type": self.q_type,
             "q_mandatory": self.q_mandatory,
