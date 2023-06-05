@@ -11,7 +11,7 @@ export function postQuestionnaire_Create(data) {
 export function postQuestionnaire_Fill(id) {
     return request({
         method: 'POST',
-        url: `/questionnaire/${id}`,
+        url: `/questionnaire/fill_questionnaire/${id}`,
     })
 }
 //暂存回答
