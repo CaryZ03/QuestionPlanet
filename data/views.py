@@ -432,7 +432,7 @@ def import_questionnaire(request, user):
             question.save()
             questionnaire.qn_questions.add(question)
             i = i+1
-        user.user_created_questionnaires.add(qn)
+        user.user_created_questionnaires.add(questionnaire)
         questionnaire.save()
         user.save()
         return JsonResponse({'errno': 0, 'msg': '问卷导入成功'})
