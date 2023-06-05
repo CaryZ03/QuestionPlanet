@@ -71,8 +71,8 @@
                 <div style="line-height: 30px;">&emsp;</div>
 
             </div>
-            <el-button type="success" style="margin: 0 0 0 214px" round v-on:click="submit_answer()">保存回答</el-button>
-            <el-button type="primary" round >提交回答</el-button>
+            <el-button type="success" style="margin: 0 0 0 214px" round v-on:click="submit_handler()">保存回答</el-button>
+            <el-button type="primary" round v-on:click="submit_answer()">提交回答</el-button>
         </div>
 
 
@@ -156,7 +156,7 @@ export default {
             console.log(this.qn_id);
         },
 
-        submit_answer(){
+        submit_handler(){
             this.answer_sheet.splice(0, this.answer_sheet.length);
             this.questions.forEach((question, index_question) => {
                 let a_content_array = [];
@@ -191,27 +191,26 @@ export default {
             });
         },  
         
-        save_tips() {
-        this.$alert('问卷保存成功！', '保存问卷', {
-          confirmButtonText: '确定',
-        });
-      },
-
-    },
-
-    computed:{
-        save_handler()
-        {
-            return () => {
-            this.saveQuestionnaire();
-            this.save_tips();
-            }
+        submit_answer() {
+            this.$confirm('是否提交回答?', '提交回答', {
+                confirmButtonText: '确定',
+                cancelButtonText: '取消',
+                type: 'warning'
+            }).then(() => {
+                this.submit_handler();
+                this.$message({
+                    type: 'success',
+                    message: '提交成功!'
+                });
+            }).catch(() => {
+                this.$message({
+                    type: 'info',
+                    message: '已取消提交'
+                });          
+            });
         },
+
     },
-
-
-
-
 
 };
 </script>
