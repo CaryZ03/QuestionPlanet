@@ -1,0 +1,41 @@
+Date : 2023-06-05 15:10:43
+Directory : c:\Users\胡斌\Desktop\软工\软工1\QuestionPlanet\question_planet_vue
+Total : 10 files,  -63 codes, 30 comments, -17 blanks, all -50 lines
+
+Languages
++------------+------------+------------+------------+------------+------------+
+| language   | files      | code       | comment    | blank      | total      |
++------------+------------+------------+------------+------------+------------+
+| JSON       |          2 |         30 |          0 |          0 |         30 |
+| JavaScript |          1 |          0 |          0 |          1 |          1 |
+| Vue        |          7 |        -93 |         30 |        -18 |        -81 |
++------------+------------+------------+------------+------------+------------+
+
+Directories
++---------------------------------------------------------------------------------------------------+------------+------------+------------+------------+------------+
+| path                                                                                              | files      | code       | comment    | blank      | total      |
++---------------------------------------------------------------------------------------------------+------------+------------+------------+------------+------------+
+| .                                                                                                 |         10 |        -63 |         30 |        -17 |        -50 |
+| . (Files)                                                                                         |          2 |         30 |          0 |          0 |         30 |
+| src                                                                                               |          8 |        -93 |         30 |        -17 |        -80 |
+| src (Files)                                                                                       |          2 |         -5 |          0 |          0 |         -5 |
+| src\components                                                                                    |          2 |          3 |          0 |          1 |          4 |
+| src\views                                                                                         |          4 |        -91 |         30 |        -18 |        -79 |
++---------------------------------------------------------------------------------------------------+------------+------------+------------+------------+------------+
+
+Files
++---------------------------------------------------------------------------------------------------+------------+------------+------------+------------+------------+
+| filename                                                                                          | language   | code       | comment    | blank      | total      |
++---------------------------------------------------------------------------------------------------+------------+------------+------------+------------+------------+
+| c:\Users\胡斌\Desktop\软工\软工1\QuestionPlanet\question_planet_vue\package-lock.json                   | JSON       |         29 |          0 |          0 |         29 |
+| c:\Users\胡斌\Desktop\软工\软工1\QuestionPlanet\question_planet_vue\package.json                        | JSON       |          1 |          0 |          0 |          1 |
+| c:\Users\胡斌\Desktop\软工\软工1\QuestionPlanet\question_planet_vue\src\App.vue                         | Vue        |         -5 |          0 |         -1 |         -6 |
+| c:\Users\胡斌\Desktop\软工\软工1\QuestionPlanet\question_planet_vue\src\components\AsideMenu.vue        | Vue        |          0 |          0 |         -1 |         -1 |
+| c:\Users\胡斌\Desktop\软工\软工1\QuestionPlanet\question_planet_vue\src\components\LoginAndRegister.vue | Vue        |          3 |          0 |          2 |          5 |
+| c:\Users\胡斌\Desktop\软工\软工1\QuestionPlanet\question_planet_vue\src\main.js                         | JavaScript |          0 |          0 |          1 |          1 |
+| c:\Users\胡斌\Desktop\软工\软工1\QuestionPlanet\question_planet_vue\src\views\AnswerView.vue            | Vue        |        -97 |        -16 |        -26 |       -139 |
+| c:\Users\胡斌\Desktop\软工\软工1\QuestionPlanet\question_planet_vue\src\views\CreateView.vue            | Vue        |         31 |          1 |          0 |         32 |
+| c:\Users\胡斌\Desktop\软工\软工1\QuestionPlanet\question_planet_vue\src\views\LoginView.vue             | Vue        |        -47 |         47 |          0 |          0 |
+| c:\Users\胡斌\Desktop\软工\软工1\QuestionPlanet\question_planet_vue\src\views\ManageView.vue            | Vue        |         22 |         -2 |          8 |         28 |
+| Total                                                                                             |            |        -63 |         30 |        -17 |        -50 |
++---------------------------------------------------------------------------------------------------+------------+------------+------------+------------+------------+

@@ -48,15 +48,6 @@ def check_identity_get(view_func):
                     questionnaire = question.q_questionnaire
                     if questionnaire not in user.user_created_questionnaires.all():
                         return JsonResponse({'errno': 3008, 'msg': '用户没有权限进行该操作'})
-                # elif kwargs.get('a_id'):
-                #     a_id = kwargs.get('a_id')
-                #     if not Answer.objects.filter(a_id=a_id).exists():
-                #         return JsonResponse({'errno': 3007, 'msg': "答案不存在"})
-                #     answer = Answer.objects.get(a_id=a_id)
-                #     question = answer.a_question
-                #     questionnaire = question.q_questionnaire
-                #     if questionnaire not in user.user_created_questionnaires.all():
-                #         return JsonResponse({'errno': 3008, 'msg': '用户没有权限进行该操作'})
                 return view_func(request, *args, user=user, **kwargs)
             else:
                 admin = token.admin
@@ -78,21 +69,6 @@ def check_identity_post(view_func):
                 return JsonResponse({'errno': 3002, 'msg': "登录信息已过期"})
             elif not token.is_admin:
                 user = token.filler.filler_user
-                # if 'qn_id' in data:
-                #     qn_id = data.get('qn_id')
-                #     if not Questionnaire.objects.filter(qn_id=qn_id).exists():
-                #         return JsonResponse({'errno': 3005, 'msg': "问卷不存在"})
-                #     questionnaire = Questionnaire.objects.get(qn_id=qn_id)
-                #     if questionnaire not in user.user_created_questionnaires.all():
-                #         return JsonResponse({'errno': 3008, 'msg': '用户没有权限进行该操作'})
-                # elif 'q_id' in data:
-                #     q_id = data.get('q_id')
-                #     if not Question.objects.filter(q_id=q_id).exists():
-                #         return JsonResponse({'errno': 3006, 'msg': "问题不存在"})
-                #     question = Question.objects.get(q_id=q_id)
-                #     questionnaire = question.q_questionnaire
-                #     if questionnaire not in user.user_created_questionnaires.all():
-                #         return JsonResponse({'errno': 3008, 'msg': '用户没有权限进行该操作'})
                 if 'a_id' in data:
                     a_id = data.get('a_id')
                     if not Answer.objects.filter(a_id=a_id).exists():
@@ -182,10 +158,29 @@ def questionnaire_export_file(request, user, qn_id):
     writer.writerow(['Questionnaire ID', 'Questionnaire Title', 'Questionnaire Description', 'Questions Count',
                      'Answer Sheet Count', 'Score Average', 'Score Standard Deviation', 'Single Choice Count',
                      'Multiple Choice Count', 'Judge Count', 'Fill Count', 'Essay Count', 'Grade Count'])
-
     writer.writerow([questionnaire.qn_id, questionnaire.qn_title, questionnaire.qn_description, questions_count,
                      answer_sheet_count, score_avg, score_stddev, single_count, multiple_count, judge_count,
                      fill_count, essay_count, grade_count])
+
+    writer.writerow([])
+
+    questions = Question.objects.filter(q_questionnaire=questionnaire)
+    writer.writerow(
+        ['Question ID', 'Question Type', 'Question Title', 'Question Description', 'Option Count', 'Options'])
+    for question in questions:
+        if question.q_type == 'single' or question.q_type == 'multiple':
+            options = ", ".join(option['label'] for option in question.q_options)
+        else:
+            options = ''
+
+        writer.writerow([
+            question.q_id,
+            question.q_type,
+            question.q_title,
+            question.q_description,
+            question.q_option_count,
+            options
+        ])
 
     return response
 
@@ -221,6 +216,17 @@ def questionnaire_analysis(request, user, qn_id):
                 for option in q_result['q_options']:
                     if option['choose'] == a_content:
                         option['num'] += 1
+        elif question.q_type == 'grade':
+            q_result['q_options'] = [{'choose': '1', 'label': '一星', 'num': 0},
+                                     {'choose': '2', 'label': '二星', 'num': 0},
+                                     {'choose': '3', 'label': '三星', 'num': 0},
+                                     {'choose': '4', 'label': '四星', 'num': 0},
+                                     {'choose': '5', 'label': '五星', 'num': 0}]
+            for answer in answers:
+                a_content = answer.a_content.capitalize()
+                for option in q_result['q_options']:
+                    if option['choose'] == a_content:
+                        option['num'] += 1
         q_results.append(q_result)
         i = i + 1
     result = {
@@ -232,6 +238,19 @@ def questionnaire_analysis(request, user, qn_id):
         'q_results': q_results
     }
     return JsonResponse({'errno': 0, 'msg': '问卷分析成功', 'result': result})
+
+
+@csrf_exempt
+@check_identity_get
+@require_http_methods('GET')
+def query_users(request, user, input_name):
+    # 在用户类的数据库中查找包含传入字符串的所有用户名
+    users = User.objects.filter(user_name__icontains=input_name)
+
+    # 提取用户名列表
+    username_list = [user.user_name for user in users]
+
+    return JsonResponse({'errno': 0, 'msg': '用户查询成功', 'users': username_list})
 
 
 @csrf_exempt
