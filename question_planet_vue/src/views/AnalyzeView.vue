@@ -65,12 +65,10 @@
               &emsp;&emsp;
               <el-button type="primary" round v-on:click="change_to_ring(index)">圆环图</el-button>
           </el-footer>
-            <div class="echart" :id="'barChart-' + index" :style="myChartStyle"></div>
-            <div class="echart" :id="'lineChart-' + index" :style="myChartStyle"></div>
-            <div class="echart" :id="'pieChart-' + index" :style="myChartStyle"></div>
-            <div class="echart" :id="'ringChart-' + index" :style="myChartStyle"></div>
-          
-          
+            <div class="echart" :id="'barChart-' + index" :style="myChartStyle" v-if="isBar"></div>
+            <div class="echart" :id="'lineChart-' + index" :style="myChartStyle" v-else-if="isLine"></div>
+            <div class="echart" :id="'pieChart-' + index" :style="myChartStyle" v-else-if="isPie"></div>
+            <div class="echart" :id="'ringChart-' + index" :style="myChartStyle" v-else-if="isRing"></div>
           
           </el-container>
   
@@ -86,17 +84,6 @@
   
   <script>
   import * as echarts from "echarts";
-  import axios from 'axios';
-  // const vm = new Vue({
-  //   el: '#question-list',
-  //   data:{
-  //     seen:true
-  //   }
-  // }
-  // )
-  
-  
-
   export default {
     data() {
       return {
@@ -106,59 +93,14 @@
         isPie: false,
         isRing: false,
         a_count: 0,
-        questions: [
-          {
-          type: "single",
-          isEdit: true,
-          isMandatory: true,
-          title: "问题名称1",
-          options: [
-            { label: "选项1", checked: false, num: 15 },
-            { label: "选项2", checked: false, num: 20 },
-            { label: "选项3", checked: false, num: 13 },
-            { label: "选项4", checked: false, num: 12 },
-            { label: "选项5", checked: false, num: 1 },
-            { label: "选项6", checked: false, num: 24 },
-          ],
-          selectedOption: null,
-          answer: "",
-          answerNum: 85, // 回答本问题总人数
-          },
-          {
-          type: "single",
-          isEdit: true,
-          isMandatory: true,
-          title: "问题名称2",
-          options: [
-            { label: "选项1", checked: false, num: 15 },
-            { label: "选项2", checked: false, num: 20 },
-            { label: "选项3", checked: false, num: 13 },
-            { label: "选项4", checked: false, num: 12 },
-            { label: "选项5", checked: false, num: 1 },
-            { label: "选项6", checked: false, num: 24 },
-            { label: "选项7", checked: false, num: 10 },
-            { label: "选项8", checked: false, num: 10 },
-          ],
-          selectedOption: null,
-          answer: "",
-          answerNum: 105, // 回答本问题总人数
-          },
-        ],
+        questions: [],
         myChartStyle: { float: "left", width: "100%", height: "400px"}
       };
     },
     created() {
         this.load_qn();
-        this.drawBarCharts();
-        this.drawLineCharts();
-        this.drawPieCharts();
-        this.drawRingCharts();
     },
     mounted() {
-      this.drawBarCharts();
-      this.drawLineCharts();
-      this.drawPieCharts();
-      this.drawRingCharts();
     },
     watch: {
     questions: {
@@ -175,13 +117,6 @@
       load_qn()
         {   
             var _this = this;
-            // axios({
-            //     method: 'get',
-            //     url: 'http://127.0.0.1:4523/m2/2618081-0-default/83421811',
-            //     params: {
-            //         uid: 1
-            //     },
-            // })
             this.$api.data.getQuestionnaire_Analyze(this.$store.state.analyzingNumID)
             .then(function (response) {
             console.log(response);
@@ -196,10 +131,12 @@
             });
         },
       drawBarCharts() {
+
       this.questions.forEach((question, index) => {
         const chartId = 'barChart-' + index;
         const chartContainer = document.getElementById(chartId);
 
+        console.log(chartContainer);
         // 使用 ECharts 初始化图表
         const myChart = echarts.init(chartContainer);
 
@@ -246,7 +183,7 @@
               data: question.q_options.map(option => option.num)
             }
           ]
-          };  
+          }; 
         myChart.setOption(option);
         //随着屏幕大小调节图表
         window.addEventListener("resize", () => {
@@ -314,12 +251,88 @@
       });
     },
 
+    destroyBarCharts() {
+    this.questions.forEach((question, index) => {
+      const chartId = 'barChart-' + index;
+      const chartContainer = document.getElementById(chartId);
+
+      // 根据容器元素获取图表实例
+      const myChart = echarts.getInstanceByDom(chartContainer);
+
+      // 销毁图表实例
+      myChart.dispose();
+
+      // 移除 resize 事件监听器
+      window.removeEventListener('resize', () => {
+        myChart.resize();
+      });
+    });
+  },
+
+    destroyLineCharts() {
+    this.questions.forEach((question, index) => {
+      const chartId = 'lineChart-' + index;
+      const chartContainer = document.getElementById(chartId);
+
+      // 根据容器元素获取图表实例
+      const myChart = echarts.getInstanceByDom(chartContainer);
+
+      // 销毁图表实例
+      myChart.dispose();
+
+      // 移除 resize 事件监听器
+      window.removeEventListener('resize', () => {
+        myChart.resize();
+      });
+    });
+  },
+
+    destroyPieCharts() {
+    this.questions.forEach((question, index) => {
+      const chartId = 'pieChart-' + index;
+      const chartContainer = document.getElementById(chartId);
+
+      // 根据容器元素获取图表实例
+      const myChart = echarts.getInstanceByDom(chartContainer);
+
+      // 销毁图表实例
+      myChart.dispose();
+
+      // 移除 resize 事件监听器
+      window.removeEventListener('resize', () => {
+        myChart.resize();
+      });
+    });
+  },
+
+    destroyRingCharts() {
+    this.questions.forEach((question, index) => {
+      const chartId = 'ringChart-' + index;
+      const chartContainer = document.getElementById(chartId);
+
+      // 根据容器元素获取图表实例
+      const myChart = echarts.getInstanceByDom(chartContainer);
+
+      // 销毁图表实例
+      myChart.dispose();
+
+      // 移除 resize 事件监听器
+      window.removeEventListener('resize', () => {
+        myChart.resize();
+      });
+    });
+  },
+
+
     //绘制柱形图
       change_to_bar(index) {
         this.isLine = false;
         this.isPie = false;
         this.isRing = false;
         this.isBar = true;
+        setTimeout(() => {
+          this.drawBarCharts();
+        }, 100);
       },
 
       change_to_line(index) {
@@ -327,6 +340,9 @@
         this.isRing = false;
         this.isBar = false;
         this.isLine = true;
+        setTimeout(() => {
+          this.drawLineCharts();
+        }, 100);
       },
     
       change_to_pie(index) {
@@ -334,54 +350,19 @@
         this.isPie = true;
         this.isRing = false;
         this.isBar = false;
+        setTimeout(() => {
+          this.drawPieCharts();
+        }, 100);
       },
 
-      change_to_Ring(index) {
+      change_to_ring(index) {
         this.isLine = false;
         this.isPie = false;
         this.isRing = true;
         this.isBar = false;
-      },
-
-      // 选择题添加选项
-      addNode(index) {
-        this.questions[index].options.push({label: "选项", checked: false});
-      },
-      //删除样本div
-      deleteNode(index, i) {
-        this.questions[index].options.splice(i, 1);  //删除index为i,位置的数组元素
-      },
-      // 题目上移
-      upNode(i) {
-        if(i <= 0) return
-  
-            [this.questions[i-1],this.questions[i]] = [this.questions[i],this.questions[i-1]]
-  
-            this.$forceUpdate()
-      },
-      //题目下移
-      downNode(i) {
-        if(i >= this.questions.length - 1) return
-  
-        [this.questions[i+1],this.questions[i]] = [this.questions[i],this.questions[i+1]]
-  
-            this.$forceUpdate()
-      },
-      
-
-      //退出编辑模式
-      change_to_save_mode(index) {
-        this.questions[index].isEdit = false;
-      },
-  
-      //退出编辑模式
-      change_to_edit_mode(index) {
-        this.questions[index].isEdit = true;
-      },
-  
-      // 删除问题
-      removeQuestion(index) {
-        this.questions.splice(index, 1);
+        setTimeout(() => {
+          this.drawRingCharts();
+        }, 100);
       },
 
       // 计算比例
@@ -389,77 +370,7 @@
       return ((num / total) * 100).toFixed(2) + '%';
       },
       
-
-
-      // 评分题选择星星
-      selectStar(question, starIndex) {
-        for (let i = 0; i < question.stars.length; i++) {
-          if (i <= starIndex) {
-            question.stars.splice(i, 1, true);
-          } else {
-            question.stars.splice(i, 1, false);
-          }
-        }
-      },
-      
-      // 排序题拖动事件
-      dragStart(event, question, option) {
-        event.preventDefault();
-        event.stopPropagation();
-        event.dataTransfer.setData("text/plain", "");
-        event.target.parentElement.classList.add("dragging");
-        this.dragOption = option;
-        this.dragQuestion = question;
-      },
-      dragEnd(event, question, option) {
-        event.preventDefault();
-        event.stopPropagation();
-        event.target.parentElement.classList.remove("dragging");
-        let newIndex = question.options.indexOf(option);
-        let oldIndex = question.options.indexOf(this.dragOption);
-        if (newIndex > oldIndex) {
-          question.options.splice(newIndex + 1, 0, this.dragOption);
-        } else {
-          question.options.splice(newIndex, 0, this.dragOption);
-        }
-        question.options.splice(oldIndex, 1);
-        this.dragOption = null;
-        this.dragQuestion = null;
-      },
-  
-      // 图片选择题选择图片
-      selectImage(question, index) {
-        question.images.forEach((image, imageIndex) => {
-          if (index === imageIndex) {
-            image.selected = true;
-          } else {
-            image.selected = false;
-          }
-        });
-      },
-  
-      
-      scrollToQuestion(index) {
-        // 获取锚点值
-        const hash = '#question-' + (index + 1);
-  
-        // 查找对应的问题卡片元素
-        const questionCard = document.querySelector(hash);
-        if (!questionCard) {
-          return;
-        }
-  
-        // 滚动到可视区域
-        questionCard.scrollIntoView({ behavior: "smooth" });
-      }
-  
-  
-  
-  
     },
-  
-    
-  
   };
   </script>
   
