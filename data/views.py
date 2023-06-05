@@ -203,14 +203,16 @@ def questionnaire_analysis(request, user, qn_id):
         q_result['q_type'] = question.q_type
         if question.q_type == 'single' or question.q_type == 'multiple':
             options = list(json.loads(question.q_options))
-            q_result['q_options'] = [{'choose': str(num), 'label': option, 'num': 0} for num, option in enumerate(options)]
+            q_result['q_options'] = [{'choose': str(num), 'label': option, 'num': 0} for num, option in
+                                     enumerate(options)]
             for answer in answers:
                 a_content = answer.a_content.upper()
                 for option in q_result['q_options']:
                     if option['choose'] in a_content:
                         option['num'] += 1
         elif question.q_type == 'judge':
-            q_result['q_options'] = [{'choose': '0', 'label': '错误', 'num': 0}, {'choose': '1', 'label': '正确', 'num': 0}]
+            q_result['q_options'] = [{'choose': '0', 'label': '错误', 'num': 0},
+                                     {'choose': '1', 'label': '正确', 'num': 0}]
             for answer in answers:
                 a_content = answer.a_content.capitalize()
                 for option in q_result['q_options']:
@@ -364,7 +366,7 @@ def generate_chart(request, user, qn_id):
 @csrf_exempt
 @check_identity_post
 @require_http_methods(['POST'])
-def import_questionnaire(request):
+def import_questionnaire(request, user):
     if request.method == 'POST' and request.FILES['file']:
         file = request.FILES['file']
         reader = csv.reader(file.read().decode('utf-8').splitlines())
@@ -377,7 +379,8 @@ def import_questionnaire(request):
         questionnaire = Questionnaire.objects.create(
             qn_id=qn_id,
             qn_title=qn_title,
-            qn_description=qn_description
+            qn_description=qn_description,
+            qn_creator=user
         )
 
         # 解析问题信息并创建问题
