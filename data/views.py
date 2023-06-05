@@ -362,9 +362,58 @@ def generate_chart(request, user, qn_id):
 
 
 @csrf_exempt
-@transaction.atomic
+@check_identity_post
 @require_http_methods(['POST'])
 def import_questionnaire(request):
+    if request.method == 'POST' and request.FILES['file']:
+        file = request.FILES['file']
+        reader = csv.reader(file.read().decode('utf-8').splitlines())
+
+        # 解析CSV文件并创建问卷
+        questionnaire_info = next(reader)
+        qn_id = questionnaire_info[0]
+        qn_title = questionnaire_info[1]
+        qn_description = questionnaire_info[2]
+        questionnaire = Questionnaire.objects.create(
+            qn_id=qn_id,
+            qn_title=qn_title,
+            qn_description=qn_description
+        )
+
+        # 解析问题信息并创建问题
+        next(reader)  # Skip empty row
+        next(reader)  # Skip header row
+        for row in reader:
+            q_id = row[0]
+            q_type = row[1]
+            q_title = row[2]
+            q_description = row[3]
+            q_option_count = row[4]
+            q_options = []
+
+            # 解析选项信息
+            if q_type in ['single', 'multiple']:
+                options = row[5].split(', ')
+                for option in options:
+                    q_options.append({'label': option, 'checked': false, num: 0})
+
+            # 创建问题并加入问卷
+            question = Question.objects.create(
+                q_id=q_id,
+                q_questionnaire=questionnaire,
+                q_type=q_type,
+                q_title=q_title,
+                q_description=q_description,
+                q_option_count=q_option_count,
+                q_options=q_options
+            )
+
+        return JsonResponse({'errno': 0, 'msg': '问卷导入成功'})
+
+    return JsonResponse({'errno': 3058, 'msg': '无效的请求'})
+
+
+def import_questionnaire_text(request):
     file = request.FILES['file']  # 获取上传的文件
     ext = file.name.split('.')[-1]  # 获取文件扩展名
     if ext not in ['txt', 'doc']:
