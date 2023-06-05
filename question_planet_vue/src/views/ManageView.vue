@@ -160,7 +160,7 @@ export default {
       this.stateType = 0
     },
 
-    
+
     getManagerQuestionnaireList_Delete() {
       const data = {
         "uid": this.$store.state.curUserID,
@@ -242,8 +242,16 @@ export default {
 
     exportQuestionnaire(questionnaire) {
       var qn_id = JSON.parse(questionnaire).qn_id
+      console.log("typeof"+typeof(qn_id))
       this.$api.data.getQuestionnaire_ExportFile(qn_id).then((res) => {
+
         console.log(res)
+        const url = window.URL.createObjectURL(new Blob([res.data]))
+        const link = document.createElement('a')
+        link.href = url
+        link.setAttribute('download', 'questionnaire_export.csv')
+        document.body.appendChild(link)
+        link.click()
       })
     },
 
