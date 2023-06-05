@@ -639,7 +639,7 @@ else
     "question_list": [
         {
             "q_type": 问题类型,
-            "q_manditory": 是否必填,
+            "q_mandatory": 是否必填,
             "q_title": 问题标题,
             "q_description": 问题描述,
             "q_option_count": 选项数,

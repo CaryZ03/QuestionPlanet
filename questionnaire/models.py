@@ -80,6 +80,7 @@ class Questionnaire(Model):
     qn_description = TextField(null=True)
     qn_creator = ForeignKey('user.User', on_delete=SET_NULL, null=True)
     qn_createTime = DateTimeField(auto_now_add=True)
+    qn_publishTime = DateTimeField(default=None, null=True)
     qn_endTime = DateTimeField(default=None, null=True)
     status_choices = (
         ('unpublished', "未发布"),
@@ -100,9 +101,10 @@ class Questionnaire(Model):
             "qn_title": self.qn_title,
             "qn_description": self.qn_description,
             "qn_createTime": str(self.qn_createTime),
+            "qn_publishTime": str(self.qn_publishTime),
             "qn_endTime": str(self.qn_endTime),
             "qn_status": self.qn_status,
             "qn_refillable": self.qn_refillable,
-            "qn_answersheet_count": self.qn_answersheets.count()
+            # "qn_answersheet_count": self.qn_answersheets.count()
         }
         return json.dumps(info)
