@@ -58,7 +58,7 @@ class Question(Model):
             "q_option_count": self.q_option_count,
             "q_options": self.q_options,
             "q_correct_answer": self.q_correct_answer,
-            "q_score": self.q_score
+            "q_score": str(self.q_score)
         }
         return json.dumps(info)
 
