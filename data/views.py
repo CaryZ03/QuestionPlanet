@@ -390,7 +390,7 @@ def import_questionnaire(request, user):
     if request.method == 'POST' and request.FILES['file']:
         file = request.FILES['file']
         reader = csv.reader(file.read().decode('utf-8').splitlines())
-
+        next(reader)
         # 解析CSV文件并创建问卷
         questionnaire_info = next(reader)
         qn_id = questionnaire_info[0]
