@@ -158,10 +158,29 @@ def questionnaire_export_file(request, user, qn_id):
     writer.writerow(['Questionnaire ID', 'Questionnaire Title', 'Questionnaire Description', 'Questions Count',
                      'Answer Sheet Count', 'Score Average', 'Score Standard Deviation', 'Single Choice Count',
                      'Multiple Choice Count', 'Judge Count', 'Fill Count', 'Essay Count', 'Grade Count'])
-
     writer.writerow([questionnaire.qn_id, questionnaire.qn_title, questionnaire.qn_description, questions_count,
                      answer_sheet_count, score_avg, score_stddev, single_count, multiple_count, judge_count,
                      fill_count, essay_count, grade_count])
+
+    writer.writerow([])
+
+    questions = Question.objects.filter(q_questionnaire=questionnaire)
+    writer.writerow(
+        ['Question ID', 'Question Type', 'Question Title', 'Question Description', 'Option Count', 'Options'])
+    for question in questions:
+        if question.q_type == 'single' or question.q_type == 'multiple':
+            options = ", ".join(option['label'] for option in question.q_options)
+        else:
+            options = ''
+
+        writer.writerow([
+            question.q_id,
+            question.q_type,
+            question.q_title,
+            question.q_description,
+            question.q_option_count,
+            options
+        ])
 
     return response
 
@@ -192,6 +211,17 @@ def questionnaire_analysis(request, user, qn_id):
                         option['num'] += 1
         elif question.q_type == 'judge':
             q_result['q_options'] = [{'choose': '0', 'label': '错误', 'num': 0}, {'choose': '1', 'label': '正确', 'num': 0}]
+            for answer in answers:
+                a_content = answer.a_content.capitalize()
+                for option in q_result['q_options']:
+                    if option['choose'] == a_content:
+                        option['num'] += 1
+        elif question.q_type == 'grade':
+            q_result['q_options'] = [{'choose': '1', 'label': '一星', 'num': 0},
+                                     {'choose': '2', 'label': '二星', 'num': 0},
+                                     {'choose': '3', 'label': '三星', 'num': 0},
+                                     {'choose': '4', 'label': '四星', 'num': 0},
+                                     {'choose': '5', 'label': '五星', 'num': 0}]
             for answer in answers:
                 a_content = answer.a_content.capitalize()
                 for option in q_result['q_options']:

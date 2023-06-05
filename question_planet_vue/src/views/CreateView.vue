@@ -124,7 +124,7 @@
 
                 <div style="line-height: 30px;">&emsp;</div>
 
-            <div v-for="(question, index) in questions" :key="index" class="card mb-2" v-bind:id="question.id">
+            <div v-for="(question, index) in questions" :key="index" class="card mb-2" :id="index">
                 <el-container style="box-shadow: 0 2px 4px rgba(0, 0, 0, .12), 0 0 6px rgba(0, 0, 0, .04)">
                     <el-main v-if="question.isEdit">
                         <span class="red_star" v-if="question.q_mandatory">*&nbsp;</span>
@@ -288,7 +288,7 @@
             <li size="medium" v-for="(question, index) in questions" :key="index">{{ question.title }}</li>
           </ol> -->
                 <el-link class="outline-item" v-for="(question, index) in questions" :key="index"
-                    @click.prevent="scrollToQuestion(question, index)">{{ index + 1 }}.{{ question.title }}</el-link>
+                    @click.prevent="scrollToQuestion(question, index)">{{ index + 1 }}.{{ question.q_title }}</el-link>
             </div>
 
         </div>
@@ -406,7 +406,11 @@ export default {
             const dateString = date.toLocaleDateString('en-US', options).replace(/\//g, '-');
             const timeString = date.toLocaleTimeString('en-US', {hour12:false});
 
-            const formattedDate = `${dateString.split('-').reverse().join('-')} ${timeString}`;
+            // 调整日期格式
+            const [YYYY, MM, DD] = dateString.split('-');
+            const formattedDate = `${DD}-${MM}-${YYYY} ${timeString}`;
+            console.log(formattedDate);   // 输出： 19-04-2023 20:06:11
+
 
             const dataObject = { 
                 uid: this.$store.curUserID,
@@ -463,7 +467,19 @@ export default {
         },
         //复制问题
         dup_question(index) {
-            
+            let question = {
+                q_type: this.questions[index].q_type,
+                isEdit: true,
+                q_mandatory: this.questions[index].q_mandatory,
+                q_title: this.questions[index].q_title,
+                q_options: this.questions[index].q_options,
+                q_description: this.questions[index].q_description,
+                a_content: this.questions[index].a_content,
+                q_correct_answer: this.questions[index].q_correct_answer,
+                q_score: this.questions[index].q_score,
+            };
+            console.log(question);
+            this.questions.splice(index, 0, question);
         },
         // 题目上移
         upNode(i) {
@@ -559,7 +575,10 @@ export default {
 
                 // 查找对应的问题卡片元素
                 //const questionCard = document.querySelector(hash);
-                const questionCard = document.getElementById(question.id);
+                // console.log(question)
+                // console.log(question.q_id)
+                console.log(index)
+                const questionCard = document.getElementById(index);
                 console.log(questionCard);
                 // const questionCard = document.querySelector(hash);
                 if (!questionCard) {

@@ -28,7 +28,13 @@ jobs:
             kill -9 $pid
             sleep 3
             uwsgi --ini uwsgi.ini
-            sleep 2
-            sudo nginx -s reload
+            
+            cd /home/caryz/QuestionPlanet/question_planet_vue
+            npm install
+            npm run build
+            sudo rm -r ../front_end
+            sudo cp -R dist/* ../front_end
+
+            sudo service nginx restart
             
 

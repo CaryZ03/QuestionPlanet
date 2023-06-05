@@ -24,6 +24,8 @@
         <el-link id="ctl00_ContentPlaceHolder1_lkEnterpriseName"  class="wjx_alink" @click="open()" >设置域名</el-link>
       </div>
 
+      <img class="man" src="../assets/man - 副本.png" alt="Avatar" style="height: auto; object-fit: contain; width: 120px;">
+      <!-- <img class="moon" src="../assets/planet4 - 副本.png" alt="Avatar" style="height: auto; object-fit: contain; width: 120px;"> -->
     </div>
 
 </div>
@@ -140,6 +142,19 @@ a {
   vertical-align: middle;
 }
 
+.content .man{
+   width: 300px !important;
+  position: static;
+  opacity: 100% !important;
+
+}
+
+.content .moon{
+  width: 200px !important;
+  position: static;
+  opacity: 100% !important;
+}
+
 .clearfix {
   zoom: 1;
 }
@@ -171,6 +186,9 @@ a:active {
   font-weight: 700;
   line-height: 26px;
   margin-bottom: 16px;
+
+  /* margin: -47px -1px 16px -131px; */
+  margin: -47px -1px 16px -15.0763%;
 }
 
 .content {
@@ -179,8 +197,11 @@ a:active {
   /* box-shadow: #e8e8e8 0 1px 4px 0, rgba(0, 0, 0, .01) 0 0 0 1px; */
   box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
   font-size: 13px;
-  height: 234px;
+  height: 471px !important;
+ 
   padding: 20px 30px;
+  /* margin: -3px 0 0 -130px; */
+  margin: -3px 0 0 -15.6489%;
   opacity: 80%;
 }
 
