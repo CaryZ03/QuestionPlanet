@@ -54,7 +54,7 @@
                 <div style="line-height: 30px;">&emsp;</div>
 
             </div>
-            <el-button type="success" style="margin: 0 0 0 -66px" round v-on:click="commitAnswer()">保存回答</el-button>
+            <el-button type="success" style="margin: 0 0 0 214px" round v-on:click="submit_answer()">保存回答</el-button>
             <el-button type="primary" round >提交回答</el-button>
         </div>
 
@@ -80,6 +80,7 @@ export default {
         return {
             uid: this.$store.state.curUserID,
             qn_id: "",
+            as_id: "",
             qn_title: "这是问卷标题",
             qn_description: "",
             qn_end_time: "",
@@ -89,35 +90,57 @@ export default {
         };
     },
     created() {
+        this.qn_id = this.$route.params.qn_id;
         this.load_qn();
+        this.create_as();
     },
     methods: {
-        load_qn()
-        {   
+        create_as()
+        {
             var _this = this;
-            axios({
-                method: 'get',
-                url: 'http://127.0.0.1:4523/m2/2618081-0-default/83421811',
-                params: {
-                    uid: 1
-                },
-            })
+            this.$api.questionnaire.postQuestionnaire_Fill(this.$route.params.qn_id)
             .then(function (response) {
             console.log(response);
-            console.log(response.data);
-            console.log(response.data.qn_title);
-            _this.qn_title = response.data.qn_title;
-            _this.questions = response.data.questions_data;
+            _this.as_id = response.data.as_id;
+            console.log(_this.as_id);
             })
             .catch(function (error) {
             console.log(error);
             });
         },
+        load_qn()
+        {   
+            var _this = this;
+            this.$api.questionnaire.getQuestionnaire_Check(this.$route.params.qn_id)
+            .then(function (response) {
+            //console.log(response);
+            //console.log(response.data.qn_info);
+            //console.log(response.data.question_list);
+            const qn_info = JSON.parse(response.data.qn_info);
+            const qn_list = response.data.question_list;
+            console.log(qn_info);
+            _this.qn_title = qn_info.qn_title;
+            _this.qn_end_time = qn_info.qn_end_time;
+            _this.qn_description = qn_info.qn_description;
+            _this.qn_refillable = qn_info.qn_refillable;
+            qn_list.forEach(question => {
+                const item = JSON.parse(question);
+                item.q_options = JSON.parse(item.q_options);
+                _this.questions.push(item);
+            })
+            //_this.questions = qn_list;
+            })
+            .catch(function (error) {
+            console.log(error);
+            });
+            console.log(this.qn_id);
+        },
 
-        commitAnswer(){
+        submit_answer(){
+            this.answer_sheet.splice(0, this.answer_sheet.length);
             this.questions.forEach((question, index_question) => {
                 let a_content_array = [];
-                if(question.type === "multiple")
+                if(question.q_type === "multiple")
                 {
                     question.q_options.forEach((option, index_option) => {
                         if (option.checked) {
@@ -128,197 +151,31 @@ export default {
                     //console.log(question.a_content);
                 }
  
-                this.answer_sheet.push({q_id: index_question, a_content: question.a_content});
+                this.answer_sheet.push({q_id: question.q_id, a_content: question.a_content});
                 });
             console.log(this.answer_sheet);
             const dataObject = { 
-                qn_id: 3,
-                as_id: 3,
+                qn_id: this.qn_id,
+                as_id: this.as_id,
                 answer_data: JSON.stringify(this.answer_sheet)
             };
             const jsonString = JSON.stringify(dataObject);
             console.log(jsonString);
             //上传问卷，跳转。
-        },  
-
-        // 添加问题
-        addQuestion(type) {
-            let question = {
-                type: type,
-                isEdit: true,
-                isMandatory: true,
-                title: "",
-                options: [],
-                q_description: "",
-                a_content: "",
-                right_answer: "",
-                score: "",
-                stars: [false, false, false, false, false],
-            };
-            if (type === "single" || type === "multiple") {
-                question.options = [
-                    { label: "选项1", checked: false ,num: 0},
-                    { label: "选项2", checked: false ,num: 0},
-                ];
-            } else if (type === "rating") {
-                question.stars = [false, false, false, false, false];
-            }
-            // 为题目卡片动态生成唯一 ID
-            question.id = 'question-' + (this.questions.length + 1);
-            this.questions.push(question);
-        },
-        
-        //保存试卷
-        saveQuestionnaire(){
-            const selectedQuestions = this.questions.map(question => {
-            // 选择要包含在 JSON 数据中的属性
-            return {
-                q_type: question.type,
-                q_mandatory: question.isMandatory,
-                q_title: question.title,
-                q_description: question.q_description,
-                q_option_count: question.options.length,
-                q_options: question.options,
-                q_correct_answer: question.right_answer,
-                q_score: question.score,
-            };
+            this.$api.questionnaire.postAnswer_Submit(jsonString)
+            .then(function (response) {
+                console.log(response);
+            })
+            .catch(function (error) {
+                console.log(error);
             });
-            const dataObject = {
-                uid: this.uid,
-                qn_id: this.qn_id,
-                qn_title: this.qn_title,
-                qn_description: this.qn_description,
-                qn_end_time: this.qn_end_time,
-                qn_refillable: this.qn_refillable,
-                questions_list: selectedQuestions,
-            };
-            const jsonString = JSON.stringify(dataObject);
-            console.log(jsonString);
-
-        },
-
+        },  
+        
         save_tips() {
         this.$alert('问卷保存成功！', '保存问卷', {
           confirmButtonText: '确定',
         });
       },
-        // 选择题添加选项
-        addNode(index) {
-            this.questions[index].options.push({ label: "选项", checked: false });
-        },
-        //删除样本div
-        deleteNode(index, i) {
-            this.questions[index].options.splice(i, 1);  //删除index为i,位置的数组元素
-        },
-        // 题目上移
-        upNode(i) {
-            if (i <= 0) return
-
-            [this.questions[i - 1], this.questions[i]] = [this.questions[i], this.questions[i - 1]]
-
-            this.$forceUpdate()
-        },
-        //题目下移
-        downNode(i) {
-            if (i >= this.questions.length - 1) return
-
-            [this.questions[i + 1], this.questions[i]] = [this.questions[i], this.questions[i + 1]]
-
-            this.$forceUpdate()
-        },
-
-        //退出编辑模式
-        change_to_save_mode(index) {
-            this.questions[index].isEdit = false;
-        },
-
-        //退出编辑模式
-        change_to_edit_mode(index) {
-            this.questions[index].isEdit = true;
-        },
-
-        // 删除问题
-        removeQuestion(index) {
-            this.questions.splice(index, 1);
-        },
-
-        // 评分题选择星星
-        selectStar(question, starIndex) {
-            for (let i = 0; i < question.stars.length; i++) {
-                if (i <= starIndex) {
-                    question.stars.splice(i, 1, true);
-                } else {
-                    question.stars.splice(i, 1, false);
-                }
-            }
-        },
-
-        // 排序题拖动事件
-        dragStart(event, question, option) {
-            event.preventDefault();
-            event.stopPropagation();
-            event.dataTransfer.setData("text/plain", "");
-            event.target.parentElement.classList.add("dragging");
-            this.dragOption = option;
-            this.dragQuestion = question;
-        },
-        dragEnd(event, question, option) {
-            event.preventDefault();
-            event.stopPropagation();
-            event.target.parentElement.classList.remove("dragging");
-            let newIndex = question.options.indexOf(option);
-            let oldIndex = question.options.indexOf(this.dragOption);
-            if (newIndex > oldIndex) {
-                question.options.splice(newIndex + 1, 0, this.dragOption);
-            } else {
-                question.options.splice(newIndex, 0, this.dragOption);
-            }
-            question.options.splice(oldIndex, 1);
-            this.dragOption = null;
-            this.dragQuestion = null;
-        },
-
-        // 图片选择题选择图片
-        selectImage(question, index) {
-            question.images.forEach((image, imageIndex) => {
-                if (index === imageIndex) {
-                    image.selected = true;
-                } else {
-                    image.selected = false;
-                }
-            });
-        },
-
-
-
-
-
-
-        scrollToQuestion(question, index) {
-
-            this.$nextTick(() => {
-
-                //获取锚点值
-                const hash = '.outline-item #question-' + (index + 1);
-
-
-                // 查找对应的问题卡片元素
-                //const questionCard = document.querySelector(hash);
-                const questionCard = document.getElementById(question.id);
-                console.log(questionCard);
-                // const questionCard = document.querySelector(hash);
-                if (!questionCard) {
-                    return;
-                }
-                // // 滚动到可视区域
-                // questionCard.scrollIntoView({ behavior: "smooth" });
-                questionCard.scrollIntoView({ behavior: "smooth" });
-            })
-
-        }
-
-
-
 
     },
 
@@ -462,6 +319,10 @@ export default {
     padding: 1rem;
     width: 44%;
     overflow-y: scroll;
+}
+
+.question-card::-webkit-scrollbar {
+    display: none;
 }
 
 .card {
