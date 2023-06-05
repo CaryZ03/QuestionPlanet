@@ -386,6 +386,7 @@ def import_questionnaire(request, user):
         # 解析问题信息并创建问题
         next(reader)  # Skip empty row
         next(reader)  # Skip header row
+        i = 0
         for row in reader:
             q_id = row[0]
             q_type = row[1]
@@ -403,6 +404,7 @@ def import_questionnaire(request, user):
             # 创建问题并加入问卷
             question = Question.objects.create(
                 q_id=q_id,
+                q_position=i,
                 q_questionnaire=questionnaire,
                 q_type=q_type,
                 q_title=q_title,
@@ -410,7 +412,7 @@ def import_questionnaire(request, user):
                 q_option_count=q_option_count,
                 q_options=q_options
             )
-
+            i = i+1
         return JsonResponse({'errno': 0, 'msg': '问卷导入成功'})
 
     return JsonResponse({'errno': 3058, 'msg': '无效的请求'})
