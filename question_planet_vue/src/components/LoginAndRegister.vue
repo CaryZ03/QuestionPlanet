@@ -153,6 +153,8 @@ export default {
             // alert("注册成功")
             Message.success("注册成功")
           const wrapper = document.querySelector('.wrapper')
+          wrapper.classList.remove('active');
+          
         }
         else{
           

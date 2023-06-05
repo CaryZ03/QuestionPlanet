@@ -15,6 +15,8 @@
           <div class="q_nav">
             <button class="btnSort" @click="sortByCreateIDMax" style="float: right;">最大ID</button>
             <button class="btnSort" @click="sortByCreateIDMin" style="float: right;">最小ID</button>
+            <button class="btnSort" @click="sortByCreateTimeMAX" style="float: right;">最早发布</button>
+            <button class="btnSort" @click="sortByCreateTimeMIN" style="float: right;">最晚发布</button>
 
             <div class="search-box" style="background: transparent;">
               <a class="search-btn" @click="filteredItems" style="background: transparent;">
@@ -40,8 +42,8 @@
                 <div class="pull-left item-id">ID:{{ JSON.parse(questionnaire).qn_id }}</div>
                 <div class="pull-left item-running">Status:{{ JSON.parse(questionnaire).qn_status }}</div>
                 <div class="pull-left item-data">receive:0</div>
-                <div class="pull-left item-data">创建时间:{{ JSON.parse(questionnaire).qn_createTime }}</div>
-                <div class="pull-left item-data">结束时间:{{ JSON.parse(questionnaire).qn_endTime }}</div>
+                <div class="pull-left item-data">创建时间:{{ JSON.parse(questionnaire).qn_create_time.substring(0,19) }}</div>
+                <div class="pull-left item-data">结束时间:{{ JSON.parse(questionnaire).qn_end_time.substring(0,19) }}</div>
               </div>
             </div>
             <el-divider></el-divider>
@@ -81,14 +83,14 @@ export default {
       name: 'Loar',
       type: '考试卷',
       edDate: '2023-5-16',
-      
+
     };
     return {
       searchText: '',
       tableData: Array(20).fill(item),
       userID: this.$store.state.curUserID,
       questionnaireList: null,
-      stateType: 0 ,//0是管理，1是填写，2是回收站
+      stateType: 0,//0是管理，1是填写，2是回收站
       searchKeyword: '' // 搜索关键字
     }
   },
@@ -270,16 +272,20 @@ export default {
       return this.questionnaireList
     },
     // 创建时间排序
-    sortByCreateTimeMAX() {
-      console.log(this.questionnaireList)
-      this.questionnaireList = this.questionnaireList.sort((a, b) => new Date(JSON.parse(b).qn_createTime) - new Date(JSON.parse(a).qn_createTime));
-      console.log(this.questionnaireList)
+    sortByCreateTimeMIN() {
+      console.log(JSON.parse(this.questionnaireList[0]).qn_create_time)
+      console.log(JSON.parse(this.questionnaireList[0]).qn_create_time.substring(0,19))
+
+      this.questionnaireList = this.questionnaireList.sort((a, b) => 
+          new Date(JSON.parse(b).qn_create_time.substring()) - new Date(JSON.parse(a).qn_create_time.substring()));
       return this.questionnaireList
     },
-    sortByCreateTimeMIN() {
-      console.log(this.questionnaireList)
-      this.questionnaireList = this.questionnaireList.sort((b, a) => new Date(JSON.parse(b).qn_createTime) - new Date(JSON.parse(a).qn_createTime));
-      console.log(this.questionnaireList)
+    sortByCreateTimeMAX() {
+      console.log(JSON.parse(this.questionnaireList[0]).qn_create_time)
+      console.log(JSON.parse(this.questionnaireList[0]).qn_create_time.substring(0,19))
+
+      this.questionnaireList = this.questionnaireList.sort((b, a) => 
+          new Date(JSON.parse(b).qn_create_time.substring()) - new Date(JSON.parse(a).qn_create_time.substring()));
       return this.questionnaireList
     },
     // 按endTime排序
@@ -293,6 +299,22 @@ export default {
     // 根据当前排序方式显示数据列表
 
     filteredItems() {
+      switch (this.stateType) {
+        case 0:
+          this.getManagerQuestionnaireList_Create();
+          break;
+
+        case 1:
+          this.getManagerQuestionnaireList_Filled();
+          break;
+
+        case 2:
+        this.getManagerQuestionnaireList_Delete();
+          break;
+
+        default:
+          break;
+      }
       const keyword = this.searchKeyword.trim(); // 获取搜索关键字
 
       console.log(keyword)
@@ -301,8 +323,8 @@ export default {
         return this.questionnaireList; // 如果搜索关键字为空，则返回所有数据
 
       } else {
-        console.log("filter!"+ this.questionnaireList)
-        return this.questionnaireList.filter(item => item.qn_id.indexOf(keyword)!== -1); // 过滤符合搜索条件的数据
+        console.log("filter!" + this.questionnaireList)
+        this.questionnaireList=this.questionnaireList.filter(item => item.qn_id.indexOf(keyword) !== -1); // 过滤符合搜索条件的数据
       }
     }
   },
