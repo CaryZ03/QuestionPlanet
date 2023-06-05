@@ -3,9 +3,13 @@
       
       <!-- 问题列表 -->
       <div class="question-card" id="question-list">
-        <div>
-        <h2 style="margin: 0 0 0 -70px; text-align: center;">{{ qn_title }}</h2>
-        </div>
+        <el-container class="card mb-2" style="box-shadow: 0 2px 4px rgba(0, 0, 0, .12), 0 0 6px rgba(0, 0, 0, .04)">
+                    <el-main>
+                        <span>问卷标题：{{ this.qn_title }}</span>
+                    </el-main>
+        </el-container>
+
+        
 
         <div v-for="(question, index) in questions" :key="index" class="card mb-2">
           <el-container style="box-shadow: 0 2px 4px rgba(0, 0, 0, .12), 0 0 6px rgba(0, 0, 0, .04)">
@@ -242,7 +246,7 @@
               data: question.q_options.map(option => option.num)
             }
           ]
-          };
+          };  
         myChart.setOption(option);
         //随着屏幕大小调节图表
         window.addEventListener("resize", () => {
