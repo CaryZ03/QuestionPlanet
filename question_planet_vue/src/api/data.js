@@ -11,11 +11,10 @@ export function getQuestionnaire_Export(data) {
 }
 
 // questionnaire_export_file
-export function getQuestionnaire_ExportFile(data) {
+export function getQuestionnaire_ExportFile(qn_id) {
     return request({
         method: 'GET',
-        url: '/data/questionnaire_export_file',
-        data,
+        url: `/data/questionnaire_export_file/${qn_id}`,
     })
 }
 
