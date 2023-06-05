@@ -364,7 +364,6 @@ def generate_chart(request, user, qn_id):
 
 
 @csrf_exempt
-@check_identity_post
 @require_http_methods(['POST'])
 def import_questionnaire(request, user):
     if request.method == 'POST' and request.FILES['file']:
