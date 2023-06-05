@@ -124,7 +124,7 @@
 
                 <div style="line-height: 30px;">&emsp;</div>
 
-            <div v-for="(question, index) in questions" :key="index" class="card mb-2" v-bind:id="question.id">
+            <div v-for="(question, index) in questions" :key="index" class="card mb-2" :id="index">
                 <el-container style="box-shadow: 0 2px 4px rgba(0, 0, 0, .12), 0 0 6px rgba(0, 0, 0, .04)">
                     <el-main v-if="question.isEdit">
                         <span class="red_star" v-if="question.q_mandatory">*&nbsp;</span>
@@ -559,7 +559,10 @@ export default {
 
                 // 查找对应的问题卡片元素
                 //const questionCard = document.querySelector(hash);
-                const questionCard = document.getElementById(question.id);
+                // console.log(question)
+                // console.log(question.q_id)
+                console.log(index)
+                const questionCard = document.getElementById(index);
                 console.log(questionCard);
                 // const questionCard = document.querySelector(hash);
                 if (!questionCard) {
