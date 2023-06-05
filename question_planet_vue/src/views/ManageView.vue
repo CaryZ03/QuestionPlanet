@@ -50,17 +50,17 @@
             <el-divider></el-divider>
             <div class="questionnaire_body">
               <el-button v-show="stateType == 0" @click="pushCreate(questionnaire)" round
-                style="background-color:rgba(227, 227, 227, 0.1);;">设计问卷</el-button>
+                style="background-color:rgba(227, 227, 227, 0.1);color:#ffffff !important;" >设计问卷</el-button>
               <el-button v-show="stateType == 0" @click="generateQuestionnaireLink(JSON.parse(questionnaire).qn_id)"
-                class="copyLink" round style="background-color:rgba(227, 227, 227, 0.1);;">发送问卷</el-button>
+                class="copyLink" round style="background-color:rgba(227, 227, 227, 0.1);color:#ffffff !important;">发送问卷</el-button>
               <el-button v-show="stateType == 0" @click="pushAnalyze(questionnaire)" round
-                style="background-color:rgba(227, 227, 227, 0.1);">分析问卷</el-button>
+                style="background-color:rgba(227, 227, 227, 0.1);color:#ffffff !important;">分析问卷</el-button>
               <el-button v-show="stateType == 0" @click="deleteQuestionnaire(questionnaire)" round
-                style="background-color:rgba(227, 227, 227, 0.1);">删除问卷</el-button>
+                style="background-color:rgba(227, 227, 227, 0.1);color:#ffffff !important;">删除问卷</el-button>
               <el-button v-show="stateType == 2" @click="deleteQuestionnaire(questionnaire)" round
-                style="background-color:rgba(227, 227, 227, 0.1);">移除问卷</el-button>
+                style="background-color:rgba(227, 227, 227, 0.1);color:#ffffff !important;">移除问卷</el-button>
               <el-button v-show="stateType == 2" @click="deDeleteQuestionnaire(questionnaire)" round
-                style="background-color:rgba(227, 227, 227, 0.1);">撤销删除</el-button>
+                style="background-color:rgba(227, 227, 227, 0.1);color:#ffffff !important;">撤销删除</el-button>
             </div>
 
           </el-row>
@@ -880,7 +880,7 @@ border-style: initial;
 border-width: 10px;
 box-shadow: rgba(0, 0, 0, 0.3) 0 2px 12px 0;
 box-sizing: border-box;
-color: #333333;
+color: #ffffff;
 display: inline-block;
 font-family: "Helvetica Neue", Helvetica, Arial, "PingFang SC", "Microsoft YaHei", "Microsoft YaHei UI", 微软雅黑, sans-serif;
 font-size: 12px;
@@ -915,6 +915,11 @@ background-image: linear-gradient(46deg, rgba(13, 68, 227, 0) 6.2%, rgba(45, 195
 .questionnaire_body {
   padding-top: 5px;
   height: 80px;
+  
+}
+
+.questionnaire_body el-button{
+  color: #FFFFFF !important;
 }
 
 
@@ -947,11 +952,11 @@ background-image: linear-gradient(46deg, rgba(13, 68, 227, 0) 6.2%, rgba(45, 195
 }
 
 .item-id {
-  text-decoration-color: black;
+  text-decoration-color: rgb(255, 255, 255);
 }
 
 .item-data {
-  text-decoration-color: black;
+  text-decoration-color: rgb(255, 255, 255);
 
 }
 
