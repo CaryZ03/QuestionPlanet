@@ -266,7 +266,7 @@
             <li size="medium" v-for="(question, index) in questions" :key="index">{{ question.title }}</li>
           </ol> -->
                 <el-link class="outline-item" v-for="(question, index) in questions" :key="index"
-                    @click.prevent="scrollToQuestion(question, index)">{{ index + 1 }}.{{ question.title }}</el-link>
+                    @click.prevent="scrollToQuestion(question, index)">{{ index + 1 }}.{{ question.q_title }}</el-link>
             </div>
 
         </div>

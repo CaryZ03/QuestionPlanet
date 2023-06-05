@@ -87,6 +87,11 @@
     </div>
 
     <corperation></corperation>
+    <div>
+      <img class="moon hvr-grow-shadow" @click="clickfunction" src="../assets/planet4 - 副本.png" alt="Avatar" style="height: auto; object-fit: contain; width: 120px;">
+      <!-- <el-button class="moon-botton" icon="el-icon-search" circle></el-button> -->
+    </div>
+    
   </div>
 
 
@@ -97,6 +102,12 @@ import { dataTool } from 'echarts';
 import UserInfo from '@/components/UserInfo.vue';
 export default {
     methods:{
+
+        clickfunction(){
+          window.open("https://xenonga.github.io/");
+         
+        },
+
 
         uploadData(data){
           console.log(data);
@@ -371,6 +382,37 @@ export default {
 
 <style scoped>
 
+.moon{
+  box-sizing: border-box;
+font-family: Poppins, sans-serif;
+height: auto;
+margin: 0;
+object-fit: contain;
+padding: 0;
+width: 400px !important;
+position: fixed;
+
+right: 137px;
+top: 302px;
+
+left: 1129px;
+bottom: 15px;
+}
+.moon-botton{
+  box-sizing: border-box;
+font-family: Poppins, sans-serif;
+height: auto;
+margin: 0;
+object-fit: contain;
+padding: 0;
+width: 400px !important;
+position: fixed;
+left: 1092px;
+top: 401px;
+right: 149px;
+bottom: 15px;
+}
+
 #content{
   opacity: 80%;
 }
@@ -581,6 +623,7 @@ html {
 
   width: 90%;
   box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
+
   /* opacity: 70%; */
 }
 
@@ -623,14 +666,15 @@ html {
   display: inline-block;
   font-weight: 400;
 
-  font-size: 26px;
+  font-size: 31px;
+  font-family: Lucida Sans Unicode;
 /* font-weight: normal; */
 list-style: none;
 margin: 0;
 padding: 0;
 text-align: left;
 line-height: 61px;
-letter-spacing: 5px;
+letter-spacing: 0px;
 }
 
 .user-data{

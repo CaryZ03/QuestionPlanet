@@ -24,6 +24,8 @@
         <el-link id="ctl00_ContentPlaceHolder1_lkEnterpriseName"  class="wjx_alink" @click="open()" >设置域名</el-link>
       </div>
 
+      <img class="man" src="../assets/man - 副本.png" alt="Avatar" style="height: auto; object-fit: contain; width: 120px;">
+      <!-- <img class="moon" src="../assets/planet4 - 副本.png" alt="Avatar" style="height: auto; object-fit: contain; width: 120px;"> -->
     </div>
 
 </div>
@@ -138,6 +140,19 @@ a {
 
 .content .items b, .content .items span, .vam {
   vertical-align: middle;
+}
+
+.content .man{
+   width: 300px !important;
+  position: static;
+  opacity: 100% !important;
+
+}
+
+.content .moon{
+  width: 200px !important;
+  position: static;
+  opacity: 100% !important;
 }
 
 .clearfix {
