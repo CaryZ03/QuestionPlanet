@@ -663,7 +663,31 @@ else
 
 ### 错误码：无
 
-## 206 check_questionnaire
+## 205 copy_questionnaire
+
+### 描述：复制问卷
+
+### URL：fill_questionnaire/<qn_id>
+
+### 请求类型：POST
+
+### Header：Authorization
+
+### 输入数据：无
+
+### 返回数据：
+
+```json
+{
+    "errno": 0,
+    "msg": "问卷复制成功",
+    "qn_id": 新问卷id
+}
+```
+
+### 错误码：无
+
+## 207 check_questionnaire
 
 ### 描述：查看问卷
 
@@ -708,7 +732,7 @@ else
 
 ### 错误码：无
 
-## 207 delete_questionnaire
+## 208 delete_questionnaire
 
 ### 描述：删除问卷
 
@@ -735,7 +759,7 @@ else
 
 ### 错误码：无
 
-## 208 change_questionnaire_status
+## 209 change_questionnaire_status
 
 ### 描述：更改问卷状态（打开、关闭、封禁、解封）
 
