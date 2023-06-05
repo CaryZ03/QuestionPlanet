@@ -2,16 +2,10 @@
   <div>
     <div v-if="!this.$store.state.isAnalyzing && !this.$store.state.is_creating">
       <aside>
-        <AsideMenu @childEvent="handleChildEvent"></AsideMenu>
+        <AsideMenu @childEvent="handleChildEvent" @file-selected="onFileSelected"></AsideMenu>
       </aside>
       <main>
-
-
-
         <el-main style="background: transparent;">
-
-
-
           <div class="q_nav">
             <button class="btnSort" @click="sortByCreateIDMax" style="float: right;">最大ID</button>
             <button class="btnSort" @click="sortByCreateIDMin" style="float: right;">最小ID</button>
@@ -19,7 +13,7 @@
             <button class="btnSort" @click="sortByCreateTimeMIN" style="float: right;">最晚发布</button>
 
             <div class="search-box" style="">
-              <a class="search-btn" @click="filteredItems" style="">
+              <a class="search-btn" @click.prevent="filteredItems" style="">
                 <i class="el-icon-search" aria-hidden="true"></i>
               </a>
               <input type="text" v-model="searchKeyword" style="color: aliceblue;" class="search-txt" placeholder="搜索" />
@@ -27,14 +21,10 @@
             </div>
           </div>
 
-
-
-
-
-
-          <el-row v-for="questionnaire in questionnaireList" :key="questionnaire.qn_id"
+          <el-row v-for="questionnaire in questionnaireListShow" :key="questionnaire.qn_id"
             class="single_questionnaire_box hvr-grow-shadow">
             <div class="questionnaire_title">
+
               <div class="pull-left">
                 <div class="questionnaire_title">{{ JSON.parse(questionnaire).qn_title }}</div>
               </div>
@@ -91,8 +81,9 @@ export default {
       tableData: Array(20).fill(item),
       userID: this.$store.state.curUserID,
       questionnaireList: null,
+      questionnaireListShow: null,
       stateType: 0,//0是管理，1是填写，2是回收站
-      searchKeyword: '' // 搜索关键字
+      searchKeyword: '', // 搜索关键字
     }
   },
   watch: {
@@ -116,8 +107,8 @@ export default {
         alert(this.$store.state.is_creating)
     },
     // 生成问卷链接
-    generateQuestionnaireLink(qn_id) {
-      var text = `http://localhost:8080/answer/${qn_id}`
+    publicQuestionnaire(qn_id) {
+      var text = `http://182.92.102.246:1145/answer/${qn_id}`
 
       alert(text)
       const clipboard = new Clipboard('.copyLink', {
@@ -131,6 +122,17 @@ export default {
         alert('Failed to copy text');
         clipboard.destroy();
       });
+
+      const data = {
+        "uid": this.$store.state.curUserID,
+        "qn_id": qn_id,
+        "status": "published"
+      }
+      console.log("publishQuestionnaire_data:" + data)
+
+      this.$api.questionnaire.postQuestionnaire_ChangeStatus(data).then((res) => {
+        console.log(res)
+      })
     },
 
 
@@ -158,10 +160,52 @@ export default {
       this.$api.userInfo.getUserInfo_GetQList(data).then((res) => {
 
         this.questionnaireList = res.data['qn_info']
+        this.questionnaireListShow = res.data['qn_info']
         console.log(typeof (res.data['qn_info']))
       })
       this.stateType = 0
     },
+
+    onFileSelected(file) {
+      // 处理接收到的文件数据
+      alert("getFile")
+      console.log(file)
+
+      const formData = new FormData()
+      formData.append('file', file)
+      
+      this.$api.data.postQuestionnaire_Import(formData).then((res)=>{
+        console.log(res)
+      })
+
+    },
+
+    importQuestionnaire() {
+      // 获取文件输入框元素
+      const fileInput = document.getElementById('questionnaireFile');
+      // 监听文件选择事件
+      fileInput.addEventListener('change', (event) => {
+        // 获取选择的文件
+        const file = event.target.files[0];
+        // 创建FormData对象，用于传输文件
+        const formData = new FormData();
+        formData.append('file', file);
+        // 发送POST请求
+        fetch('/import-questionnaire', {
+          method: 'POST',
+          body: formData
+        })
+          .then(response => response.json())
+          .then(data => {
+            console.log(data); // 处理响应数据
+          })
+          .catch(error => {
+            console.error('Error:', error);
+          });
+      });
+    },
+
+
     getManagerQuestionnaireList_Delete() {
       const data = {
         "uid": this.$store.state.curUserID,
@@ -172,6 +216,7 @@ export default {
       this.$api.userInfo.getUserInfo_GetQList(data).then((res) => {
         console.log(res.data['qn_info'])
         this.questionnaireList = res.data['qn_info']
+        this.questionnaireListShow = res.data['qn_info']
       })
       this.stateType = 2
     },
@@ -186,8 +231,16 @@ export default {
         console.log("!!!!!!!!!!!!!!!")
         console.log(res.data['qn_info'] + "!!!!!!!!!!!!!!!")
         this.questionnaireList = res.data['qn_info']
+        this.questionnaireListShow = res.data['qn_info']
       })
       this.stateType = 1
+    },
+    copyQuestionnaire(questionnaire) {
+      var qn_id = JSON.parse(questionnaire).qn_id
+      this.$api.questionnaire.getQuestionnaire_copy(qn_id).then((res) => {
+        console.log(res)
+      })
+      this.getManagerQuestionnaireList_Create()
     },
     deleteQuestionnaire(questionnaire) {
       console.dir(questionnaire)
@@ -239,6 +292,21 @@ export default {
       })
     },
 
+    exportQuestionnaire(questionnaire) {
+      var qn_id = JSON.parse(questionnaire).qn_id
+      console.log("typeof" + typeof (qn_id))
+      this.$api.data.getQuestionnaire_ExportFile(qn_id).then((res) => {
+
+        console.log(res)
+        const url = window.URL.createObjectURL(new Blob([res.data]))
+        const link = document.createElement('a')
+        link.href = url
+        link.setAttribute('download', 'questionnaire_export.csv')
+        document.body.appendChild(link)
+        link.click()
+      })
+    },
+
     handleChildEvent(key) {
       console.log('Received child event:', key)
       switch (key) {
@@ -260,74 +328,67 @@ export default {
 
     // 按ID排序
     sortByCreateIDMax() {
-      console.log(this.questionnaireList)
-      this.questionnaireList = this.questionnaireList.sort((a, b) => JSON.parse(b).qn_id - JSON.parse(a).qn_id);
-      console.log(this.questionnaireList)
-      return this.questionnaireList
+      console.log(this.questionnaireListShow)
+      this.questionnaireList = this.questionnaireListShow.sort((a, b) => JSON.parse(b).qn_id - JSON.parse(a).qn_id);
+      console.log(this.questionnaireListShow)
+      return this.questionnaireListShow
     },
 
     sortByCreateIDMin() {
-      console.log(this.questionnaireList)
-      this.questionnaireList = this.questionnaireList.sort((b, a) => JSON.parse(b).qn_id - JSON.parse(a).qn_id);
-      console.log(this.questionnaireList)
-      return this.questionnaireList
+      console.log(this.questionnaireListShow)
+      this.questionnaireList = this.questionnaireListShow.sort((b, a) => JSON.parse(b).qn_id - JSON.parse(a).qn_id);
+      console.log(this.questionnaireListShow)
+      return this.questionnaireListShow
     },
     // 创建时间排序
     sortByCreateTimeMIN() {
-      console.log(JSON.parse(this.questionnaireList[0]).qn_create_time)
-      console.log(JSON.parse(this.questionnaireList[0]).qn_create_time.substring(0, 19))
+      console.log(JSON.parse(this.questionnaireListShow[0]).qn_create_time)
+      console.log(JSON.parse(this.questionnaireListShow[0]).qn_create_time.substring(0, 19))
 
-      this.questionnaireList = this.questionnaireList.sort((a, b) =>
+      this.questionnaireList = this.questionnaireListShow.sort((a, b) =>
         new Date(JSON.parse(b).qn_create_time.substring()) - new Date(JSON.parse(a).qn_create_time.substring()));
-      return this.questionnaireList
+      return this.questionnaireListShow
     },
     sortByCreateTimeMAX() {
-      console.log(JSON.parse(this.questionnaireList[0]).qn_create_time)
-      console.log(JSON.parse(this.questionnaireList[0]).qn_create_time.substring(0, 19))
+      console.log(JSON.parse(this.questionnaireListShow[0]).qn_create_time)
+      console.log(JSON.parse(this.questionnaireListShow[0]).qn_create_time.substring(0, 19))
 
-      this.questionnaireList = this.questionnaireList.sort((b, a) =>
+      this.questionnaireListShow = this.questionnaireListShow.sort((b, a) =>
         new Date(JSON.parse(b).qn_create_time.substring()) - new Date(JSON.parse(a).qn_create_time.substring()));
-      return this.questionnaireList
+      return this.questionnaireListShow
     },
     // 按endTime排序
 
 
     // 按问卷回收量排序
     sortByQuestionnaireCount() {
-      return this.questionnaireList.sort((a, b) => JSON.parse(a).questionnaireCount - JSON.parse(b).questionnaireCount);
+      return this.questionnaireListShow.sort((a, b) => JSON.parse(a).questionnaireCount - JSON.parse(b).questionnaireCount);
     },
 
     // 根据当前排序方式显示数据列表
 
     filteredItems() {
-      switch (this.stateType) {
-        case 0:
-          this.getManagerQuestionnaireList_Create();
-          break;
+      this.$set(this.$data, 'questionnaireListShow', this.questionnaireList);
 
-        case 1:
-          this.getManagerQuestionnaireList_Filled();
-          break;
-
-        case 2:
-          this.getManagerQuestionnaireList_Delete();
-          break;
-
-        default:
-          break;
-      }
       const keyword = this.searchKeyword.trim(); // 获取搜索关键字
 
       console.log("KeyWord!!!!!!!!:" + keyword)
       if (!keyword) {
-        console.log(this.questionnaireList)
-        return this.questionnaireList; // 如果搜索关键字为空，则返回所有数据
+        console.log(this.questionnaireListShow)
+        return this.questionnaireListShow; // 如果搜索关键字为空，则返回所有数据
 
       } else {
-        console.log("filter!" + this.questionnaireList)
-        this.questionnaireList = this.questionnaireList.filter(item => JSON.parse(item).qn_title.indexOf(keyword) !== -1); // 过滤符合搜索条件的数据
+        console.log("filter!" + this.questionnaireListShow)
+        var tmp = this.questionnaireList.filter(item => {
+          const parsedItem = JSON.parse(item)
+          console.log("parsedItem" + item)
+          return parsedItem.qn_title && parsedItem.qn_title.includes(keyword)
+        });
+        console.log(tmp)
+        this.questionnaireListShow = tmp
 
-        return this.questionnaireList;
+        console.log("this.questionnaireListShow:" + this.questionnaireListShow)
+        return tmp;
       }
     }
   },

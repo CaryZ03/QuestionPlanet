@@ -88,6 +88,26 @@ def check_identity_post(view_func):
     return wrapper
 
 
+def check_identity_import(view_func):
+    def wrapper(request, *args, **kwargs):
+        token_key = request.headers.get('Authorization')
+        if token_key:
+            # 使用 Token 模型的 objects.get 方法查找令牌
+            token = UserToken.objects.filter(key=token_key).first()
+            if token is None or token.expire_time < now():
+                return JsonResponse({'errno': 3002, 'msg': "登录信息已过期"})
+            elif not token.is_admin:
+                user = token.filler.filler_user
+                return view_func(request, *args, user=user, **kwargs)
+            else:
+                admin = token.admin
+                return view_func(request, *args, admin=admin, **kwargs)
+        else:
+            return JsonResponse({'errno': 3001, 'msg': "未登录"})
+
+    return wrapper
+
+
 def calculate_score(answer_sheet):
     total_score = 0
     for answer in answer_sheet.as_answers.all():
@@ -203,14 +223,16 @@ def questionnaire_analysis(request, user, qn_id):
         q_result['q_type'] = question.q_type
         if question.q_type == 'single' or question.q_type == 'multiple':
             options = list(json.loads(question.q_options))
-            q_result['q_options'] = [{'choose': str(num), 'label': option, 'num': 0} for num, option in enumerate(options)]
+            q_result['q_options'] = [{'choose': str(num), 'label': option, 'num': 0} for num, option in
+                                     enumerate(options)]
             for answer in answers:
                 a_content = answer.a_content.upper()
                 for option in q_result['q_options']:
                     if option['choose'] in a_content:
                         option['num'] += 1
         elif question.q_type == 'judge':
-            q_result['q_options'] = [{'choose': '0', 'label': '错误', 'num': 0}, {'choose': '1', 'label': '正确', 'num': 0}]
+            q_result['q_options'] = [{'choose': '0', 'label': '错误', 'num': 0},
+                                     {'choose': '1', 'label': '正确', 'num': 0}]
             for answer in answers:
                 a_content = answer.a_content.capitalize()
                 for option in q_result['q_options']:
@@ -362,9 +384,63 @@ def generate_chart(request, user, qn_id):
 
 
 @csrf_exempt
-@transaction.atomic
+@check_identity_import
 @require_http_methods(['POST'])
-def import_questionnaire(request):
+def import_questionnaire(request, user):
+    if request.method == 'POST' and request.FILES['file']:
+        file = request.FILES['file']
+        reader = csv.reader(file.read().decode('utf-8').splitlines())
+        next(reader)
+        # 解析CSV文件并创建问卷
+        questionnaire_info = next(reader)
+        qn_title = questionnaire_info[1]
+        qn_description = questionnaire_info[2]
+        questionnaire = Questionnaire.objects.create(
+            qn_title=qn_title,
+            qn_description=qn_description,
+            qn_creator=user
+        )
+
+        # 解析问题信息并创建问题
+        next(reader)  # Skip empty row
+        next(reader)  # Skip header row
+        i = 0
+        for row in reader:
+            q_id = row[0]
+            q_type = row[1]
+            q_title = row[2]
+            q_description = row[3]
+            q_option_count = row[4]
+            q_options = []
+
+            # 解析选项信息
+            if q_type in ['single', 'multiple']:
+                options = row[5].split(', ')
+                for option in options:
+                    q_options.append({'label': option, 'checked': false, num: 0})
+
+            # 创建问题并加入问卷
+            question = Question.objects.create(
+                q_position=i,
+                q_questionnaire=questionnaire,
+                q_type=q_type,
+                q_title=q_title,
+                q_description=q_description,
+                q_option_count=q_option_count,
+                q_options=q_options
+            )
+            question.save()
+            questionnaire.qn_questions.add(question)
+            i = i+1
+        user.user_created_questionnaires.add(questionnaire)
+        questionnaire.save()
+        user.save()
+        return JsonResponse({'errno': 0, 'msg': '问卷导入成功'})
+
+    return JsonResponse({'errno': 3058, 'msg': '无效的请求'})
+
+
+def import_questionnaire_text(request):
     file = request.FILES['file']  # 获取上传的文件
     ext = file.name.split('.')[-1]  # 获取文件扩展名
     if ext not in ['txt', 'doc']:

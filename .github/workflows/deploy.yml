@@ -32,6 +32,8 @@ jobs:
             cd /home/caryz/QuestionPlanet/question_planet_vue
             npm install
             npm run build
+            sudo rm -r ../front_end
+            sudo mkdir ../front_end
             sudo cp -R dist/* ../front_end
 
             sudo service nginx restart
