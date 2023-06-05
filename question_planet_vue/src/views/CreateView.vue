@@ -342,7 +342,7 @@ export default {
                 q_description: "",
                 a_content: "",
                 q_correct_answer: "",
-                score: 0.0,
+                q_score: 0.0,
                 stars: [false, false, false, false, false],
             };
             if (q_type === "single" || q_type === "multiple") {
