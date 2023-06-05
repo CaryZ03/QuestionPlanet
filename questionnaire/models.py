@@ -1,7 +1,6 @@
 import json
 
 from django.db.models import *
-from user.models import *
 
 
 class Answer(Model):
@@ -78,7 +77,7 @@ class Questionnaire(Model):
     qn_id = AutoField(primary_key=True)
     qn_title = TextField(null=True)
     qn_description = TextField(null=True)
-    qn_creator = ForeignKey('user.User', on_delete=SET_NULL, null=True)
+    qn_creator = ForeignKey('user.User', on_delete=SET_NULL, null=True, related_name='creator')
     qn_createTime = DateTimeField(auto_now_add=True)
     qn_publishTime = DateTimeField(default=None, null=True)
     qn_endTime = DateTimeField(default=None, null=True)
@@ -93,6 +92,7 @@ class Questionnaire(Model):
     qn_refillable = BooleanField(default=True)
     qn_questions = ManyToManyField(Question)
     qn_answersheets = ManyToManyField(AnswerSheet)
+    qn_allowed_users = ManyToManyField('user.User', related_name='allowed_users')
     qn_data_json = JSONField(default=None, null=True)
 
     def to_json(self):
@@ -102,9 +102,9 @@ class Questionnaire(Model):
             "qn_description": self.qn_description,
             "qn_createTime": str(self.qn_createTime),
             "qn_publishTime": str(self.qn_publishTime),
-            "qn_endTime": str(self.qn_endTime),
+            "qn_end_time": str(self.qn_endTime),
             "qn_status": self.qn_status,
             "qn_refillable": self.qn_refillable,
-            # "qn_answersheet_count": self.qn_answersheets.count()
+            "qn_answersheet_count": self.qn_answersheets.count()
         }
         return json.dumps(info)
