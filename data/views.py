@@ -430,10 +430,10 @@ def import_questionnaire(request, user):
                 q_options=q_options
             )
             question.save()
-            qn.qn_questions.add(question)
+            questionnaire.qn_questions.add(question)
             i = i+1
         user.user_created_questionnaires.add(qn)
-        qn.save()
+        questionnaire.save()
         user.save()
         return JsonResponse({'errno': 0, 'msg': '问卷导入成功'})
 
