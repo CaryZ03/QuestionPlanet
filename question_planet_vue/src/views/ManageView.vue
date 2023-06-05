@@ -40,8 +40,8 @@
             <div class="questionnaire_body">
               <el-button v-show="stateType == 0" @click="pushCreate(questionnaire)" round
                 style="background-color:rgba(227, 227, 227, 0.1);;">设计问卷</el-button>
-              <el-button v-show="stateType == 0" @click="generateQuestionnaireLink(JSON.parse(questionnaire).qn_id)"
-                class="copyLink" round style="background-color:rgba(227, 227, 227, 0.1);;">发送问卷</el-button>
+              <el-button v-show="stateType == 0" @click="publicQuestionnaire(JSON.parse(questionnaire).qn_id)"
+                class="copyLink" round style="background-color:rgba(227, 227, 227, 0.1);;">发布问卷</el-button>
               <el-button v-show="stateType == 0" @click="pushAnalyze(questionnaire)" round
                 style="background-color:rgba(227, 227, 227, 0.1);">分析问卷</el-button>
               <el-button v-show="stateType == 0" @click="deleteQuestionnaire(questionnaire)" round
@@ -51,8 +51,14 @@
               <el-button v-show="stateType == 0" @click="exportQuestionnaire(questionnaire)" round
                 style="background-color:rgba(227, 227, 227, 0.1);">导出问卷</el-button>
 
+              <el-button v-show="stateType == 0" @click="copyQuestionnaire(questionnaire)" round
+                style="background-color:rgba(227, 227, 227, 0.1);">复制问卷</el-button>
+
               <el-button v-show="stateType == 2" @click="deDeleteQuestionnaire(questionnaire)" round
                 style="background-color:rgba(227, 227, 227, 0.1);">撤销删除</el-button>
+
+
+
 
 
             </div>
@@ -112,7 +118,7 @@ export default {
         alert(this.$store.state.is_creating)
     },
     // 生成问卷链接
-    generateQuestionnaireLink(qn_id) {
+    publicQuestionnaire(qn_id) {
       var text = `http://182.92.102.246:1145/answer/${qn_id}`
 
       alert(text)
@@ -127,6 +133,17 @@ export default {
         alert('Failed to copy text');
         clipboard.destroy();
       });
+
+      const data = {
+        "uid": this.$store.state.curUserID,
+        "qn_id": qn_id,
+        "status": "published"
+      }
+      console.log("publishQuestionnaire_data:" + data)
+
+      this.$api.questionnaire.postQuestionnaire_ChangeStatus(data).then((res) => {
+        console.log(res)
+      })
     },
 
 
@@ -190,6 +207,13 @@ export default {
       })
       this.stateType = 1
     },
+    copyQuestionnaire(questionnaire){   
+      var qn_id=JSON.parse(questionnaire).qn_id
+      this.$api.questionnaire.getQuestionnaire_copy(qn_id).then((res)=>{
+        console.log(res)
+      })
+      this.getManagerQuestionnaireList_Create()
+    },
     deleteQuestionnaire(questionnaire) {
       console.dir(questionnaire)
       questionnaire = JSON.parse(questionnaire)
@@ -242,7 +266,7 @@ export default {
 
     exportQuestionnaire(questionnaire) {
       var qn_id = JSON.parse(questionnaire).qn_id
-      console.log("typeof"+typeof(qn_id))
+      console.log("typeof" + typeof (qn_id))
       this.$api.data.getQuestionnaire_ExportFile(qn_id).then((res) => {
 
         console.log(res)
