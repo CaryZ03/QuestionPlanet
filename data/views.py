@@ -215,7 +215,7 @@ def questionnaire_analysis(request, user, qn_id):
 @require_http_methods('GET')
 def query_users(request, user, input_name):
     # 在用户类的数据库中查找包含传入字符串的所有用户名
-    users = User.objects.filter(user_name__icontains=input_name)
+    users = User.objects.filter(user_name=input_name)
 
     # 提取用户名列表
     username_list = [user.user_name for user in users]
