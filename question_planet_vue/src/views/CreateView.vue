@@ -406,7 +406,11 @@ export default {
             const dateString = date.toLocaleDateString('en-US', options).replace(/\//g, '-');
             const timeString = date.toLocaleTimeString('en-US', {hour12:false});
 
-            const formattedDate = `${dateString.split('-').reverse().join('-')} ${timeString}`;
+            // 调整日期格式
+            const [YYYY, MM, DD] = dateString.split('-');
+            const formattedDate = `${DD}-${MM}-${YYYY} ${timeString}`;
+            console.log(formattedDate);   // 输出： 19-04-2023 20:06:11
+
 
             const dataObject = { 
                 uid: this.$store.curUserID,
@@ -463,7 +467,19 @@ export default {
         },
         //复制问题
         dup_question(index) {
-            
+            let question = {
+                q_type: this.questions[index].q_type,
+                isEdit: true,
+                q_mandatory: this.questions[index].q_mandatory,
+                q_title: this.questions[index].q_title,
+                q_options: this.questions[index].q_options,
+                q_description: this.questions[index].q_description,
+                a_content: this.questions[index].a_content,
+                q_correct_answer: this.questions[index].q_correct_answer,
+                q_score: this.questions[index].q_score,
+            };
+            console.log(question);
+            this.questions.splice(index, 0, question);
         },
         // 题目上移
         upNode(i) {

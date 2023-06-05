@@ -118,6 +118,7 @@ export default {
             var _this = this;
             this.$api.questionnaire.postQuestionnaire_Fill(this.$route.params.qn_id)
             .then(function (response) {
+            console.log(_this.qn_id);
             console.log(response);
             _this.as_id = response.data.as_id;
             console.log(_this.as_id);
@@ -129,7 +130,7 @@ export default {
         load_qn()
         {   
             var _this = this;
-            this.$api.questionnaire.getQuestionnaire_Check(this.$route.params.qn_id)
+            this.$api.questionnaire.getQuestionnaire_Check(this.qn_id)
             .then(function (response) {
             //console.log(response);
             //console.log(response.data.qn_info);
@@ -138,6 +139,7 @@ export default {
             const qn_list = response.data.question_list;
             console.log(qn_info);
             _this.qn_title = qn_info.qn_title;
+            _this.qn_id = qn_info.qn_id;
             _this.qn_end_time = qn_info.qn_end_time;
             _this.qn_description = qn_info.qn_description;
             _this.qn_refillable = qn_info.qn_refillable;
