@@ -5,7 +5,7 @@
         <div class="question-card" id="question-list" style="margin: 0 0 0 -62px">
             <el-container class="card mb-2" style="box-shadow: 0 2px 4px rgba(0, 0, 0, .12), 0 0 6px rgba(0, 0, 0, .04)">
                     <el-main>
-                        <span>问卷标题：{{ this.qn_title }}</span>
+                        <span style="color: #F3F2F2;">问卷标题：{{ this.qn_title }}</span>
                     </el-main>
                 </el-container>
 
@@ -16,36 +16,53 @@
                     <el-main>
                         <span class="red_star" v-if="question.q_mandatory">*&nbsp;</span>
                         <span class="red_star" v-else></span>
-                        <span v-if="question.q_type === 'single'">{{ index + 1 }}.单选题</span>
-                        <span v-if="question.q_type === 'multiple'">{{ index + 1 }}.多选题</span>
-                        <span v-if="question.q_type === 'text'">{{ index + 1 }}.填空题</span>
-                        <span v-if="question.q_type === 'judge'">{{ index + 1 }}.判断题</span>
+                        <span v-if="question.q_type === 'single'" style="color: #F3F2F2;">{{ index + 1 }}.单选题</span>
+                        <span v-if="question.q_type === 'multiple'" style="color: #F3F2F2;">{{ index + 1 }}.多选题</span>
+                        <span v-if="question.q_type === 'text'" style="color: #F3F2F2;">{{ index + 1 }}.填空题</span>
+                        <span v-if="question.q_type === 'judge'" style="color: #F3F2F2;">{{ index + 1 }}.判断题</span>
+                        <span v-if="question.q_type === 'grade'" style="color: #F3F2F2;">{{ index + 1 }}.打分题</span>
                         <div style="line-height: 30px;">&emsp;</div>
-                        <div>题目：{{ question.q_title }}</div>
+                        <div style="color: #F3F2F2;">题目：{{ question.q_title }}</div>
 
                         <div style="line-height: 30px;">&emsp;</div>
 
                         <div v-if="question.q_type === 'single' || question.q_type === 'multiple'">
-                            <div class="division"><span class="title">选项</span></div>
+                            <div class="division"><span class="title" style="color: #F3F2F2;">选项</span></div>
                             <div v-if="question.q_type === 'single'">
                                 <el-radio-group v-model="question.a_content">
                                     <el-radio v-for="(option, index_option) in question.q_options" :label="index_option"
-                                        :key="index_option">{{ option.label }}</el-radio>
+                                        :key="index_option" style="color: #F3F2F2;">{{ option.label }}</el-radio>
                                     
                                 </el-radio-group>
                             </div>
 
                             <div v-if="question.q_type === 'multiple'">
                                 <div v-for="(option, index_option) in question.q_options" :key="index_option">
-                                    <el-checkbox :label="index_option" v-model="option.checked">{{ option.label
+                                    <el-checkbox :label="index_option" v-model="option.checked" style="color: #F3F2F2;">{{ option.label
                                     }}</el-checkbox>
                                 </div>
                             </div>
                         </div>
 
                         <div v-else-if="question.q_type === 'text'">
-                            <div class="division"><span class="title">内容</span></div>
+                            <div class="division"><span class="title" style="color: #F3F2F2;">内容</span></div>
                             <el-input type="textarea" autosize placeholder="请输入内容" v-model="question.a_content"></el-input>
+                        </div>
+
+                        <div v-else-if="question.q_type === 'judge'">
+                            <div class="division"><span class="title" style="color: #F3F2F2;">选项</span></div>
+                            <el-radio-group v-model="question.a_content">
+                                <el-radio :label="0" style="color: #F3F2F2;">错误</el-radio>
+                                <el-radio :label="1" style="color: #F3F2F2;">正确</el-radio>
+                            </el-radio-group>
+                        </div>
+
+                        <div v-else-if="question.q_type === 'grade'">
+                            <div class="division"><span class="title" style="color: #F3F2F2;">评分</span></div>
+                            <el-rate
+                                v-model="question.a_content"
+                                :colors="grade_colors">
+                            </el-rate>
                         </div>
 
                     </el-main>
@@ -87,6 +104,7 @@ export default {
             qn_refillable: "",
             questions: [],
             answer_sheet: [],
+            grade_colors: ['#99A9BF', '#F7BA2A', '#FF9900']
         };
     },
     created() {
@@ -461,7 +479,7 @@ export default {
 }
 
 .el-main {
-    background-color: #E9EEF3;
+    background-color: rgba(233, 238, 243, .27) !important;
     color: #333;
     text-align: left;
 }

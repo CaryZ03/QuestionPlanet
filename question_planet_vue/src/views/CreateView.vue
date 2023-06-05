@@ -52,7 +52,7 @@
                     <!-- <h5 class="tool-title"><i class="el-icon-star-off"></i>评分题</h5> -->
                     <!-- <p class="tool-text">问卷中用户需要对某个问题进行打分。</p> -->
                     <el-button type="primary" class="btn btn-primary btn-sm" icon="el-icon-circle-plus" size="small"
-                        @click="addQuestion('rating')" round>添加评分题</el-button>
+                        @click="addQuestion('grade')" round>添加评分题</el-button>
                 </div>
             </el-collapse-item>
 
@@ -134,6 +134,7 @@
                         <span v-if="question.q_type === 'multiple'" style="color: #F3F2F2;">{{ index + 1 }}.多选题</span>
                         <span v-if="question.q_type === 'text'" style="color: #F3F2F2;">{{ index + 1 }}.填空题</span>
                         <span v-if="question.q_type === 'judge'" style="color: #F3F2F2;">{{ index + 1 }}.判断题</span>
+                        <span v-if="question.q_type === 'grade'" style="color: #F3F2F2;">{{ index + 1 }}.打分题</span>
                         <div style="line-height: 30px;">&emsp;</div>
 
                         <div class="title">标题</div>
@@ -175,9 +176,17 @@
                         <div v-else-if="question.q_type === 'judge'">
                             <div class="division"><span class="title">选项</span></div>
                             <el-radio-group v-model="question.a_content">
-                                <el-radio :label="0">错误</el-radio>
-                                <el-radio :label="1">正确</el-radio>
+                                <el-radio :label="0" style="color: #F3F2F2;">错误</el-radio>
+                                <el-radio :label="1" style="color: #F3F2F2;">正确</el-radio>
                             </el-radio-group>
+                        </div>
+
+                        <div v-else-if="question.q_type === 'grade'">
+                            <div class="division"><span class="title">评分</span></div>
+                            <el-rate
+                                v-model="question.a_content"
+                                :colors="grade_colors">
+                            </el-rate>
                         </div>
 
                         <div style="line-height: 30px;">&emsp;</div>
@@ -199,6 +208,7 @@
                         <span v-if="question.q_type === 'multiple'" style="color: #F3F2F2;">{{ index + 1 }}.多选题</span>
                         <span v-if="question.q_type === 'text'" style="color: #F3F2F2;">{{ index + 1 }}.填空题</span>
                         <span v-if="question.q_type === 'judge'" style="color: #F3F2F2;">{{ index + 1 }}.判断题</span>
+                        <span v-if="question.q_type === 'grade'" style="color: #F3F2F2;">{{ index + 1 }}.打分题</span>
                         <div style="line-height: 30px;">&emsp;</div>
                         <div style="color: #F3F2F2;">题目：{{ question.q_title }}</div>
 
@@ -223,23 +233,35 @@
                         </div>
 
                         <div v-else-if="question.q_type === 'text'">
-                            <div class="division"><span class="title">内容</span></div>
+                            <div class="division"><span class="title" style="color: #F3F2F2;">内容</span></div>
                             <el-input type="textarea" autosize placeholder="请输入内容" v-model="question.a_content"></el-input>
                         </div>
 
                         <div v-else-if="question.q_type === 'judge'">
-                            <div class="division"><span class="title">选项</span></div>
+                            <div class="division"><span class="title" style="color: #F3F2F2;">选项</span></div>
                             <el-radio-group v-model="question.a_content">
-                                <el-radio :label="0">错误</el-radio>
-                                <el-radio :label="1">正确</el-radio>
+                                <el-radio :label="0" style="color: #F3F2F2;">错误</el-radio>
+                                <el-radio :label="1" style="color: #F3F2F2;">正确</el-radio>
                             </el-radio-group>
                         </div>
+
+                        <div v-else-if="question.q_type === 'grade'">
+                            <div class="division"><span class="title" style="color: #F3F2F2;">评分</span></div>
+                            <el-rate
+                                v-model="question.a_content"
+                                :colors="grade_colors">
+                            </el-rate>
+                        </div>
+                    
+                        
 
                     </el-main>
                     <el-footer>
                         <el-button icon="el-icon-folder-checked" circle v-on:click="change_to_save_mode(index)"
                             v-if="question.isEdit"></el-button>
                         <el-button icon="el-icon-edit" circle v-on:click="change_to_edit_mode(index)" v-else></el-button>
+                        &emsp;&emsp;&emsp;&emsp;
+                        <el-button icon="el-icon-document-copy" circle v-on:click="dup_question(index)"></el-button>
                         &emsp;&emsp;&emsp;&emsp;
                         <el-button icon="el-icon-delete" circle v-on:click="removeQuestion(index)"></el-button>
                         &emsp;&emsp;&emsp;&emsp;
@@ -295,7 +317,8 @@ export default {
             qn_end_time: '',
             qn_refillable: true,
             questions: [],
-            activeNames: ['1','2','3','4','5','6','7']
+            activeNames: ['1','2','3','4','5','6','7'],
+            grade_colors: ['#99A9BF', '#F7BA2A', '#FF9900']
         };
     },
     created() {
@@ -343,15 +366,12 @@ export default {
                 a_content: "",
                 q_correct_answer: "",
                 q_score: 0.0,
-                stars: [false, false, false, false, false],
             };
             if (q_type === "single" || q_type === "multiple") {
                 question.q_options = [
                     { label: "选项1", checked: false ,num: 0},
                     { label: "选项2", checked: false ,num: 0},
                 ];
-            } else if (q_type === "rating") {
-                question.stars = [false, false, false, false, false];
             }
             // 为题目卡片动态生成唯一 ID
             question.id = 'question-' + (this.questions.length + 1);
@@ -440,6 +460,10 @@ export default {
         //删除样本div
         deleteNode(index, i) {
             this.questions[index].q_options.splice(i, 1);  //删除index为i,位置的数组元素
+        },
+        //复制问题
+        dup_question(index) {
+            
         },
         // 题目上移
         upNode(i) {
