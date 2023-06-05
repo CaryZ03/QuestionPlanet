@@ -212,7 +212,7 @@ def copy_questionnaire(request, user, qn_id):
     new_qn.qn_description = qn_description
     new_qn.qn_end_time = qn_end_time
     new_qn.qn_refillable = qn_refillable
-    new_qn.qn_allowed_users.set(allowed_users)
+    # new_qn.qn_allowed_users.set(allowed_users)
 
     new_qn.qn_data_json = old_qn.qn_data_json
 
@@ -226,7 +226,7 @@ def copy_questionnaire(request, user, qn_id):
             q_title=q_data.q_title,
             q_description=q_data.q_description,
             q_option_count=q_data.q_option_count,
-            q_options=json.dumps(q_data.q_options),
+            q_options=q_data.q_options,
             q_correct_answer=q_data.q_correct_answer,
             q_score=q_data.q_score,
         )
