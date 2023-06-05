@@ -17,10 +17,10 @@
             <button class="btnSort" @click="sortByCreateIDMin" style="float: right;">最小ID</button>
 
             <div class="search-box" style="background: transparent;">
-              <a class="search-btn" style="background: transparent;">
+              <a class="search-btn" @click="filteredItems" style="background: transparent;">
                 <i class="el-icon-search" aria-hidden="true"></i>
               </a>
-              <input type="text" class="search-txt" placeholder="搜索" />
+              <input v-model="searchKeyword" class="search-txt" placeholder="搜索" />
               <!-- <div class="search-line"></div> -->
             </div>
           </div>
@@ -30,27 +30,6 @@
 
 
 
-          <el-row class="single_questionnaire_box hvr-grow-shadow">
-            <div class="questionnaire_title">
-              <div class="pull-left">
-                <div class="questionnaire_title">hihi</div>
-              </div>
-              <div class="pull-right">
-                <div class="pull-left item-id">id:NULL</div>
-                <div class="pull-left item-running">status:NULL</div>
-                <div class="pull-left item-data">receive:0</div>
-                <div class="pull-left item-data">2020/02/02 00:22</div>
-              </div>
-            </div>
-            <el-divider></el-divider>
-            <div class="questionnaire_body">
-              <el-button round style="background-color:rgba(227, 227, 227, 0.1);;">设计问卷</el-button>
-              <el-button round style="background-color:rgba(227, 227, 227, 0.1);;">发送问卷</el-button>
-              <el-button @click="getManagerQuestionnaireList_Create" round
-                style="background-color:rgba(227, 227, 227, 0.1);;">分析问卷</el-button>
-            </div>
-
-          </el-row>
           <el-row v-for="questionnaire in questionnaireList" :key="questionnaire.qn_id"
             class="single_questionnaire_box hvr-grow-shadow">
             <div class="questionnaire_title">
@@ -67,17 +46,17 @@
             </div>
             <el-divider></el-divider>
             <div class="questionnaire_body">
-              <el-button @click="pushCreate(questionnaire)"  round
+              <el-button v-show="stateType == 0" @click="pushCreate(questionnaire)" round
                 style="background-color:rgba(227, 227, 227, 0.1);;">设计问卷</el-button>
-              <el-button @click="generateQuestionnaireLink(JSON.parse(questionnaire).qn_id)" class="copyLink" round
-                style="background-color:rgba(227, 227, 227, 0.1);;">发送问卷</el-button>
-              <el-button @click="pushAnalyze(questionnaire)" round
+              <el-button v-show="stateType == 0" @click="generateQuestionnaireLink(JSON.parse(questionnaire).qn_id)"
+                class="copyLink" round style="background-color:rgba(227, 227, 227, 0.1);;">发送问卷</el-button>
+              <el-button v-show="stateType == 0" @click="pushAnalyze(questionnaire)" round
                 style="background-color:rgba(227, 227, 227, 0.1);">分析问卷</el-button>
               <el-button v-show="stateType == 0" @click="deleteQuestionnaire(questionnaire)" round
                 style="background-color:rgba(227, 227, 227, 0.1);">删除问卷</el-button>
-              <el-button v-show="stateType == 0" @click="deleteQuestionnaire(questionnaire)" round
-                style="background-color:rgba(227, 227, 227, 0.1);">移除问卷</el-button>
               <el-button v-show="stateType == 2" @click="deleteQuestionnaire(questionnaire)" round
+                style="background-color:rgba(227, 227, 227, 0.1);">移除问卷</el-button>
+              <el-button v-show="stateType == 2" @click="deDeleteQuestionnaire(questionnaire)" round
                 style="background-color:rgba(227, 227, 227, 0.1);">撤销删除</el-button>
             </div>
 
@@ -109,7 +88,8 @@ export default {
       tableData: Array(20).fill(item),
       userID: this.$store.state.curUserID,
       questionnaireList: null,
-      stateType: 0 //0是管理，1是填写，2是回收站
+      stateType: 0 ,//0是管理，1是填写，2是回收站
+      searchKeyword: '' // 搜索关键字
     }
   },
   watch: {
@@ -135,7 +115,7 @@ export default {
     // 生成问卷链接
     generateQuestionnaireLink(qn_id) {
       var text = `http://localhost:8080/answer/${qn_id}`
-      
+
       alert(text)
       const clipboard = new Clipboard('.copyLink', {
         text: () => text
@@ -148,7 +128,6 @@ export default {
         alert('Failed to copy text');
         clipboard.destroy();
       });
-
     },
 
 
@@ -238,7 +217,23 @@ export default {
         })
         this.getManagerQuestionnaireList_Delete()
       }
+    },
+    deDeleteQuestionnaire(questionnaire) {
+      console.dir(questionnaire)
+      questionnaire = JSON.parse(questionnaire)
+      console.log(questionnaire.qn_id)
+      var qn_id
+      qn_id = questionnaire.qn_id
+      const data = {
+        "uid": this.$store.state.curUserID,
+        "qn_id": qn_id,
+        "status": "unpublished"
+      }
+      console.log("deleteQuestionnaire_data:" + data)
 
+      this.$api.questionnaire.postQuestionnaire_ChangeStatus(data).then((res) => {
+        console.log(res)
+      })
     },
 
     handleChildEvent(key) {
@@ -300,6 +295,16 @@ export default {
       // TODO: 根据当前的排序方式返回排序后的数据
       return this.items;
     },
+    filteredItems() {
+      const keyword = this.searchKeyword.trim(); // 获取搜索关键字
+
+      console.log(keyword)
+      if (!keyword) {
+        return this.questionnaireList; // 如果搜索关键字为空，则返回所有数据
+      } else {
+        return this.questionnaireList.filter(item => item.qn_id.indexOf(keyword)); // 过滤符合搜索条件的数据
+      }
+    }
   },
   mounted() {
     this.getManagerQuestionnaireList_Create();
@@ -380,21 +385,19 @@ export default {
 
 .search-txt {
   -webkit-tap-highlight-color: transparent;
-  background-color: transparent;
   border-style: none;
   box-sizing: border-box;
-  color: #222222;
-  font-family: "Helvetica Neue", Helvetica, Arial, "PingFang SC", "Microsoft YaHei", "Microsoft YaHei UI", 微软雅黑, sans-serif;
+  background: transparent;
+  font-family: Helvetica;
   font-size: 16px;
   font-weight: inherit;
   line-height: 40px;
+  margin: 0 0 -15px;
   outline: none;
   padding: 0 12px;
   text-align: left;
   transition: all .4s;
   width: 200px;
-  margin: 0 0 -15px;
-  transition: 0.4s;
 }
 
 .search-btn {
