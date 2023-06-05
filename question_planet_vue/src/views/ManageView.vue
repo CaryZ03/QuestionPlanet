@@ -2,7 +2,7 @@
   <div>
     <div v-if="!this.$store.state.isAnalyzing && !this.$store.state.is_creating">
       <aside>
-        <AsideMenu @childEvent="handleChildEvent"></AsideMenu>
+        <AsideMenu @childEvent="handleChildEvent" @file-selected="onFileSelected"></AsideMenu>
       </aside>
       <main>
         <el-main style="background: transparent;">
@@ -24,6 +24,7 @@
           <el-row v-for="questionnaire in questionnaireListShow" :key="questionnaire.qn_id"
             class="single_questionnaire_box hvr-grow-shadow">
             <div class="questionnaire_title">
+
               <div class="pull-left">
                 <div class="questionnaire_title">{{ JSON.parse(questionnaire).qn_title }}</div>
               </div>
@@ -94,7 +95,6 @@ export default {
       questionnaireListShow: null,
       stateType: 0,//0是管理，1是填写，2是回收站
       searchKeyword: '', // 搜索关键字
-
     }
   },
   watch: {
@@ -177,6 +177,45 @@ export default {
       this.stateType = 0
     },
 
+    onFileSelected(file) {
+      // 处理接收到的文件数据
+      alert("getFile")
+      console.log(file)
+
+      const formData = new FormData()
+      formData.append('file', file)
+      
+      this.$api.data.postQuestionnaire_Import(formData).then((res)=>{
+        console.log(res)
+      })
+
+    },
+
+    importQuestionnaire() {
+      // 获取文件输入框元素
+      const fileInput = document.getElementById('questionnaireFile');
+      // 监听文件选择事件
+      fileInput.addEventListener('change', (event) => {
+        // 获取选择的文件
+        const file = event.target.files[0];
+        // 创建FormData对象，用于传输文件
+        const formData = new FormData();
+        formData.append('file', file);
+        // 发送POST请求
+        fetch('/import-questionnaire', {
+          method: 'POST',
+          body: formData
+        })
+          .then(response => response.json())
+          .then(data => {
+            console.log(data); // 处理响应数据
+          })
+          .catch(error => {
+            console.error('Error:', error);
+          });
+      });
+    },
+
 
     getManagerQuestionnaireList_Delete() {
       const data = {
@@ -207,9 +246,9 @@ export default {
       })
       this.stateType = 1
     },
-    copyQuestionnaire(questionnaire){   
-      var qn_id=JSON.parse(questionnaire).qn_id
-      this.$api.questionnaire.getQuestionnaire_copy(qn_id).then((res)=>{
+    copyQuestionnaire(questionnaire) {
+      var qn_id = JSON.parse(questionnaire).qn_id
+      this.$api.questionnaire.getQuestionnaire_copy(qn_id).then((res) => {
         console.log(res)
       })
       this.getManagerQuestionnaireList_Create()

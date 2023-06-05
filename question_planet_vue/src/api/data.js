@@ -60,6 +60,9 @@ export function postQuestionnaire_Import(data) {
         method: 'POST',
         url: '/data/import_questionnaire',
         data,
+        headers: {
+            'Content-Type':  'multipart/form-data',
+        }
     })
 }
 
