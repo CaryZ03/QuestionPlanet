@@ -4,7 +4,7 @@
 
     <div class="form-box login">
       <h2 style="color: aliceblue;">Login</h2>
-      <form @click.prevent="">
+      <form @submit.prevent="">
         <div class="input-box">
           <span class="icon"><i class="el-icon-edit"></i></span>
           <input type="text" v-model="user.username" required>
@@ -19,14 +19,14 @@
 
         <div class="remember-forgot">
           <label><input type="checkbox" v-model="isRemember">Remember Me</label>
-          <a href="#" style="color: aliceblue;">Forgot Password</a>
+          <a href="" style="color: aliceblue;">Forgot Password</a>
         </div>
 
         <button class="btn" @click="login">Login</button>
         <button class="btn" @click="test">test</button>
 
         <div class="login-register">
-          <p style="color: aliceblue;">Don't have an account?<a href="#" class="register-link"
+          <p style="color: aliceblue;">Don't have an account?<a href="" class="register-link"
               style="color: aliceblue;">Register</a></p>
         </div>
       </form>
@@ -34,7 +34,7 @@
 
     <div class="form-box register">
       <h2 style="color: aliceblue;">Registeration </h2>
-      <form @click.prevent="">
+      <form @submit.prevent="">
         <div class="input-box">
           <span class="icon"><i class="el-icon-edit"></i></span>
           <input type="text" v-model="userR.username" required>
@@ -61,7 +61,7 @@
         <button class="btn" @click="register">Register</button>
 
         <div class="login-register">
-          <p>Already have an account?<a href="#" class="login-link">Login</a></p>
+          <p>Already have an account?<a href="" class="login-link">Login</a></p>
         </div>
       </form>
     </div>
@@ -71,7 +71,7 @@
 <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
 <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
 <script>
-import { Message } from 'element-ui';
+
 import maxios from '../api'
 export default {
     data() {
@@ -100,8 +100,7 @@ export default {
         if (response.data['errno'] === 0) {
 
 
-          //alert("win")
-          Message.success("登录成功")
+          alert("win")
           console.log(response.data)
 
           this.$store.state.token_key=response.data['token_key']
@@ -121,14 +120,12 @@ export default {
           })
         }
         else {
-          Message.error(response.data.msg)
           console.log(response.data)
           console.log("发生了奇怪的问题")
         }
       }).catch(error => {
-        Message.error("登录失败")
         console.log(error)
-        // alert("wa")
+        alert("wa")
 
 
       })
@@ -139,29 +136,25 @@ export default {
           })
     },
     register() {
-        if(this.isAgree==false){
-            Message.warning("请确认用户协议")
-            //alert("请确认用户协议")
-            return;
-        }
-      const data = JSON.stringify(this.userR)
-      console.log(data)
-      this.$api.userInfo.postUserInfo_Register(data).then((response) => {
-        console.log(response.data)
-        if (response.data.errno == 0) {
-            Message.success("注册成功")
-            // alert("注册成功")
-          const wrapper = document.querySelector('.wrapper')
+      console.log("isagree:"+this.isAgree)
+        if(this.isAgree===false){
+
         }
         else{
-          Message.error(response.data.msg)
-          console.log(response.data)
+          console.log("????????:")
+          const data = JSON.stringify(this.userR)
+           console.log(data)
+         this.$api.userInfo.postUserInfo_Register(data).then((response) => {
+        console.log(response.data)
+        if (response.data.errno == 0) {
+            alert("注册成功")
+          const wrapper = document.querySelector('.wrapper')
         }
       }).catch(error => {
-        Message.error("注册失败")
-        // alert("注册失败")
+        alert("注册失败")
         console.log(error)
       })
+        }
     },
   },
 

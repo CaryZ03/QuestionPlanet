@@ -1,7 +1,7 @@
 <template>
     <div class="row">
         <!-- 工具栏 -->
-        <el-collapse v-model="activeNames" @change="handleChange"  class="col-md-3 d-none d-lg-block bg-light sidebar">
+        <el-collapse v-model="activeNames" class="col-md-3 d-none d-lg-block bg-light sidebar">
             <el-collapse-item  name="1" class="tool " >
                 <template slot="title">
                   <i class="el-icon-circle-check"></i>单选题
@@ -127,22 +127,22 @@
             <div v-for="(question, index) in questions" :key="index" class="card mb-2" v-bind:id="question.id">
                 <el-container style="box-shadow: 0 2px 4px rgba(0, 0, 0, .12), 0 0 6px rgba(0, 0, 0, .04)">
                     <el-main v-if="question.isEdit">
-                        <span class="red_star" v-if="question.isMandatory">*&nbsp;</span>
+                        <span class="red_star" v-if="question.q_mandatory">*&nbsp;</span>
                         <span class="red_star" v-else></span>
 
-                        <span v-if="question.type === 'single'" style="color: #F3F2F2;">{{ index + 1 }}.单选题</span>
-                        <span v-if="question.type === 'multiple'" style="color: #F3F2F2;">{{ index + 1 }}.多选题</span>
-                        <span v-if="question.type === 'text'" style="color: #F3F2F2;">{{ index + 1 }}.填空题</span>
-                        <span v-if="question.type === 'judge'" style="color: #F3F2F2;">{{ index + 1 }}.判断题</span>
+                        <span v-if="question.q_type === 'single'" style="color: #F3F2F2;">{{ index + 1 }}.单选题</span>
+                        <span v-if="question.q_type === 'multiple'" style="color: #F3F2F2;">{{ index + 1 }}.多选题</span>
+                        <span v-if="question.q_type === 'text'" style="color: #F3F2F2;">{{ index + 1 }}.填空题</span>
+                        <span v-if="question.q_type === 'judge'" style="color: #F3F2F2;">{{ index + 1 }}.判断题</span>
                         <div style="line-height: 30px;">&emsp;</div>
 
                         <div class="title">标题</div>
-                        <el-input placeholder="请输入标题" v-model="question.title" clearable></el-input>
+                        <el-input placeholder="请输入标题" v-model="question.q_title" clearable></el-input>
                         <div style="line-height: 30px;">&emsp;</div>
 
-                        <div v-if="question.type === 'single' || question.type === 'multiple'">
+                        <div v-if="question.q_type === 'single' || question.q_type === 'multiple'">
                             <div class="division"><span class="title">选项</span></div>
-                            <div class="single_choice_ques" v-for="(item, index_item) in question.options"
+                            <div class="single_choice_ques" v-for="(item, index_item) in question.q_options"
                                 :key="index_item">
                                 <el-row>
                                     <el-col :span="3">
@@ -167,12 +167,12 @@
                             </el-row>
                         </div>
 
-                        <div v-else-if="question.type === 'text'">
+                        <div v-else-if="question.q_type === 'text'">
                             <div class="division"><span class="title">内容</span></div>
                             <el-input type="textarea" autosize placeholder="请输入内容" v-model="question.a_content"></el-input>
                         </div>
 
-                        <div v-else-if="question.type === 'judge'">
+                        <div v-else-if="question.q_type === 'judge'">
                             <div class="division"><span class="title">选项</span></div>
                             <el-radio-group v-model="question.a_content">
                                 <el-radio :label="0">错误</el-radio>
@@ -187,47 +187,47 @@
                             <el-col :span="21">
                                 <div style="line-height: 200%; color: #F3F2F2;">此题目必须回答</div>
                             </el-col>
-                            <el-col :span="3"><el-switch v-model="question.isMandatory" active-color="#0099ff"
+                            <el-col :span="3"><el-switch v-model="question.q_mandatory" active-color="#0099ff"
                                     inactive-color="#c2bdbd"></el-switch></el-col>
                         </el-row>
                     </el-main>
 
                     <el-main v-else>
-                        <span class="red_star" v-if="question.isMandatory">*&nbsp;</span>
+                        <span class="red_star" v-if="question.q_mandatory">*&nbsp;</span>
                         <span class="red_star" v-else></span>
-                        <span v-if="question.type === 'single'">{{ index + 1 }}.单选题</span>
-                        <span v-if="question.type === 'multiple'">{{ index + 1 }}.多选题</span>
-                        <span v-if="question.type === 'text'">{{ index + 1 }}.填空题</span>
-                        <span v-if="question.type === 'judge'">{{ index + 1 }}.判断题</span>
+                        <span v-if="question.q_type === 'single'" style="color: #F3F2F2;">{{ index + 1 }}.单选题</span>
+                        <span v-if="question.q_type === 'multiple'" style="color: #F3F2F2;">{{ index + 1 }}.多选题</span>
+                        <span v-if="question.q_type === 'text'" style="color: #F3F2F2;">{{ index + 1 }}.填空题</span>
+                        <span v-if="question.q_type === 'judge'" style="color: #F3F2F2;">{{ index + 1 }}.判断题</span>
                         <div style="line-height: 30px;">&emsp;</div>
-                        <div>题目：{{ question.title }}</div>
+                        <div style="color: #F3F2F2;">题目：{{ question.q_title }}</div>
 
                         <div style="line-height: 30px;">&emsp;</div>
 
-                        <div v-if="question.type === 'single' || question.type === 'multiple'">
+                        <div v-if="question.q_type === 'single' || question.q_type === 'multiple'">
                             <div class="division"><span class="title">选项</span></div>
-                            <div v-if="question.type === 'single'">
+                            <div v-if="question.q_type === 'single'">
                                 <el-radio-group v-model="question.a_content">
-                                    <el-radio v-for="(option, index_option) in question.options" :label="index_option"
-                                        :key="index_option">{{ option.label }}</el-radio>
+                                    <el-radio v-for="(option, index_option) in question.q_options" :label="index_option"
+                                        :key="index_option" style="color: #F3F2F2;">{{ option.label }}</el-radio>
                                     
                                 </el-radio-group>
                             </div>
 
-                            <div v-if="question.type === 'multiple'">
-                                <div v-for="(option, index_option) in question.options" :key="index_option">
-                                    <el-checkbox :label="index_option" v-model="option.checked">{{ option.label
+                            <div v-if="question.q_type === 'multiple'">
+                                <div v-for="(option, index_option) in question.q_options" :key="index_option">
+                                    <el-checkbox :label="index_option" v-model="option.checked" style="color: #F3F2F2;">{{ option.label
                                     }}</el-checkbox>
                                 </div>
                             </div>
                         </div>
 
-                        <div v-else-if="question.type === 'text'">
+                        <div v-else-if="question.q_type === 'text'">
                             <div class="division"><span class="title">内容</span></div>
                             <el-input type="textarea" autosize placeholder="请输入内容" v-model="question.a_content"></el-input>
                         </div>
 
-                        <div v-else-if="question.type === 'judge'">
+                        <div v-else-if="question.q_type === 'judge'">
                             <div class="division"><span class="title">选项</span></div>
                             <el-radio-group v-model="question.a_content">
                                 <el-radio :label="0">错误</el-radio>
@@ -298,27 +298,59 @@ export default {
             activeNames: ['1','2','3','4','5','6','7']
         };
     },
+    created() {
+        this.qn_id = this.$route.params.qn_id;
+        this.load_qn();
+    },
     methods: {
+        load_qn()
+        {   
+            var _this = this;
+            this.$api.questionnaire.getQuestionnaire_Check(this.$route.params.qn_id)
+            .then(function (response) {
+            console.log(response);
+            console.log(response.data.qn_info);
+            console.log(response.data.question_list);
+            const qn_info = JSON.parse(response.data.qn_info);
+            const qn_list = response.data.question_list;
+            console.log(qn_info);
+            _this.qn_title = qn_info.qn_title;
+            _this.qn_end_time = qn_info.qn_end_time;
+            _this.qn_description = qn_info.qn_description;
+            _this.qn_refillable = qn_info.qn_refillable;
+            qn_list.forEach(question => {
+                const item = JSON.parse(question);
+                item.q_options = JSON.parse(item.q_options);
+                item.isEdit = true;
+                _this.questions.push(item);
+            })
+            //_this.questions = qn_list;
+            })
+            .catch(function (error) {
+            console.log(error);
+            });
+            console.log(this.qn_id);
+        },
         // 添加问题
-        addQuestion(type) {
+        addQuestion(q_type) {
             let question = {
-                type: type,
+                q_type: q_type,
                 isEdit: true,
-                isMandatory: true,
-                title: "",
-                options: [],
+                q_mandatory: true,
+                q_title: "",
+                q_options: [],
                 q_description: "",
                 a_content: "",
-                right_answer: "",
+                q_correct_answer: "",
                 score: 0.0,
                 stars: [false, false, false, false, false],
             };
-            if (type === "single" || type === "multiple") {
-                question.options = [
+            if (q_type === "single" || q_type === "multiple") {
+                question.q_options = [
                     { label: "选项1", checked: false ,num: 0},
                     { label: "选项2", checked: false ,num: 0},
                 ];
-            } else if (type === "rating") {
+            } else if (q_type === "rating") {
                 question.stars = [false, false, false, false, false];
             }
             // 为题目卡片动态生成唯一 ID
@@ -337,14 +369,14 @@ export default {
             const selectedQuestions = this.questions.map(question => {
             // 选择要包含在 JSON 数据中的属性
             return {
-                q_type: question.type,
-                q_mandatory: question.isMandatory,
-                q_title: question.title,
+                q_type: question.q_type,
+                q_mandatory: question.q_mandatory,
+                q_title: question.q_title,
                 q_description: question.q_description,
-                q_option_count: question.options.length,
-                q_options: question.options,
-                q_correct_answer: question.right_answer,
-                q_score: question.score,
+                q_option_count: question.q_options.length,
+                q_options: question.q_options,
+                q_correct_answer: question.q_correct_answer,
+                q_score: question.q_score,
             };
             });
             const isoString = this.qn_end_time;
@@ -357,8 +389,8 @@ export default {
             const formattedDate = `${dateString.split('-').reverse().join('-')} ${timeString}`;
 
             const dataObject = { 
-                uid: 7,
-                qn_id: 65,
+                uid: this.$store.curUserID,
+                qn_id: this.qn_id,
                 qn_title: this.qn_title,
                 qn_description: this.qn_description,
                 qn_end_time: formattedDate,
@@ -403,11 +435,11 @@ export default {
       },
         // 选择题添加选项
         addNode(index) {
-            this.questions[index].options.push({ label: "选项", checked: false });
+            this.questions[index].q_options.push({ label: "选项", checked: false });
         },
         //删除样本div
         deleteNode(index, i) {
-            this.questions[index].options.splice(i, 1);  //删除index为i,位置的数组元素
+            this.questions[index].q_options.splice(i, 1);  //删除index为i,位置的数组元素
         },
         // 题目上移
         upNode(i) {

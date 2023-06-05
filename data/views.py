@@ -32,7 +32,7 @@ def check_identity_get(view_func):
             if token is None or token.expire_time < now():
                 return JsonResponse({'errno': 3002, 'msg': "登录信息已过期"})
             elif not token.is_admin:
-                user = token.user
+                user = token.filler.filler_user
                 if kwargs.get('qn_id') is not None:
                     qn_id = kwargs.get('qn_id')
                     if not Questionnaire.objects.filter(qn_id=qn_id).exists():
@@ -77,7 +77,7 @@ def check_identity_post(view_func):
             if token is None or token.expire_time < now():
                 return JsonResponse({'errno': 3002, 'msg': "登录信息已过期"})
             elif not token.is_admin:
-                user = token.user
+                user = token.filler.filler_user
                 # if 'qn_id' in data:
                 #     qn_id = data.get('qn_id')
                 #     if not Questionnaire.objects.filter(qn_id=qn_id).exists():

@@ -1,7 +1,6 @@
 import json
 
 from django.db.models import *
-from user.models import *
 
 
 class Answer(Model):
@@ -49,7 +48,7 @@ class Question(Model):
     def to_json(self):
         info = {
             "q_id": self.q_id,
-            "q_questionnaire": self.q_questionnaire,
+            "q_questionnaire": self.q_questionnaire.qn_id,
             "q_position": self.q_position,
             "q_type": self.q_type,
             "q_mandatory": self.q_mandatory,
@@ -58,7 +57,7 @@ class Question(Model):
             "q_option_count": self.q_option_count,
             "q_options": self.q_options,
             "q_correct_answer": self.q_correct_answer,
-            "q_score": self.q_score
+            "q_score": str(self.q_score)
         }
         return json.dumps(info)
 
@@ -67,7 +66,7 @@ class AnswerSheet(Model):
     as_id = AutoField(primary_key=True)
     as_filler = ForeignKey('user.Filler', on_delete=CASCADE, null=True)
     as_questionnaire = ForeignKey('Questionnaire', on_delete=CASCADE, null=True)
-    as_createTime = DateTimeField(auto_now_add=True)
+    as_create_time = DateTimeField(auto_now_add=True)
     as_answers = ManyToManyField(Answer)
     as_score = IntegerField(default=0)
     as_temporary_save = JSONField(default=None, null=True)
@@ -78,9 +77,10 @@ class Questionnaire(Model):
     qn_id = AutoField(primary_key=True)
     qn_title = TextField(null=True)
     qn_description = TextField(null=True)
-    qn_creator = ForeignKey('user.User', on_delete=SET_NULL, null=True)
-    qn_createTime = DateTimeField(auto_now_add=True)
-    qn_endTime = DateTimeField(default=None, null=True)
+    qn_creator = ForeignKey('user.User', on_delete=SET_NULL, null=True, related_name='creator')
+    qn_create_time = DateTimeField(auto_now_add=True)
+    qn_publish_time = DateTimeField(default=None, null=True)
+    qn_end_time = DateTimeField(default=None, null=True)
     status_choices = (
         ('unpublished', "未发布"),
         ('published', "已发布"),
@@ -92,6 +92,7 @@ class Questionnaire(Model):
     qn_refillable = BooleanField(default=True)
     qn_questions = ManyToManyField(Question)
     qn_answersheets = ManyToManyField(AnswerSheet)
+    qn_allowed_users = ManyToManyField('user.User', related_name='allowed_users')
     qn_data_json = JSONField(default=None, null=True)
 
     def to_json(self):
@@ -99,8 +100,9 @@ class Questionnaire(Model):
             "qn_id": self.qn_id,
             "qn_title": self.qn_title,
             "qn_description": self.qn_description,
-            "qn_createTime": str(self.qn_createTime),
-            "qn_endTime": str(self.qn_endTime),
+            "qn_create_time": str(self.qn_create_time),
+            "qn_publish_time": str(self.qn_publish_time),
+            "qn_end_time": str(self.qn_end_time),
             "qn_status": self.qn_status,
             "qn_refillable": self.qn_refillable,
             "qn_answersheet_count": self.qn_answersheets.count()
