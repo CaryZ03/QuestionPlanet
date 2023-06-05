@@ -9,62 +9,62 @@ import LoginAndRegister from '@/components/LoginAndRegister.vue'
 export default {
   data() {
     return {
-      user: {
-        username: '',
-        password: ''
-      },
-      userR: {
-        username: '',
-        password1: '',
-        password2: ''
-      },
+      // user: {
+      //   username: '',
+      //   password: ''
+      // },
+      // userR: {
+      //   username: '',
+      //   password1: '',
+      //   password2: ''
+      // },
     }
   },
   methods: {
-    login() {
-      const data = JSON.stringify(this.user)
-      console.log(data)
+    // login() {
+    //   const data = JSON.stringify(this.user)
+    //   console.log(data)
 
 
 
-      this.$api.userInfo.postUserInfo_UserLogin(data).then((response) => {
-        if (response.data['errno'] === 0) {
-          console.log(response.data)
-          console.log(response.data)
-          console.log(response.data.uid)
-          this.$store.state.curUserID = response.data['uid']
-          this.$store.state.curUsername = this.user.username
-          this.$store.state.isLogin = true
-          // set cookie
-          document.cookie = `session_id=${response.data.session_id}`;
-          this.$router.push({
-            path: "/manage/" + this.$store.state.curUserID
-          })
-        }
-        else {
-          console.log("发生了奇怪的问题")
-        }
-      }).catch(error => {
-        console.log(error)
+    //   this.$api.userInfo.postUserInfo_UserLogin(data).then((response) => {
+    //     if (response.data['errno'] === 0) {
+    //       console.log(response.data)
+    //       console.log(response.data)
+    //       console.log(response.data.uid)
+    //       this.$store.state.curUserID = response.data['uid']
+    //       this.$store.state.curUsername = this.user.username
+    //       this.$store.state.isLogin = true
+    //       // set cookie
+    //       document.cookie = `session_id=${response.data.session_id}`;
+    //       this.$router.push({
+    //         path: "/manage/" + this.$store.state.curUserID
+    //       })
+    //     }
+    //     else {
+    //       console.log("发生了奇怪的问题")
+    //     }
+    //   }).catch(error => {
+    //     console.log(error)
 
 
-      })
-    },
-    register() {
-      const data = JSON.stringify(this.userR)
-      this.$api.userInfo.postUserInfo_Register(data).then((response) => {
-        console.log(response.data)
-        if (response.data[0].error == 0) {
-          console.log("注册成功")
-          this.$router.push({
-          path: "/login" 
-          })
-        }
-      }).catch(error => {
-        alert("注册失败")
-        console.log(error)
-      })
-    },
+    //   })
+    // },
+    // register() {
+    //   const data = JSON.stringify(this.userR)
+    //   this.$api.userInfo.postUserInfo_Register(data).then((response) => {
+    //     console.log(response.data)
+    //     if (response.data[0].error == 0) {
+    //       console.log("注册成功")
+    //       this.$router.push({
+    //       path: "/login" 
+    //       })
+    //     }
+    //   }).catch(error => {
+    //     alert("注册失败")
+    //     console.log(error)
+    //   })
+    // },
   },
 
 

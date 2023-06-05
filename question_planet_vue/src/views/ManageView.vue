@@ -20,7 +20,7 @@
               <a class="search-btn" @click="filteredItems" style="background: transparent;">
                 <i class="el-icon-search" aria-hidden="true"></i>
               </a>
-              <input v-model="searchKeyword" class="search-txt" placeholder="搜索" />
+              <input type="text" v-model="searchKeyword" class="search-txt" placeholder="搜索" />
               <!-- <div class="search-line"></div> -->
             </div>
           </div>
@@ -291,18 +291,18 @@ export default {
     },
 
     // 根据当前排序方式显示数据列表
-    sortedItems() {
-      // TODO: 根据当前的排序方式返回排序后的数据
-      return this.items;
-    },
+
     filteredItems() {
       const keyword = this.searchKeyword.trim(); // 获取搜索关键字
 
       console.log(keyword)
       if (!keyword) {
+        console.log(this.questionnaireList)
         return this.questionnaireList; // 如果搜索关键字为空，则返回所有数据
+
       } else {
-        return this.questionnaireList.filter(item => item.qn_id.indexOf(keyword)); // 过滤符合搜索条件的数据
+        console.log("filter!"+ this.questionnaireList)
+        return this.questionnaireList.filter(item => item.qn_id.indexOf(keyword)!== -1); // 过滤符合搜索条件的数据
       }
     }
   },
