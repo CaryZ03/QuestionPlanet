@@ -429,7 +429,12 @@ def import_questionnaire(request, user):
                 q_option_count=q_option_count,
                 q_options=q_options
             )
+            question.save()
+            qn.qn_questions.add(question)
             i = i+1
+        user.user_created_questionnaires.add(qn)
+        qn.save()
+        user.save()
         return JsonResponse({'errno': 0, 'msg': '问卷导入成功'})
 
     return JsonResponse({'errno': 3058, 'msg': '无效的请求'})
