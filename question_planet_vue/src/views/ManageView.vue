@@ -18,11 +18,11 @@
             <button class="btnSort" @click="sortByCreateTimeMAX" style="float: right;">最早发布</button>
             <button class="btnSort" @click="sortByCreateTimeMIN" style="float: right;">最晚发布</button>
 
-            <div class="search-box" style="background: transparent;">
-              <a class="search-btn" @click="filteredItems" style="background: transparent;">
+            <div class="search-box" style="">
+              <a class="search-btn" @click="filteredItems" style="">
                 <i class="el-icon-search" aria-hidden="true"></i>
               </a>
-              <input type="text" v-model="searchKeyword" class="search-txt" placeholder="搜索" />
+              <input type="text" v-model="searchKeyword" style="color: aliceblue;" class="search-txt" placeholder="搜索" />
               <!-- <div class="search-line"></div> -->
             </div>
           </div>
@@ -42,8 +42,9 @@
                 <div class="pull-left item-id">ID:{{ JSON.parse(questionnaire).qn_id }}</div>
                 <div class="pull-left item-running">Status:{{ JSON.parse(questionnaire).qn_status }}</div>
                 <div class="pull-left item-data">receive:0</div>
-                <div class="pull-left item-data">创建时间:{{ JSON.parse(questionnaire).qn_create_time.substring(0,19) }}</div>
-                <div class="pull-left item-data">结束时间:{{ JSON.parse(questionnaire).qn_end_time.substring(0,19) }}</div>
+                <div class="pull-left item-data">创建时间:{{ JSON.parse(questionnaire).qn_create_time.substring(0, 19) }}
+                </div>
+                <div class="pull-left item-data">结束时间:{{ JSON.parse(questionnaire).qn_end_time.substring(0, 19) }}</div>
               </div>
             </div>
             <el-divider></el-divider>
@@ -274,18 +275,18 @@ export default {
     // 创建时间排序
     sortByCreateTimeMIN() {
       console.log(JSON.parse(this.questionnaireList[0]).qn_create_time)
-      console.log(JSON.parse(this.questionnaireList[0]).qn_create_time.substring(0,19))
+      console.log(JSON.parse(this.questionnaireList[0]).qn_create_time.substring(0, 19))
 
-      this.questionnaireList = this.questionnaireList.sort((a, b) => 
-          new Date(JSON.parse(b).qn_create_time.substring()) - new Date(JSON.parse(a).qn_create_time.substring()));
+      this.questionnaireList = this.questionnaireList.sort((a, b) =>
+        new Date(JSON.parse(b).qn_create_time.substring()) - new Date(JSON.parse(a).qn_create_time.substring()));
       return this.questionnaireList
     },
     sortByCreateTimeMAX() {
       console.log(JSON.parse(this.questionnaireList[0]).qn_create_time)
-      console.log(JSON.parse(this.questionnaireList[0]).qn_create_time.substring(0,19))
+      console.log(JSON.parse(this.questionnaireList[0]).qn_create_time.substring(0, 19))
 
-      this.questionnaireList = this.questionnaireList.sort((b, a) => 
-          new Date(JSON.parse(b).qn_create_time.substring()) - new Date(JSON.parse(a).qn_create_time.substring()));
+      this.questionnaireList = this.questionnaireList.sort((b, a) =>
+        new Date(JSON.parse(b).qn_create_time.substring()) - new Date(JSON.parse(a).qn_create_time.substring()));
       return this.questionnaireList
     },
     // 按endTime排序
@@ -309,7 +310,7 @@ export default {
           break;
 
         case 2:
-        this.getManagerQuestionnaireList_Delete();
+          this.getManagerQuestionnaireList_Delete();
           break;
 
         default:
@@ -317,14 +318,16 @@ export default {
       }
       const keyword = this.searchKeyword.trim(); // 获取搜索关键字
 
-      console.log(keyword)
+      console.log("KeyWord!!!!!!!!:" + keyword)
       if (!keyword) {
         console.log(this.questionnaireList)
         return this.questionnaireList; // 如果搜索关键字为空，则返回所有数据
 
       } else {
         console.log("filter!" + this.questionnaireList)
-        this.questionnaireList=this.questionnaireList.filter(item => item.qn_id.indexOf(keyword) !== -1); // 过滤符合搜索条件的数据
+        this.questionnaireList = this.questionnaireList.filter(item => JSON.parse(item).qn_title.indexOf(keyword) !== -1); // 过滤符合搜索条件的数据
+
+        return this.questionnaireList;
       }
     }
   },
@@ -375,7 +378,7 @@ export default {
 .search-line {
   position: absolute;
   left: 62px;
-  bottom: 0px;
+  bottom: 10px;
   width: 0px;
   height: 2px;
   background-color: rgb(251, 121, 0);
@@ -384,47 +387,38 @@ export default {
 
 .search-box {
   -webkit-tap-highlight-color: transparent;
-  background: 0 0;
-  background-color: linear-gradient(90deg, #5A85DC 0, rgba(108, 149, 218, .42) 50%, #3472DE 100%);
-  background-image: linear-gradient(90deg, #5A85DC 0, rgba(108, 149, 218, .42) 50%, #3472DE 100%);
-  background-position: 0 0;
-  border: 3px none #F30000;
   border-radius: 40px;
   bottom: 30px;
   box-shadow: rgba(0, 0, 0, 0.1) 0 2px 25px 0;
   box-sizing: border-box;
   color: #333333;
   display: flex;
-  font-family: "Helvetica Neue", Helvetica, Arial, "PingFang SC", "Microsoft YaHei", "Microsoft YaHei UI", 微软雅黑, sans-serif;
+  font-family: Poppins, sans-serif;
   font-size: 12px;
   height: 40px;
   left: 30px;
-  margin: 0 0 -15px;
-  padding: 0 10px 10px;
+  margin: -138px 0 -22px;
+  padding: 0 10px;
   position: absolute;
   text-align: left;
+  background-color: #170813;
+  background-image: linear-gradient(160deg, #3B3F40 0.4%, #552549 100%);
 }
 
 .search-txt {
-  -webkit-tap-highlight-color: transparent;
-  border-style: none;
-  box-sizing: border-box;
-  background: transparent;
-  font-family: Helvetica;
-  font-size: 16px;
-  font-weight: inherit;
-  line-height: 40px;
-  margin: 0 0 -15px;
+  border: none;
+  background: none;
   outline: none;
-  padding: 0 12px;
-  text-align: left;
-  transition: all .4s;
-  width: 200px;
+  padding: 0;
+  color: #fff;
+  font-size: 16px;
+  line-height: 40px;
+  width: 0;
+  transition: 0.4s;
 }
 
 .search-btn {
   color: #888888;
-  background: transparent;
   font-size: 24px;
   width: 40px;
   height: 40px;
@@ -442,8 +436,19 @@ export default {
 }
 
 .search-box:hover .search-btn {
-  background-color: #fff;
+  /* background-color: #fff;
+   */
+  background: transparent;
   animation: rotate 0.4s linear;
+}
+
+.search-txt:focus {
+  width: 200px;
+  padding: 0 12px;
+}
+
+.search-txt:focus+.search-line {
+  width: 200px;
 }
 
 @keyframes rotate {
@@ -868,32 +873,32 @@ div {
 }
 
 .single_questionnaire_box {
-  backdrop-filter: blur(20px);
-  border-radius: 4px;
-  border-style: initial;
-  border-width: 10px;
-  box-shadow: rgba(0, 0, 0, 0.3) 0 2px 12px 0;
-  box-sizing: border-box;
-  color: #333333;
-  display: inline-block;
-  font-family: "Helvetica Neue", Helvetica, Arial, "PingFang SC", "Microsoft YaHei", "Microsoft YaHei UI", 微软雅黑, sans-serif;
-  font-size: 12px;
-  height: 90px;
-  left: 2.5%;
-  letter-spacing: normal;
-  line-height: normal;
-  margin: 10px 0 20px;
-  padding: 0 20px;
-  position: relative;
-  text-align: left;
-  transform: perspective(1px) translateZ(0);
-  transition-duration: .3s;
-  transition-property: box-shadow, transform;
-  vertical-align: middle;
-  width: 95%;
-  z-index: 100;
-  background-color: #B38BFF;
-  background-image: linear-gradient(45deg, #0D44E37A 0%, #2DC3EB78 52%, #2BFF882E 90.8%);
+  -webkit-tap-highlight-color: transparent;
+backdrop-filter: blur(20px);
+border-radius: 4px;
+border-style: initial;
+border-width: 10px;
+box-shadow: rgba(0, 0, 0, 0.3) 0 2px 12px 0;
+box-sizing: border-box;
+color: #333333;
+display: inline-block;
+font-family: "Helvetica Neue", Helvetica, Arial, "PingFang SC", "Microsoft YaHei", "Microsoft YaHei UI", 微软雅黑, sans-serif;
+font-size: 12px;
+height: 90px;
+left: 2.5%;
+letter-spacing: normal;
+line-height: normal;
+margin: 10px 0 20px;
+padding: 0 20px;
+position: relative;
+text-align: left;
+transform: perspective(1px) translateZ(0);
+transition-duration: .3s;
+transition-property: box-shadow, transform;
+vertical-align: middle;
+width: 95%;
+z-index: 100;
+background-image: linear-gradient(46deg, rgba(13, 68, 227, 0) 6.2%, rgba(45, 195, 235, 0.75) 69%, rgba(43, 255, 136, .18) 90.8%), linear-gradient(90deg, #6EA3EA00 0%, #5594B53D 49.4%, #03577B 100%);
 }
 
 .questionnaire_title {
