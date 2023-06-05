@@ -26,7 +26,7 @@
         <button class="btn" @click="test">test</button>
 
         <div class="login-register">
-          <p style="color: aliceblue;">Don't have an account?<a href="" class="register-link"
+          <p style="color: aliceblue;">Don't have an account?<a href="#" class="register-link"
               style="color: aliceblue;">Register</a></p>
         </div>
       </form>
@@ -61,7 +61,7 @@
         <button class="btn" @click="register">Register</button>
 
         <div class="login-register">
-          <p>Already have an account?<a href="" class="login-link">Login</a></p>
+          <p>Already have an account?<a href="#" class="login-link">Login</a></p>
         </div>
       </form>
     </div>
@@ -149,6 +149,8 @@ export default {
         if (response.data.errno == 0) {
             alert("注册成功")
           const wrapper = document.querySelector('.wrapper')
+          wrapper.classList.remove('active');
+          
         }
       }).catch(error => {
         alert("注册失败")

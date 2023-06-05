@@ -42,7 +42,7 @@ class Question(Model):
     q_option_count = IntegerField(default=1)
     q_options = JSONField(null=True)
     q_correct_answer = TextField(null=True)
-    q_score = DecimalField(max_digits=6, decimal_places=2, default=0.0)
+    q_score = DecimalField(max_digits=6, decimal_places=2, default=0.0, null=True)
     q_answers = ManyToManyField(Answer)
 
     def to_json(self):

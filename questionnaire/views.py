@@ -53,6 +53,8 @@ def fill_questionnaire(request, qn_id):
             filler.save()
         token_key = create_token(filler.filler_id, False)
     questionnaire = Questionnaire.objects.get(qn_id=qn_id)
+    if questionnaire.qn_status != 'published':
+        return JsonResponse({'errno': 2011, 'msg': "问卷不存在"})
     if AnswerSheet.objects.filter(as_questionnaire=questionnaire, as_filler=filler).exists():
         answer_sheet = AnswerSheet.objects.get(as_questionnaire=questionnaire, as_filler=filler)
     else:
@@ -189,6 +191,52 @@ def save_questionnaire(request, user):
 
 
 @csrf_exempt
+@login_required
+@questionnaire_exists
+@require_http_methods(['POST'])
+def copy_questionnaire(request, user, qn_id):
+    new_qn = Questionnaire.objects.create()
+    new_qn.qn_creator = user
+    user.user_created_questionnaires.add(new_qn)
+    user.save()
+
+    old_qn = Questionnaire.objects.get(qn_id=qn_id)
+    qn_title = old_qn.qn_title
+    qn_description = old_qn.qn_description
+    qn_end_time = old_qn.qn_end_time
+    qn_refillable = old_qn.qn_refillable
+    question_list = old_qn.qn_questions
+    allowed_users = old_qn.qn_allowed_users
+
+    new_qn.qn_title = qn_title
+    new_qn.qn_description = qn_description
+    new_qn.qn_end_time = datetime.strptime(qn_end_time, '%Y-%m-%d %H:%M:%S')
+    new_qn.qn_refillable = qn_refillable
+    new_qn.qn_allowed_users = allowed_users
+
+    new_qn.qn_data_json = old_qn.qn_data_json
+
+    # 创建问题并加入问卷中
+    for q_data in question_list:
+        question = Question.objects.create(
+            q_questionnaire=new_qn,
+            q_position=q_data.q_position,
+            q_type=q_data.q_type,
+            q_mandatory=q_data.q_mandatory,
+            q_title=q_data.q_title,
+            q_description=q_data.q_description,
+            q_option_count=q_data.q_option_count,
+            q_options=json.dumps(q_data.q_options),
+            q_correct_answer=q_data.q_correct_answer,
+            q_score=q_data.q_score,
+        )
+        question.save()
+        new_qn.qn_questions.add(question)
+    new_qn.save()
+    return JsonResponse({'code': 0, 'message': '问卷复制成功', 'qn_id': new_qn.qn_id})
+
+
+@csrf_exempt
 @require_http_methods(['GET'])
 def check_questionnaire(request, qn_id):
     if not Questionnaire.objects.filter(qn_id=qn_id).exists():
@@ -222,6 +270,8 @@ def change_questionnaire_status(request, user):
     qn = Questionnaire.objects.get(qn_id=qn_id)
     qn.qn_status = status
     qn.save()
+    if status == 'published':
+        qn.qn_publish_time = now()
     return JsonResponse({'errno': 0, 'msg': "问卷状态更改成功"})
 
 

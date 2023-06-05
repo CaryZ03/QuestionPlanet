@@ -54,7 +54,7 @@
                 <div style="line-height: 30px;">&emsp;</div>
 
             </div>
-            <el-button type="success" style="margin: 0 0 0 214px" round v-on:click="commitAnswer()">保存回答</el-button>
+            <el-button type="success" style="margin: 0 0 0 214px" round v-on:click="submit_answer()">保存回答</el-button>
             <el-button type="primary" round >提交回答</el-button>
         </div>
 
@@ -80,6 +80,7 @@ export default {
         return {
             uid: this.$store.state.curUserID,
             qn_id: "",
+            as_id: "",
             qn_title: "这是问卷标题",
             qn_description: "",
             qn_end_time: "",
@@ -91,16 +92,30 @@ export default {
     created() {
         this.qn_id = this.$route.params.qn_id;
         this.load_qn();
+        this.create_as();
     },
     methods: {
+        create_as()
+        {
+            var _this = this;
+            this.$api.questionnaire.postQuestionnaire_Fill(this.$route.params.qn_id)
+            .then(function (response) {
+            console.log(response);
+            _this.as_id = response.data.as_id;
+            console.log(_this.as_id);
+            })
+            .catch(function (error) {
+            console.log(error);
+            });
+        },
         load_qn()
         {   
             var _this = this;
             this.$api.questionnaire.getQuestionnaire_Check(this.$route.params.qn_id)
             .then(function (response) {
-            console.log(response);
-            console.log(response.data.qn_info);
-            console.log(response.data.question_list);
+            //console.log(response);
+            //console.log(response.data.qn_info);
+            //console.log(response.data.question_list);
             const qn_info = JSON.parse(response.data.qn_info);
             const qn_list = response.data.question_list;
             console.log(qn_info);
@@ -121,7 +136,7 @@ export default {
             console.log(this.qn_id);
         },
 
-        commitAnswer(){
+        submit_answer(){
             this.answer_sheet.splice(0, this.answer_sheet.length);
             this.questions.forEach((question, index_question) => {
                 let a_content_array = [];
@@ -136,17 +151,24 @@ export default {
                     //console.log(question.a_content);
                 }
  
-                this.answer_sheet.push({q_id: index_question, a_content: question.a_content});
+                this.answer_sheet.push({q_id: question.q_id, a_content: question.a_content});
                 });
             console.log(this.answer_sheet);
             const dataObject = { 
-                qn_id: 3,
-                as_id: 3,
+                qn_id: this.qn_id,
+                as_id: this.as_id,
                 answer_data: JSON.stringify(this.answer_sheet)
             };
             const jsonString = JSON.stringify(dataObject);
             console.log(jsonString);
             //上传问卷，跳转。
+            this.$api.questionnaire.postAnswer_Submit(jsonString)
+            .then(function (response) {
+                console.log(response);
+            })
+            .catch(function (error) {
+                console.log(error);
+            });
         },  
         
         save_tips() {
