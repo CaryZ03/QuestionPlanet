@@ -88,6 +88,26 @@ def check_identity_post(view_func):
     return wrapper
 
 
+def check_identity_import(view_func):
+    def wrapper(request, *args, **kwargs):
+        token_key = request.headers.get('Authorization')
+        if token_key:
+            # 使用 Token 模型的 objects.get 方法查找令牌
+            token = UserToken.objects.filter(key=token_key).first()
+            if token is None or token.expire_time < now():
+                return JsonResponse({'errno': 3002, 'msg': "登录信息已过期"})
+            elif not token.is_admin:
+                user = token.filler.filler_user
+                return view_func(request, *args, user=user, **kwargs)
+            else:
+                admin = token.admin
+                return view_func(request, *args, admin=admin, **kwargs)
+        else:
+            return JsonResponse({'errno': 3001, 'msg': "未登录"})
+
+    return wrapper
+
+
 def calculate_score(answer_sheet):
     total_score = 0
     for answer in answer_sheet.as_answers.all():
@@ -364,6 +384,7 @@ def generate_chart(request, user, qn_id):
 
 
 @csrf_exempt
+@check_identity_import
 @require_http_methods(['POST'])
 def import_questionnaire(request, user):
     if request.method == 'POST' and request.FILES['file']:
