@@ -206,7 +206,7 @@ def copy_questionnaire(request, user, qn_id):
     qn_end_time = old_qn.qn_end_time
     qn_refillable = old_qn.qn_refillable
     question_list = old_qn.qn_questions
-    allowed_users = old_qn.qn_allowed_users.set()
+    allowed_users = old_qn.qn_allowed_users.all()
 
     new_qn.qn_title = qn_title
     new_qn.qn_description = qn_description
