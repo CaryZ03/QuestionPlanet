@@ -392,11 +392,10 @@ padding: 0;
 width: 400px !important;
 position: fixed;
 
-right: 137px;
-top: 302px;
-
-left: 1129px;
-bottom: 15px;
+right: 8.9193%;
+top: 45.46%;
+left: 73.5026%;
+bottom: 0.9766%;
 }
 .moon-botton{
   box-sizing: border-box;
