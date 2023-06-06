@@ -263,9 +263,8 @@ def questionnaire_analysis(request, user, qn_id):
 
 
 @csrf_exempt
-@check_identity_post
 @require_http_methods(['POST'])
-def questionnaire_process(request, user):
+def questionnaire_process(request):
     qn_id = json.loads(request.body.decode('utf-8')).get('qn_id')
     n = json.loads(request.body.decode('utf-8')).get('n')
     # 查找问卷
