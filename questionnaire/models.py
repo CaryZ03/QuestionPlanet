@@ -77,18 +77,25 @@ class Questionnaire(Model):
     qn_id = AutoField(primary_key=True)
     qn_title = TextField(null=True)
     qn_description = TextField(null=True)
+    qn_types = (
+        ('normal', "普通问卷"),
+        ('test', "考试问卷"),
+        ('vote', "投票问卷"),
+        ('application', "申请问卷")
+    )
+    qn_type = CharField(max_length=20, choices=qn_types, default='normal')
     qn_creator = ForeignKey('user.User', on_delete=SET_NULL, null=True, related_name='creator')
     qn_create_time = DateTimeField(auto_now_add=True)
     qn_publish_time = DateTimeField(default=None, null=True)
     qn_end_time = DateTimeField(default=None, null=True)
-    status_choices = (
+    qn_status_choices = (
         ('unpublished', "未发布"),
         ('published', "已发布"),
         ('closed', "已关闭"),
         ('banned', "已封禁"),
         ('deleted', "已删除")
     )
-    qn_status = CharField(max_length=20, choices=status_choices, default='unpublished')
+    qn_status = CharField(max_length=20, choices=qn_status_choices, default='unpublished')
     qn_refillable = BooleanField(default=True)
     qn_questions = ManyToManyField(Question)
     qn_answersheets = ManyToManyField(AnswerSheet)
@@ -100,6 +107,7 @@ class Questionnaire(Model):
             "qn_id": self.qn_id,
             "qn_title": self.qn_title,
             "qn_description": self.qn_description,
+            "qn_type": self.qn_type,
             "qn_create_time": str(self.qn_create_time),
             "qn_publish_time": str(self.qn_publish_time),
             "qn_end_time": str(self.qn_end_time),

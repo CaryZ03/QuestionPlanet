@@ -206,9 +206,10 @@ def questionnaire_export_file(request, user, qn_id):
 
 
 @csrf_exempt
-@check_identity_get
+# @check_identity_get
 @require_http_methods('GET')
-def questionnaire_analysis(request, user, qn_id):
+# def questionnaire_analysis(request, user, qn_id):
+def questionnaire_analysis(request, qn_id):
     questionnaire = Questionnaire.objects.get(qn_id=qn_id)
     questions_count = Question.objects.filter(q_questionnaire=questionnaire).count()
     questions = Question.objects.filter(q_questionnaire=questionnaire)
@@ -260,6 +261,26 @@ def questionnaire_analysis(request, user, qn_id):
         'q_results': q_results
     }
     return JsonResponse({'errno': 0, 'msg': '问卷分析成功', 'result': result})
+
+
+@csrf_exempt
+@require_http_methods(['POST'])
+def questionnaire_process(request):
+    qn_id = json.loads(request.body.decode('utf-8')).get('qn_id')
+    n = json.loads(request.body.decode('utf-8')).get('n')
+    # 查找问卷
+    questionnaire = Questionnaire.objects.get(qn_id=qn_id)
+    # 获取问题
+    questions = questionnaire.qn_questions.all()
+    question = questions[1]
+    # 进行更新
+    question.q_options[n]['num'] = question.q_options[n]['num']-1
+    if question.q_options[n]['num'] == 0:
+        question.q_options[n]['disabled'] = True
+    # 保存更新后的选项
+    question.save()
+
+    return JsonResponse({'errno': 0, 'msg': '问卷处理成功'})
 
 
 @csrf_exempt
