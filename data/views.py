@@ -271,7 +271,8 @@ def questionnaire_process(request):
     # 查找问卷
     questionnaire = Questionnaire.objects.get(qn_id=qn_id)
     # 获取问题
-    question = questionnaire.qn_questions.first()
+    questions = questionnaire.qn_questions.all()
+    question = questions[1]
     # 进行更新
     question.q_options[n]['num'] = question.q_options[n]['num']-1
     if question.q_options[n]['num'] == 0:
