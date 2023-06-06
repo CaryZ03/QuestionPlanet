@@ -28082,3 +28082,66 @@ spawned uWSGI worker 7 (pid: 76475, cores: 2)
 spawned uWSGI worker 8 (pid: 76481, cores: 2)
 [pid: 76475|app: 0|req: 1/1] 106.39.42.229 () {44 vars in 837 bytes} [Tue Jun  6 14:40:40 2023] GET /api/user/check_questionnaire_list/created?uid=7 => generated 7585 bytes in 2215 msecs (HTTP/1.1 200) 9 headers in 306 bytes (1 switches on core 0)
 [pid: 76475|app: 0|req: 2/2] 106.39.42.229 () {44 vars in 824 bytes} [Tue Jun  6 14:40:44 2023] GET /api/questionnaire/check_questionnaire/45 => generated 2272 bytes in 105 msecs (HTTP/1.1 200) 9 headers in 306 bytes (1 switches on core 1)
+Tue Jun  6 14:45:59 2023 - uWSGI worker 8 screams: UAAAAAAH my master disconnected: i will kill myself !!!
+Tue Jun  6 14:45:59 2023 - uWSGI worker 8 screams: UAAAAAAH my master disconnected: i will kill myself !!!
+Tue Jun  6 14:45:59 2023 - uWSGI worker 3 screams: UAAAAAAH my master disconnected: i will kill myself !!!
+Tue Jun  6 14:45:59 2023 - uWSGI worker 2 screams: UAAAAAAH my master disconnected: i will kill myself !!!
+Tue Jun  6 14:45:59 2023 - uWSGI worker 4 screams: UAAAAAAH my master disconnected: i will kill myself !!!
+Tue Jun  6 14:45:59 2023 - uWSGI worker 2 screams: UAAAAAAH my master disconnected: i will kill myself !!!
+Tue Jun  6 14:45:59 2023 - uWSGI worker 3 screams: UAAAAAAH my master disconnected: i will kill myself !!!
+Tue Jun  6 14:45:59 2023 - uWSGI worker 4 screams: UAAAAAAH my master disconnected: i will kill myself !!!
+Tue Jun  6 14:45:59 2023 - uWSGI worker 6 screams: UAAAAAAH my master disconnected: i will kill myself !!!
+Tue Jun  6 14:45:59 2023 - uWSGI worker 5 screams: UAAAAAAH my master disconnected: i will kill myself !!!
+Tue Jun  6 14:45:59 2023 - uWSGI worker 1 screams: UAAAAAAH my master disconnected: i will kill myself !!!
+Tue Jun  6 14:45:59 2023 - uWSGI worker 6 screams: UAAAAAAH my master disconnected: i will kill myself !!!
+Tue Jun  6 14:45:59 2023 - uWSGI worker 5 screams: UAAAAAAH my master disconnected: i will kill myself !!!
+Tue Jun  6 14:45:59 2023 - uWSGI worker 1 screams: UAAAAAAH my master disconnected: i will kill myself !!!
+Tue Jun  6 14:45:59 2023 - uWSGI worker 7 screams: UAAAAAAH my master disconnected: i will kill myself !!!
+Tue Jun  6 14:45:59 2023 - uWSGI worker 7 screams: UAAAAAAH my master disconnected: i will kill myself !!!
+*** Starting uWSGI 2.0.21 (64bit) on [Tue Jun  6 14:46:02 2023] ***
+compiled with version: 9.4.0 on 23 May 2023 12:20:36
+os: Linux-5.4.0-47-generic #51-Ubuntu SMP Fri Sep 4 19:50:52 UTC 2020
+nodename: CrServer
+machine: x86_64
+clock source: unix
+detected number of CPU cores: 2
+current working directory: /home/caryz/QuestionPlanet
+writing pidfile to /home/caryz/QuestionPlanet/uwsgi.pid
+detected binary path: /usr/local/bin/uwsgi
+!!! no internal routing support, rebuild with pcre support !!!
+chdir() to /home/caryz/QuestionPlanet
+your processes number limit is 14758
+your memory page size is 4096 bytes
+detected max file descriptor number: 65535
+lock engine: pthread robust mutexes
+thunder lock: disabled (you can enable it with --thunder-lock)
+uwsgi socket 0 bound to TCP address 127.0.0.1:5678 fd 3
+Python version: 3.8.10 (default, Nov 14 2022, 12:59:47)  [GCC 9.4.0]
+Set PythonHome to /home/caryz/miniconda3/envs/django
+Python main interpreter initialized at 0x555fe2fd3730
+python threads support enabled
+your server socket listen backlog is limited to 100 connections
+your mercy for graceful operations on workers is 60 seconds
+mapped 1855998 bytes (1812 KB) for 16 cores
+*** Operational MODE: preforking+threaded ***
+WSGI app 0 (mountpoint='') ready in 1 seconds on interpreter 0x555fe2fd3730 pid: 77520 (default app)
+*** uWSGI is running in multiple interpreter mode ***
+spawned uWSGI master process (pid: 77520)
+spawned uWSGI worker 1 (pid: 77528, cores: 2)
+spawned uWSGI worker 2 (pid: 77529, cores: 2)
+spawned uWSGI worker 3 (pid: 77531, cores: 2)
+spawned uWSGI worker 4 (pid: 77532, cores: 2)
+spawned uWSGI worker 5 (pid: 77534, cores: 2)
+spawned uWSGI worker 6 (pid: 77537, cores: 2)
+spawned uWSGI worker 7 (pid: 77538, cores: 2)
+spawned uWSGI worker 8 (pid: 77539, cores: 2)
+[pid: 77539|app: 0|req: 1/1] 106.39.42.229 () {48 vars in 846 bytes} [Tue Jun  6 15:52:37 2023] OPTIONS /api/questionnaire/check_questionnaire/45 => generated 0 bytes in 6 msecs (HTTP/1.1 200) 11 headers in 499 bytes (1 switches on core 0)
+[pid: 77528|app: 0|req: 1/2] 106.39.42.229 () {44 vars in 824 bytes} [Tue Jun  6 15:52:37 2023] GET /api/questionnaire/check_questionnaire/45 => generated 2291 bytes in 2613 msecs (HTTP/1.1 200) 9 headers in 306 bytes (1 switches on core 0)
+[pid: 77539|app: 0|req: 2/3] 106.39.42.229 () {48 vars in 901 bytes} [Tue Jun  6 15:52:52 2023] POST /api/questionnaire/save_questionnaire => generated 62 bytes in 1295 msecs (HTTP/1.1 200) 9 headers in 304 bytes (1 switches on core 1)
+[pid: 77537|app: 0|req: 1/4] 106.39.42.229 () {48 vars in 834 bytes} [Tue Jun  6 15:52:57 2023] OPTIONS /api/data/questionnaire_analysis/45 => generated 0 bytes in 4 msecs (HTTP/1.1 200) 11 headers in 499 bytes (1 switches on core 0)
+[pid: 77531|app: 0|req: 1/5] 106.39.42.229 () {44 vars in 812 bytes} [Tue Jun  6 15:52:57 2023] GET /api/data/questionnaire_analysis/45 => generated 1631 bytes in 1266 msecs (HTTP/1.1 200) 9 headers in 306 bytes (1 switches on core 0)
+[pid: 77531|app: 0|req: 2/6] 106.39.42.229 () {44 vars in 824 bytes} [Tue Jun  6 15:53:07 2023] GET /api/questionnaire/check_questionnaire/45 => generated 2297 bytes in 86 msecs (HTTP/1.1 200) 9 headers in 306 bytes (1 switches on core 1)
+[pid: 77537|app: 0|req: 2/7] 106.39.42.229 () {48 vars in 846 bytes} [Tue Jun  6 15:53:43 2023] OPTIONS /api/questionnaire/check_questionnaire/46 => generated 0 bytes in 0 msecs (HTTP/1.1 200) 11 headers in 499 bytes (1 switches on core 1)
+[pid: 77537|app: 0|req: 3/8] 106.39.42.229 () {44 vars in 824 bytes} [Tue Jun  6 15:53:43 2023] GET /api/questionnaire/check_questionnaire/46 => generated 371 bytes in 1342 msecs (HTTP/1.1 200) 9 headers in 305 bytes (1 switches on core 1)
+[pid: 77539|app: 0|req: 3/9] 106.39.42.229 () {44 vars in 824 bytes} [Tue Jun  6 15:54:03 2023] GET /api/questionnaire/check_questionnaire/45 => generated 2297 bytes in 84 msecs (HTTP/1.1 200) 9 headers in 306 bytes (1 switches on core 0)
+[pid: 77539|app: 0|req: 4/10] 106.39.42.229 () {44 vars in 824 bytes} [Tue Jun  6 15:54:32 2023] GET /api/questionnaire/check_questionnaire/45 => generated 2297 bytes in 105 msecs (HTTP/1.1 200) 9 headers in 306 bytes (1 switches on core 1)

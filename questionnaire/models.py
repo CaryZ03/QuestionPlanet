@@ -83,7 +83,7 @@ class Questionnaire(Model):
         ('vote', "投票问卷"),
         ('application', "申请问卷")
     )
-    qn_type = CharField(max_length=20, choices=qn_types, null=True)
+    qn_type = CharField(max_length=20, choices=qn_types, default='normal')
     qn_creator = ForeignKey('user.User', on_delete=SET_NULL, null=True, related_name='creator')
     qn_create_time = DateTimeField(auto_now_add=True)
     qn_publish_time = DateTimeField(default=None, null=True)
