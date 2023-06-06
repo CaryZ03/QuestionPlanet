@@ -11,11 +11,10 @@ export function getQuestionnaire_Export(data) {
 }
 
 // questionnaire_export_file
-export function getQuestionnaire_ExportFile(data) {
+export function getQuestionnaire_ExportFile(qn_id) {
     return request({
         method: 'GET',
-        url: '/data/questionnaire_export_file',
-        data,
+        url: `/data/questionnaire_export_file/${qn_id}`,
     })
 }
 
@@ -61,6 +60,9 @@ export function postQuestionnaire_Import(data) {
         method: 'POST',
         url: '/data/import_questionnaire',
         data,
+        headers: {
+            'Content-Type':  'multipart/form-data',
+        }
     })
 }
 

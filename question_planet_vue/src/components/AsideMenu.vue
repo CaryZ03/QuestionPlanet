@@ -30,7 +30,8 @@
                     <div class="item">
                         <div class="light"></div>
                         <div class="licon"><span class="iconfont icon-qipao1"></span></div>
-                        <div class="con">从模板创建</div>
+                        <div @click="$refs.fileInput.click()" class="con" >从模板创建</div>
+                        <input ref="fileInput" type="file" @change="onFileChange" style="display: none">
                         <div class="ricon"></div>
                     </div>
                     <div class="item">
@@ -109,16 +110,20 @@ export default {
 
             this.$api.questionnaire.postQuestionnaire_Create(data).then((res) => {
                 console.log(res.data.errno + res.data.qn_id)
-                
+
             }).catch((err) => {
                 console.log(err)
             })
-            
+
         },
         triggerParentEvent(state) {
             console.log("state:" + state)
             this.menuState = state
             this.$emit('childEvent', this.menuState)
+        },
+        onFileChange(event) {
+            const file = event.target.files[0];
+            this.$emit('file-selected', file);
         }
     },
 

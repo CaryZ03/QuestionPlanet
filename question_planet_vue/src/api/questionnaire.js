@@ -57,6 +57,15 @@ export function postQuestionnaire_ChangeStatus(data) {
     })
 }
 
+export function getQuestionnaire_copy(qn_id) {
+    return request({
+        method: 'POST',
+        url: `/questionnaire/copy_questionnaire/${qn_id}`,
+    })
+}
+
+
+
 export function getQuestionnaire_Check(qn_id) {
     return request({
         method: 'GET',
