@@ -11,6 +11,14 @@
 
                 <div style="line-height: 30px;">&emsp;</div>
 
+                <el-container class="card mb-2" style="box-shadow: 0 2px 4px rgba(0, 0, 0, .12), 0 0 6px rgba(0, 0, 0, .04)">
+                    <el-main>
+                        <span style="color: #F3F2F2;">问卷描述：{{ this.qn_description }}</span>
+                    </el-main>
+                </el-container>
+
+                <div style="line-height: 30px;">&emsp;</div>
+
             <div v-for="(question, index) in questions" :key="index" class="card mb-2" v-bind:id="question.id">
                 <el-container style="box-shadow: 0 2px 4px rgba(0, 0, 0, .12), 0 0 6px rgba(0, 0, 0, .04)">
                     <el-main>
@@ -23,6 +31,8 @@
                         <span v-if="question.q_type === 'grade'" style="color: #F3F2F2;">{{ index + 1 }}.打分题</span>
                         <div style="line-height: 30px;">&emsp;</div>
                         <div style="color: #F3F2F2;">题目：{{ question.q_title }}</div>
+                        <div style="line-height: 30px;">&emsp;</div>
+                        <div style="color: #F3F2F2;">问题描述：{{ question.q_description }}</div>
 
                         <div style="line-height: 30px;">&emsp;</div>
 
@@ -99,12 +109,23 @@ export default {
             qn_id: "",
             as_id: "",
             qn_title: "这是问卷标题",
+            qn_type: "normal",
+            qn_type_options: [
+                {value: 'normal', label: '普通问卷'},
+                {value: 'test', label: '考试问卷'},
+                {value: 'vote', label: '投票问卷'},
+                {value: 'application', label: '报名问卷'},
+            ],
             qn_description: "",
             qn_end_time: "",
             qn_refillable: "",
             questions: [],
             answer_sheet: [],
-            grade_colors: ['#99A9BF', '#F7BA2A', '#FF9900']
+            grade_colors: ['#99A9BF', '#F7BA2A', '#FF9900'],
+            qn_is_normal: false,
+            qn_is_test: false,
+            qn_is_vote: false,
+            qn_is_application: true,
         };
     },
     created() {
