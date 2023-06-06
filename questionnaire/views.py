@@ -154,6 +154,7 @@ def save_questionnaire(request, user):
     qn_id = data_json.get('qn_id')
     qn_title = data_json.get('qn_title')
     qn_description = data_json.get('qn_description')
+    qn_type = data_json.get('qn_type')
     qn_end_time = data_json.get('qn_end_time')
     qn_refillable = data_json.get('qn_refillable')
     question_list = data_json.get('question_list')
@@ -161,6 +162,7 @@ def save_questionnaire(request, user):
     qn = Questionnaire.objects.get(qn_id=qn_id)
     qn.qn_title = qn_title
     qn.qn_description = qn_description
+    qn.qn_type = qn_type
     qn.qn_end_time = datetime.strptime(qn_end_time, '%Y-%m-%d %H:%M:%S')
     qn.qn_refillable = qn_refillable
 
