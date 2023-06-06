@@ -206,7 +206,7 @@ def questionnaire_export_file(request, user, qn_id):
 
 
 @csrf_exempt
-@check_identity_get
+# @check_identity_get
 @require_http_methods('GET')
 def questionnaire_analysis(request, user, qn_id):
     questionnaire = Questionnaire.objects.get(qn_id=qn_id)
