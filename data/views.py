@@ -274,6 +274,8 @@ def questionnaire_process(request, user):
     question = questionnaire.qn_questions.first()
     # 进行更新
     question.q_options[n]['num'] = question.q_options[n]['num']-1
+    if question.q_options[n]['num'] == 0:
+        question.q_options[n]['disabled'] = True
     # 保存更新后的选项
     question.save()
 
