@@ -165,7 +165,7 @@ def user_login(request):
             else:
                 filler = Filler.objects.create(filler_ip=filler_ip, filler_is_user=True, filler_user=user)
             token_key = request.headers.get('Authorization')
-            if token_key:
+            if token_key and UserToken.objects.filter(key=token_key).exists():
                 token = UserToken.objects.get(key=token_key)
                 token.is_admin = False
                 token.admin = None
