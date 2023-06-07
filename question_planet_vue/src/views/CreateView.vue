@@ -11,8 +11,49 @@
                     <!-- <p class="tool-text">问卷中用户只能选中一个选项作为答案。</p> -->
                     <el-tooltip class="item" effect="dark" content="问卷中用户只能选中一个选项作为答案。" placement="bottom">
                         <el-button type="primary" class="btn btn-primary btn-sm" icon="el-icon-circle-plus" size="small"
-                            @click="addQuestion('single')" round>添加单选题</el-button>
+                            @click="addQuestion('single',0)" round>添加单选题</el-button>
                     </el-tooltip>
+
+                    <el-tooltip class="item" effect="dark" content="您的性别" placement="bottom">
+                        <el-button type="primary" class="btn btn-primary btn-sm" icon="el-icon-circle-plus" size="small"
+                            @click="addQuestion('single',1)" round>性别</el-button>
+                    </el-tooltip>
+
+                    <el-tooltip class="item" effect="dark" content="你玩原神吗" placement="bottom">
+                        <el-button type="primary" class="btn btn-primary btn-sm" icon="el-icon-circle-plus" size="small"
+                            @click="addQuestion('single',2)" round>原神</el-button>
+                    </el-tooltip>
+
+                    <el-tooltip class="item" effect="dark" content="婚姻情况" placement="bottom">
+                        <el-button type="primary" class="btn btn-primary btn-sm" icon="el-icon-circle-plus" size="small"
+                            @click="addQuestion('single',3)" round>婚姻情况</el-button>
+                    </el-tooltip>
+
+                    <el-tooltip class="item" effect="dark" content="工作状态" placement="bottom">
+                        <el-button type="primary" class="btn btn-primary btn-sm" icon="el-icon-circle-plus" size="small"
+                            @click="addQuestion('single',4)" round>工作状态</el-button>
+                    </el-tooltip>
+
+                    <el-tooltip class="item" effect="dark" content="交通工具" placement="bottom">
+                        <el-button type="primary" class="btn btn-primary btn-sm" icon="el-icon-circle-plus" size="small"
+                            @click="addQuestion('single',5)" round>交通工具</el-button>
+                    </el-tooltip>
+
+                    <el-tooltip class="item" effect="dark" content="电影" placement="bottom">
+                        <el-button type="primary" class="btn btn-primary btn-sm" icon="el-icon-circle-plus" size="small"
+                            @click="addQuestion('single',6)" round>电影</el-button>
+                    </el-tooltip>
+
+                    <el-tooltip class="item" effect="dark" content="运动" placement="bottom">
+                        <el-button type="primary" class="btn btn-primary btn-sm" icon="el-icon-circle-plus" size="small"
+                            @click="addQuestion('single',7)" round>运动</el-button>
+                    </el-tooltip>
+
+                    <el-tooltip class="item" effect="dark" content="使用手机时长" placement="bottom">
+                        <el-button type="primary" class="btn btn-primary btn-sm" icon="el-icon-circle-plus" size="small"
+                            @click="addQuestion('single',8)" round>使用手机时长</el-button>
+                    </el-tooltip>
+
                 </div>
             </el-collapse-item>
 
@@ -24,8 +65,37 @@
                 <div class="tool-body">
                     <!-- <h5 class="tool-title"><i class="el-icon-circle-check"></i><i class="el-icon-circle-check"></i>多选题</h5> -->
                     <!-- <p class="tool-text">问卷中用户可以选中多个选项作为答案。</p> -->
-                    <el-button type="primary" class="btn btn-primary btn-sm" icon="el-icon-circle-plus" size="small"
-                        @click="addQuestion('multiple')" round>添加多选题</el-button>
+                    <el-tooltip class="item" effect="dark" content="问卷中用户可以选中多个选项作为答案" placement="bottom">
+                         <el-button type="primary" class="btn btn-primary btn-sm" icon="el-icon-circle-plus" size="small"
+                        @click="addQuestion('multiple',0)" round>添加多选题</el-button>
+                    </el-tooltip>
+                   
+                    
+
+                    <el-tooltip class="item" effect="dark" content="喜欢的原神角色" placement="bottom">
+                        <el-button type="primary" class="btn btn-primary btn-sm" icon="el-icon-circle-plus" size="small"
+                            @click="addQuestion('multiple',1)" round>原神角色</el-button>
+                    </el-tooltip>
+
+                    <el-tooltip class="item" effect="dark" content="运动" placement="bottom">
+                        <el-button type="primary" class="btn btn-primary btn-sm" icon="el-icon-circle-plus" size="small"
+                            @click="addQuestion('multiple',2)" round>运动</el-button>
+                    </el-tooltip>
+
+                    <el-tooltip class="item" effect="dark" content="网站" placement="bottom">
+                        <el-button type="primary" class="btn btn-primary btn-sm" icon="el-icon-circle-plus" size="small"
+                            @click="addQuestion('multiple',3)" round>网站</el-button>
+                    </el-tooltip>
+
+                    <el-tooltip class="item" effect="dark" content="音乐" placement="bottom">
+                        <el-button type="primary" class="btn btn-primary btn-sm" icon="el-icon-circle-plus" size="small"
+                            @click="addQuestion('multiple',4)" round>音乐</el-button>
+                    </el-tooltip>
+
+                    <el-tooltip class="item" effect="dark" content="交通工具" placement="bottom">
+                        <el-button type="primary" class="btn btn-primary btn-sm" icon="el-icon-circle-plus" size="small"
+                            @click="addQuestion('multiple',5)" round>交通工具</el-button>
+                    </el-tooltip>
 
                 </div>
             </el-collapse-item>
@@ -38,8 +108,36 @@
               <div class="tool-body">
                     <!-- <h5 class="tool-title"><i class="el-icon-edit-outline"></i>填空题</h5> -->
                     <!-- <p class="tool-text">问卷中用户需要输入文本信息作为答案。</p> -->
-                    <el-button type="primary" class="btn btn-primary btn-sm" icon="el-icon-circle-plus" size="small"
-                        @click="addQuestion('text')" round>添加填空题</el-button>
+                    <el-tooltip class="item" effect="dark" content="问卷中用户需要输入文本信息作为答案" placement="bottom">
+                        <el-button type="primary" class="btn btn-primary btn-sm" icon="el-icon-circle-plus" size="small"
+                        @click="addQuestion('text',0)" round>添加填空题</el-button>
+                    </el-tooltip>
+                    
+
+                    <el-tooltip class="item" effect="dark" content="姓名" placement="bottom">
+                        <el-button type="primary" class="btn btn-primary btn-sm" icon="el-icon-circle-plus" size="small"
+                            @click="addQuestion('text',1)" round>姓名</el-button>
+                    </el-tooltip>
+
+                    <el-tooltip class="item" effect="dark" content="学号" placement="bottom">
+                        <el-button type="primary" class="btn btn-primary btn-sm" icon="el-icon-circle-plus" size="small"
+                            @click="addQuestion('text',2)" round>学号</el-button>
+                    </el-tooltip>
+
+                    <el-tooltip class="item" effect="dark" content="原神UID" placement="bottom">
+                        <el-button type="primary" class="btn btn-primary btn-sm" icon="el-icon-circle-plus" size="small"
+                            @click="addQuestion('text',3)" round>原神UID</el-button>
+                    </el-tooltip>
+
+                    <el-tooltip class="item" effect="dark" content="家庭住址" placement="bottom">
+                        <el-button type="primary" class="btn btn-primary btn-sm" icon="el-icon-circle-plus" size="small"
+                            @click="addQuestion('text',4)" round>家庭住址</el-button>
+                    </el-tooltip>
+
+                    <el-tooltip class="item" effect="dark" content="手机号" placement="bottom">
+                        <el-button type="primary" class="btn btn-primary btn-sm" icon="el-icon-circle-plus" size="small"
+                            @click="addQuestion('text',5)" round>手机号</el-button>
+                    </el-tooltip>
                 </div>
             </el-collapse-item>
 
@@ -51,11 +149,75 @@
                 <div class="tool-body">
                     <!-- <h5 class="tool-title"><i class="el-icon-star-off"></i>评分题</h5> -->
                     <!-- <p class="tool-text">问卷中用户需要对某个问题进行打分。</p> -->
-                    <el-button type="primary" class="btn btn-primary btn-sm" icon="el-icon-circle-plus" size="small"
-                        @click="addQuestion('grade')" round>添加评分题</el-button>
+                    <el-tooltip class="item" effect="dark" content="问卷中用户需要对某个问题进行打分。" placement="bottom">
+                        <el-button type="primary" class="btn btn-primary btn-sm" icon="el-icon-circle-plus" size="small"
+                        @click="addQuestion('grade',0)" round>添加评分题</el-button>
+                    </el-tooltip>
+                    
+                    <el-tooltip class="item" effect="dark" content="你对原神的喜爱程度" placement="bottom">
+                        <el-button type="primary" class="btn btn-primary btn-sm" icon="el-icon-circle-plus" size="small"
+                        @click="addQuestion('grade',1)" round>模板1</el-button>
+                    </el-tooltip>
+
+                    <el-tooltip class="item" effect="dark" content="你对xxx老师的评价" placement="bottom">
+                        <el-button type="primary" class="btn btn-primary btn-sm" icon="el-icon-circle-plus" size="small"
+                        @click="addQuestion('grade',2)" round>模板2</el-button>
+                    </el-tooltip>
+                    
                 </div>
             </el-collapse-item>
 
+            <!-- 排序题工具 -->
+            <el-collapse-item  name="5" class="tool mb-2">
+              <template slot="title">
+                <i class="el-icon-s-data"></i>判断题
+              </template>
+                <div class="tool-body">
+                    <!-- <h5 class="tool-title"><i class="el-icon-s-data"></i>排序题</h5> -->
+                    <!-- <p class="tool-text">问卷中用户需要将一组选项按照自己的喜好进行排序。</p> -->
+                    <el-tooltip class="item" effect="dark" content="问卷中用户需要将一组选项按照自己的喜好进行排序。" placement="bottom">
+                        <el-button type="primary" class="btn btn-primary btn-sm" icon="el-icon-circle-plus" size="small"
+                        @click="addQuestion('judge',0)" round>添加判断题</el-button>
+                    </el-tooltip>
+                    
+                    <el-tooltip class="item" effect="dark" content="原神是世界第一吗" placement="bottom">
+                        <el-button type="primary" class="btn btn-primary btn-sm" icon="el-icon-circle-plus" size="small"
+                        @click="addQuestion('judge',1)" round>模板1</el-button>
+                    </el-tooltip>
+                    
+                    <el-tooltip class="item" effect="dark" content="你是否会向你的朋友推荐本产品" placement="bottom">
+                        <el-button type="primary" class="btn btn-primary btn-sm" icon="el-icon-circle-plus" size="small"
+                        @click="addQuestion('judge',2)" round>模板2</el-button>
+                    </el-tooltip>
+                    
+                </div>
+            </el-collapse-item>
+
+            <!-- 图片选择题工具 -->
+            <el-collapse-item name="6" class="tool mb-2">
+              <template slot="title">
+                <i class="el-icon-picture-outline"></i>图片选择题
+              </template>  
+              <div class="tool-body">
+                    <!-- <h5 class="tool-title"><i class="el-icon-picture-outline"></i>图片选择题</h5> -->
+                    <!-- <p class="tool-text">问卷中用户需要从多个图片选项中选择一个。</p> -->
+                    <el-button type="primary" class="btn btn-primary btn-sm" icon="el-icon-circle-plus" size="small"
+                        @click="addQuestion('image')" round>添加图片选择题</el-button>
+                </div>
+            </el-collapse-item>
+
+            <!-- 进度条工具 -->
+            <el-collapse-item name="7" class="tool mb-2">
+              <template slot="title">
+                <i class="el-icon-s-data"></i>进度条
+              </template>  
+              <div class="tool-body">
+                    <!-- <h5 class="tool-title"><i class="el-icon-s-data"></i>进度条</h5> -->
+                    <!-- <p class="tool-text">显示当前用户填写问卷的进度。</p> -->
+                    <el-button type="primary" class="btn btn-primary btn-sm" icon="el-icon-circle-plus" size="small"
+                        round>添加进度条</el-button>
+                </div>
+            </el-collapse-item>
     
     </el-collapse>
 
@@ -80,6 +242,7 @@
             
                 <el-container class="card mb-2" style="box-shadow: 0 2px 4px rgba(0, 0, 0, .12), 0 0 6px rgba(0, 0, 0, .04)">
                     <el-main>
+                        <span class="red_star">*&nbsp;</span>
                         <span class="title">问卷类型</span>
                         <br>
                         <el-select v-model="qn_type" placeholder="请选择" @change="updateQnType">
@@ -101,10 +264,13 @@
                         <br>
                         <el-date-picker
                             v-model="qn_end_time"
-                            type="datetime"
-                            placeholder="选择日期时间"
-                            format="yyyy-MM-dd HH:mm:ss">
-                            </el-date-picker>
+                            type="date"
+                            placeholder="选择日期">
+                        </el-date-picker>
+                        <el-time-picker
+                            v-model="qn_end_time"
+                            placeholder="任意时间点">
+                        </el-time-picker>
                     </el-main>
                 </el-container>
 
@@ -377,6 +543,7 @@
 </template>
   
 <script>
+import { Message } from 'element-ui';
 // const vm = new Vue({
 //   el: '#question-list',
 //   data:{
@@ -490,7 +657,7 @@ export default {
             console.log(this.qn_id);
         },
         // 添加问题
-        addQuestion(q_type) {
+        addQuestion(q_type, option) {
             if (this.qn_type === "vote")
             {
                 this.$message({
@@ -511,19 +678,191 @@ export default {
                 q_type: q_type,
                 isEdit: true,
                 q_mandatory: true,
-                q_title: "",
+                q_title: "标题",
                 q_options: [],
                 q_description: "",
                 a_content: "",
                 q_correct_answer: "",
                 q_score: 0.0,
             };
-            if (q_type === "single" || q_type === "multiple") {
-                question.q_options = [
+            if (q_type === "single" ) {
+                if(option == 0){
+                    question.q_options = [
                     { label: "选项1", checked: false ,num: 0},
                     { label: "选项2", checked: false ,num: 0},
                 ];
+                }
+                else if( option ==1){
+                    question.q_title = "您的性别"
+                    question.q_options = [
+                    { label: "男", checked: false ,num: 0},
+                    { label: "女", checked: false ,num: 0},
+                ];
+                }
+                else if( option ==2){
+                    question.q_title = "你玩原神吗"
+                    question.q_options = [
+                    { label: "原神，启动！", checked: false ,num: 0},
+                    { label: "不玩", checked: false ,num: 0},
+                ];
+                }
+                else if( option ==3){
+                    question.q_title = "婚姻状况"
+                    question.q_options = [
+                    { label: "未婚", checked: false ,num: 0},
+                    { label: "已婚", checked: false ,num: 0},
+                    { label: "离异", checked: false ,num: 0},
+                ];
+                }
+                else if(option ==4){
+                    question.q_title = "您的工作状态"
+                    question.q_options = [
+                        { label: "在职", checked: false ,num: 0},
+                        { label: "待业", checked: false ,num: 0},
+                        { label: "自由职业", checked: false ,num: 0},
+                        { label: "退休", checked: false ,num: 0},
+                    ];
+                }
+                else if(option == 5){
+                    question.q_title = "你平时使用的交通工具"
+                    question.q_options = [
+                        { label: "公共交通", checked: false ,num: 0},
+                        { label: "私家车", checked: false ,num: 0},
+                        { label: "共享单车", checked: false ,num: 0},
+                        { label: "步行/自行车", checked: false ,num: 0},
+                    ];
+                }
+                else if(option == 6){
+                    question.q_title = "你平时喜欢看什么类型的电影"
+                    question.q_options = [
+                        { label: "动作片", checked: false ,num: 0},
+                        { label: "喜剧片", checked: false ,num: 0},
+                        { label: "科幻片", checked: false ,num: 0},
+                        { label: "爱情片", checked: false ,num: 0},
+                        { label: "恐怖片", checked: false ,num: 0},
+                        { label: "纪录片", checked: false ,num: 0},
+                        { label: "其他", checked: false ,num: 0},
+                    ];
+                }
+                else if(option == 7){
+                    question.q_title = "你最喜欢的运动类型是"
+                    question.q_options = [
+                        { label: "足球", checked: false ,num: 0},
+                        { label: "篮球", checked: false ,num: 0},
+                        { label: "羽毛球", checked: false ,num: 0},
+                        { label: "跑步", checked: false ,num: 0},
+                        { label: "游泳", checked: false ,num: 0},
+                        { label: "健身", checked: false ,num: 0},
+                        { label: "其他", checked: false ,num: 0},
+                    ];
+                }
+                else if(option == 8){
+                    question.q_title = "你每天会花多长时间看手机"
+                    question.q_options = [
+                        { label: "不到1小时", checked: false ,num: 0},
+                        { label: "1-2小时", checked: false ,num: 0},
+                        { label: "2-3小时", checked: false ,num: 0},
+                        { label: "3小时以上", checked: false ,num: 0},
+                    ];
+                }
             }
+            else if(q_type === "multiple"){
+                if(option == 0){
+                    question.q_options = [
+                    { label: "选项1", checked: false ,num: 0},
+                    { label: "选项2", checked: false ,num: 0},
+                ];
+                }
+                else if(option ==1){
+                    question.q_title = "你喜欢的原神角色"
+                    question.q_options = [
+                        { label: "神里绫华", checked: false ,num: 0},
+                        { label: "胡桃", checked: false ,num: 0},
+                        { label: "琴", checked: false ,num: 0},
+                        { label: "七七", checked: false ,num: 0},
+                        { label: "迪卢克", checked: false ,num: 0},
+                        { label: "可莉", checked: false ,num: 0},
+                        { label: "宵宫", checked: false ,num: 0},
+                        { label: "其他", checked: false ,num: 0}
+                    ];
+                }
+                else if(option == 2){
+                    question.q_title = "你平时喜欢做哪些运动"
+                    question.q_options = [
+                        { label: "跑步", checked: false ,num: 0},
+                        { label: "游泳", checked: false ,num: 0},
+                        { label: "打羽毛球", checked: false ,num: 0},
+                        { label: "健身", checked: false ,num: 0},
+                        { label: "骑自行车", checked: false ,num: 0},
+                        { label: "其他", checked: false ,num: 0}
+                    ];
+                }
+                else if(option==3){
+                    question.q_title = "请选择你经常去的网站"
+                    question.q_options = [
+                        { label: "新闻", checked: false ,num: 0},
+                        { label: "社交媒体", checked: false ,num: 0},
+                        { label: "购物", checked: false ,num: 0},
+                        { label: "视频流媒体", checked: false ,num: 0},
+                        { label: "游戏", checked: false ,num: 0},
+                        { label: "其他", checked: false ,num: 0}
+                    ];
+                }
+                else if(option ==4){
+                    question.q_title = "你喜欢的音乐类型"
+                    question.q_options = [
+                        { label: "流行", checked: false ,num: 0},
+                        { label: "摇滚", checked: false ,num: 0},
+                        { label: "电子", checked: false ,num: 0},
+                        { label: "古典", checked: false ,num: 0},
+                        { label: "嘻哈", checked: false ,num: 0},
+                        { label: "其他", checked: false ,num: 0}
+                    ];
+                }
+                else if(option == 5){
+                    question.q_title = "你平时使用的交通工具"
+                    question.q_options = [
+                        { label: "公共交通", checked: false ,num: 0},
+                        { label: "私家车", checked: false ,num: 0},
+                        { label: "共享单车", checked: false ,num: 0},
+                        { label: "步行/自行车", checked: false ,num: 0},
+                    ];
+                }
+            }
+            else if(q_type === 'text'){
+                if(option == 1){
+                    question.q_title = "你的姓名是？"
+                }
+                else if(option == 2){
+                    question.q_title = "你的学号是？"
+                }
+                else if(option == 3){
+                    question.q_title = "你的原神UID是？"
+                }
+                else if(option == 4){
+                    question.q_title = "你的家庭地址是？"
+                }
+                else if(option == 5){
+                    question.q_title = "你的手机号是？"
+                }
+            }
+            else if(q_type === 'grade'){
+                if(option == 1){
+                    question.q_title = "你对原神的喜爱程度"
+                }
+                else if(option == 2){
+                    question.q_title = "你对xxx老师的评价"
+                }
+            }
+            else if(q_type === 'judge'){
+                if( option == 1){
+                    question.q_title = "原神是世界第一吗"
+                }
+                else if( option == 2){
+                    question.q_title = "你是否会向你的朋友推荐本产品"
+                }
+            }
+
             // 为题目卡片动态生成唯一 ID
             question.id = 'question-' + (this.questions.length + 1);
             this.questions.push(question);
@@ -552,7 +891,7 @@ export default {
             const timeString = date.toLocaleTimeString('en-US', {hour12:false});
 
             // 调整日期格式
-            const [YYYY, MM, DD] = dateString.split('-');
+            const [MM, YYYY, DD] = dateString.split('-');
             const formattedDate = `${DD}-${MM}-${YYYY} ${timeString}`;
             console.log(formattedDate);   // 输出： 19-04-2023 20:06:11
 
@@ -579,6 +918,17 @@ export default {
         },
 
         save_questionnaire() {
+            if( this.qn_title == null){
+                 Message.warning("请填写标题");
+                 return;
+            }
+            console.log('Time is:'+this.qn_end_time);
+            if( this.qn_end_time === "None"){
+                Message.warning("请填写截止时间");
+                return;
+            }
+               
+            
             this.save_handler();
             this.$alert('问卷保存成功！', '保存问卷', {
             confirmButtonText: '确定',
@@ -874,6 +1224,15 @@ export default {
     background-color: #0069d9;
 }
 
+div .el-collapse-item__content{
+    background-image: linear-gradient(163.3deg, #A8C1ED 11.54%, #F3C1EB 90.45%) !important;
+}
+
+.el-collapse__item {
+  background-color: #7b86c8 !important;
+  border-radius: 5px !important;
+}
+
 .sidebar::-webkit-scrollbar {
     display: none;
 }
@@ -960,7 +1319,7 @@ export default {
     justify-content: space-between;
     flex-direction: row;
     flex-wrap: wrap;
-    background-color: rgba(255, 255, 255, 0.103);
+    background-color: rgba(255, 255, 255, 0.103) !important;
 }
 
 .tool-title {
@@ -1019,14 +1378,20 @@ export default {
 }
 
 .btn-primary {
-    background-color: #007bff !important;
+    /* background-color: #007bff !important; */
+    /* background-image: linear-gradient(220.55deg, #565656 0%, #181818 100%); */
+    /* background-image: linear-gradient(rgb(255, 128, 0), rgb(255, 179, 102)); */
+    background-image: linear-gradient(161.15deg, #6974DC 12.73%, #9679DD 72.95%);
     border-color: #007bff !important;
     width: 30%;
+    height: 25px;
     margin: 1%;
 }
 
 .btn-primary:hover {
-    background-color: #0069d9 !important;
+    /* background-color: #0069d9 !important; */
+    /* background-image: linear-gradient(rgba(175, 89, 4, 1), rgb(255, 179, 102)); */
+    background-image: linear-gradient(142.29deg, #6973DB 21.8%, #FE9CA1 73.22%);
     border-color: #0062cc !important;
 }
 
@@ -1146,5 +1511,28 @@ body>.el-container {
     line-height: 320px;
 }
 
+
 </style>
+
+<style lang="scss" scoped>
+// .sidebar{
+// 	...
+// }
+::v-deep .el-collapse-item__header{
+          color: #fff;
+          background-color: #313743 !important;
+          position: relative;
+        }
+::v-deep .el-collapse-item__content{
+          text-align: left;
+          color: #fff ;
+          background-color: #313743;
+          padding-bottom: 0;
+        //   div{
+        //     height: .96rem;
+        //     line-height: .96rem;
+        //   }
+        }
+</style>
+
 

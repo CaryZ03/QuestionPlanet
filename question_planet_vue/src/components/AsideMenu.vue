@@ -3,17 +3,17 @@
         <div class="wrap">
             <div class="nav">
                 <!--按钮-->
-                <div class="btn">
+                <!-- <div class="btn">
                     <div class="btn-item"></div>
                     <div class="btn-item"></div>
                     <div class="btn-item"></div>
-                </div>
+                </div> -->
                 <!--头像-->
                 <div class="icon">
-                    <div class="icon-img"><img src="../assets/background.png" alt="" /></div>
+                    <div class="icon-img"><img src="../assets/pig.jpg" alt="" /></div>
                     <div class="icon-con">
-                        <p>Good Day</p>
-                        <h2>Vitaliy D.</h2>
+                        <p>非常好问卷</p>
+                        <h2>爱来自Pig</h2>
                     </div>
                 </div>
                 <div class="line"></div>
@@ -100,20 +100,16 @@ export default {
         }
     },
     methods: {
-        createNewQ() {
+        async createNewQ() {
             const data = {
                 "uid": this.$store.state.curUserID
             }
             console.log(data)
             // this.triggerParentEvent(0)
-            this.$emit('childEvent', 0)
+             
 
-            this.$api.questionnaire.postQuestionnaire_Create(data).then((res) => {
-                console.log(res.data.errno + res.data.qn_id)
-
-            }).catch((err) => {
-                console.log(err)
-            })
+             await this.$api.questionnaire.postQuestionnaire_Create(data);
+             this.$emit('childEvent', 0)
 
         },
         triggerParentEvent(state) {

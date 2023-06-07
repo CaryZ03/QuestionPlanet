@@ -11,6 +11,8 @@
             <button class="btnSort" @click="sortByCreateIDMin" style="float: right;">最小ID</button>
             <button class="btnSort" @click="sortByCreateTimeMAX" style="float: right;">最早发布</button>
             <button class="btnSort" @click="sortByCreateTimeMIN" style="float: right;">最晚发布</button>
+            <button class="btnSort" @click="sortByQuestionnaireCountMAX" style="float: right;">最多收集</button>
+            <button class="btnSort" @click="sortByQuestionnaireCountMIN" style="float: right;">最少收集</button>
 
             <div class="search-box" style="">
               <a class="search-btn" @click.prevent="filteredItems" style="">
@@ -21,40 +23,45 @@
             </div>
           </div>
 
-          <el-row v-for="questionnaire in questionnaireListShow" :key="questionnaire.qn_id"
-            class="single_questionnaire_box hvr-grow-shadow">
-            <div class="questionnaire_title">
-
-              <div class="pull-left">
-                <div class="questionnaire_title">{{ JSON.parse(questionnaire).qn_title }}</div>
-              </div>
-              <div class="pull-right">
-                <div class="pull-left item-id">ID:{{ JSON.parse(questionnaire).qn_id }}</div>
-                <div class="pull-left item-running">Status:{{ JSON.parse(questionnaire).qn_status }}</div>
-                <div class="pull-left item-data">receive:0</div>
-                <div class="pull-left item-data">创建时间:{{ JSON.parse(questionnaire).qn_create_time.substring(0, 19) }}
+          <TransitionGroup tag="ul" name="moveR" style="background: transparent ;margin: 0;padding: 0;border: 0;">
+            <div v-for="questionnaire in questionnaireListShow" :key="questionnaire"
+              class="single_questionnaire_box hvr-grow-shadow">
+              <div class="questionnaire_title">
+                <div class="pull-right">
+                  <div class="pull-left item-id">{{ JSON.parse(questionnaire).qn_title }}</div>
+                  <div class="pull-left item-id">ID:{{ JSON.parse(questionnaire).qn_id }}</div>
+                  <div class="pull-left item-running" v-if="(JSON.parse(questionnaire).qn_status == 'unpublished')">状态:未发布
+                  </div>
+                  <div class="pull-left item-running" v-else>状态:已发布</div>
+                  <div class="pull-left item-data">回收数量:{{ JSON.parse(questionnaire).qn_answersheet_count }}</div>
+                  <div class="pull-left item-data">{{ JSON.parse(questionnaire).qn_create_time.substring(0, 19) }}
+                  </div>
+                  <!-- <div class="pull-left item-data">结束时间:{{ JSON.parse(questionnaire).qn_end_time.substring(0, 19) }}
+                  </div> -->
                 </div>
-                <div class="pull-left item-data">结束时间:{{ JSON.parse(questionnaire).qn_end_time.substring(0, 19) }}</div>
               </div>
-            </div>
-            <el-divider></el-divider>
-            <div class="questionnaire_body">
-              <el-button v-show="stateType == 0" @click="pushCreate(questionnaire)" round
-                style="background-color:rgba(227, 227, 227, 0.1);color:#ffffff !important;">设计问卷</el-button>
-              <el-button v-show="stateType == 0" @click="generateQuestionnaireLink(JSON.parse(questionnaire).qn_id)"
-                class="copyLink" round
-                style="background-color:rgba(227, 227, 227, 0.1);color:#ffffff !important;">发送问卷</el-button>
-              <el-button v-show="stateType == 0" @click="pushAnalyze(questionnaire)" round
-                style="background-color:rgba(227, 227, 227, 0.1);color:#ffffff !important;">分析问卷</el-button>
-              <el-button v-show="stateType == 0" @click="deleteQuestionnaire(questionnaire)" round
-                style="background-color:rgba(227, 227, 227, 0.1);color:#ffffff !important;">删除问卷</el-button>
-              <el-button v-show="stateType == 2" @click="deleteQuestionnaire(questionnaire)" round
-                style="background-color:rgba(227, 227, 227, 0.1);color:#ffffff !important;">移除问卷</el-button>
-              <el-button v-show="stateType == 2" @click="deDeleteQuestionnaire(questionnaire)" round
-                style="background-color:rgba(227, 227, 227, 0.1);color:#ffffff !important;">撤销删除</el-button>
-            </div>
+              <el-divider></el-divider>
+              <div class="questionnaire_body">
+                <el-button v-show="stateType == 0" @click="pushCreate(questionnaire)" round
+                  style="background-color:rgba(227, 227, 227, 0.1);color:#ffffff !important;">设计问卷</el-button>
+                <el-button v-show="stateType == 0" @click="publicQuestionnaire(JSON.parse(questionnaire).qn_id)"
+                  class="copyLink" round
+                  style="background-color:rgba(227, 227, 227, 0.1);color:#ffffff !important;">发送问卷</el-button>
+                <el-button v-show="stateType == 0" @click="pushAnalyze(questionnaire)" round
+                  style="background-color:rgba(227, 227, 227, 0.1);color:#ffffff !important;">分析问卷</el-button>
+                <el-button v-show="stateType == 0" @click="deleteQuestionnaire(questionnaire)" round
+                  style="background-color:rgba(227, 227, 227, 0.1);color:#ffffff !important;">删除问卷</el-button>
+                <el-button v-show="stateType == 2" @click="deleteQuestionnaire(questionnaire)" round
+                  style="background-color:rgba(227, 227, 227, 0.1);color:#ffffff !important;">移除问卷</el-button>
+                <el-button v-show="stateType == 2" @click="deDeleteQuestionnaire(questionnaire)" round
+                  style="background-color:rgba(227, 227, 227, 0.1);color:#ffffff !important;">撤销删除</el-button>
+                <el-button v-show="stateType == 0" @click="preViewQuestionnaire(questionnaire)" round
+                  style="background-color:rgba(227, 227, 227, 0.1);color:#ffffff !important;">预览问卷</el-button>
+              </div>
 
-          </el-row>
+            </div>
+          </TransitionGroup>
+
         </el-main>
       </main>
     </div>
@@ -68,6 +75,7 @@
 <script>
 import Clipboard from 'clipboard';
 import AsideMenu from '@/components/AsideMenu.vue'
+// import router from '../router'
 export default {
   data() {
     const item = {
@@ -135,7 +143,9 @@ export default {
         console.log(res)
       })
     },
+    preViewQuestionnaire(questionnaire){
 
+    },
 
     pushAnalyze(questionnaire) {
       var data = JSON.parse(questionnaire)
@@ -151,7 +161,7 @@ export default {
       })
     },
 
-    getManagerQuestionnaireList_Create() {
+    async getManagerQuestionnaireList_Create() {
       const data = {
         "uid": this.$store.state.curUserID,
         "type": "created"
@@ -207,7 +217,7 @@ export default {
     },
 
 
-    getManagerQuestionnaireList_Delete() {
+    async getManagerQuestionnaireList_Delete() {
       const data = {
         "uid": this.$store.state.curUserID,
         "type": "deleted"
@@ -221,7 +231,7 @@ export default {
       })
       this.stateType = 2
     },
-    getManagerQuestionnaireList_Filled() {
+    async getManagerQuestionnaireList_Filled() {
       const data = {
         "uid": this.$store.state.curUserID,
         "type": "filled"
@@ -243,7 +253,7 @@ export default {
       })
       this.getManagerQuestionnaireList_Create()
     },
-    deleteQuestionnaire(questionnaire) {
+    async deleteQuestionnaire(questionnaire) {
       console.dir(questionnaire)
       questionnaire = JSON.parse(questionnaire)
       console.log(questionnaire.qn_id)
@@ -251,28 +261,70 @@ export default {
       qn_id = questionnaire.qn_id
 
       if (this.stateType == 0) {
-        const data = {
+        //已创建文件
+        await this.$confirm('此操作将永久删除该文件, 是否继续?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          this.$message({
+            type: 'success',
+            message: '删除成功!'
+          });
+
+          const data = {
           "uid": this.$store.state.curUserID,
           "qn_id": qn_id,
           "status": "deleted"
         }
         console.log("deleteQuestionnaire_data:" + data)
-
-        this.$api.questionnaire.postQuestionnaire_ChangeStatus(data).then((res) => {
-          console.log(res)
+        this.$api.questionnaire.postQuestionnaire_ChangeStatus(data).then((res)=>{
+          //console.log(res.data);
+          //console.log(res.data.errno);
+          if(res.data.errno==0) return this.getManagerQuestionnaireList_Create()
         })
-        this.getManagerQuestionnaireList_Create()
+
+        }).catch(() => {
+          this.$message({
+            type: 'info',
+            message: '已取消删除'
+          });          
+        });
+
+        
+        
       } else if (this.stateType == 1) {
+        //已填写问卷
         this.getManagerQuestionnaireList_Filled()
       } else if (this.stateType == 2) {
-        const data = {
+        //从垃圾箱里删除
+        await this.$confirm('此操作将永久删除该文件, 是否继续?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+
+          const data = {
           "uid": this.$store.state.curUserID,
           "qn_id": qn_id
         }
-        this.$api.questionnaire.postQuestionnaire_Delete(data).then((res) => {
-          console.log(res)
+         this.$api.questionnaire.postQuestionnaire_Delete(data).then((res) => {
+          console.log(res);
+          if(res.data.errno == 0) this.getManagerQuestionnaireList_Delete()
         })
-        this.getManagerQuestionnaireList_Delete()
+        this.$message({
+            type: 'success',
+            message: '删除成功!'
+          });
+        }).catch(() => {
+          this.$message({
+            type: 'info',
+            message: '已取消删除'
+          });          
+        });
+
+
+        
       }
     },
     deDeleteQuestionnaire(questionnaire) {
@@ -328,21 +380,21 @@ export default {
 
 
     // 按ID排序
-    sortByCreateIDMax() {
+    async sortByCreateIDMax() {
       console.log(this.questionnaireListShow)
       this.questionnaireList = this.questionnaireListShow.sort((a, b) => JSON.parse(b).qn_id - JSON.parse(a).qn_id);
       console.log(this.questionnaireListShow)
       return this.questionnaireListShow
     },
 
-    sortByCreateIDMin() {
+    async sortByCreateIDMin() {
       console.log(this.questionnaireListShow)
       this.questionnaireList = this.questionnaireListShow.sort((b, a) => JSON.parse(b).qn_id - JSON.parse(a).qn_id);
       console.log(this.questionnaireListShow)
       return this.questionnaireListShow
     },
     // 创建时间排序
-    sortByCreateTimeMIN() {
+    async sortByCreateTimeMIN() {
       console.log(JSON.parse(this.questionnaireListShow[0]).qn_create_time)
       console.log(JSON.parse(this.questionnaireListShow[0]).qn_create_time.substring(0, 19))
 
@@ -350,7 +402,7 @@ export default {
         new Date(JSON.parse(b).qn_create_time.substring()) - new Date(JSON.parse(a).qn_create_time.substring()));
       return this.questionnaireListShow
     },
-    sortByCreateTimeMAX() {
+    async sortByCreateTimeMAX() {
       console.log(JSON.parse(this.questionnaireListShow[0]).qn_create_time)
       console.log(JSON.parse(this.questionnaireListShow[0]).qn_create_time.substring(0, 19))
 
@@ -362,8 +414,11 @@ export default {
 
 
     // 按问卷回收量排序
-    sortByQuestionnaireCount() {
-      return this.questionnaireListShow.sort((a, b) => JSON.parse(a).questionnaireCount - JSON.parse(b).questionnaireCount);
+    async sortByQuestionnaireCountMIN() {
+      return this.questionnaireListShow.sort((a, b) => JSON.parse(a).qn_answersheet_count - JSON.parse(b).qn_answersheet_count);
+    },
+    async sortByQuestionnaireCountMAX() {
+      return this.questionnaireListShow.sort((b, a) => JSON.parse(a).qn_answersheet_count - JSON.parse(b).qn_answersheet_count);
     },
 
     // 根据当前排序方式显示数据列表
@@ -407,19 +462,38 @@ export default {
 };
 </script>
 <!-- 下拉栏 -->
+
 <style scoped>
+.fade-move,
+.fade-enter-active,
+.fade-leave-active {
+  transition: all 0.5s cubic-bezier(0.55, 0, 0.1, 1);
+}
+
+.fade-enter-from,
+.fade-leave-to {
+  opacity: 0;
+  transform: scaleY(0.01) translate(30px, 0);
+}
+
+.fade-leave-active {
+  position: absolute;
+}
+
+
 .btnSort {
   width: 130px;
   height: 50px;
   background: transparent;
   border: 2px solid #fff;
+
   outline: none;
   border-radius: 6px;
   cursor: pointer;
   font-size: 1.1em;
   color: #fff;
   font-weight: 500;
-  margin-left: 40px;
+  margin-left: 10px;
   transition: .3s;
 }
 
@@ -964,6 +1038,40 @@ div {
   background-size: 80px 80px, auto, auto;
 }
 
+
+
+/* 确保将离开的元素从布局流中删除
+  以便能够正确地计算移动的动画。 */
+.moveR-leave-active {
+  position: absolute;
+  transition: all 0.3s ease;
+  transform: translateX(100%);
+}
+
+.moveR-enter-active {
+  transition: all 0.3s ease;
+  transform: translateX(0);
+}
+
+.moveR-enter {
+  transform: translateX(100%);
+}
+
+.moveR-enter-from {
+  transform: translateX(100%);
+}
+
+.moveR-leave {
+  transform: translateX(0);
+}
+
+.moveR-leave-to {
+  transform: translateX(100%);
+}
+
+
+
+
 .questionnaire_title {
   margin: 0;
   padding: 0;
@@ -1007,8 +1115,13 @@ div {
 
 .pull-left {
   float: left;
-  padding-left: 2px;
-  padding-right: 4px;
+  ;
+  /* float: right !important;
+   */
+  /* 
+  line-height: 22px; */
+  font-size: 12px;
+  padding-right: 12px;
 }
 
 .pull-right {

@@ -1,6 +1,6 @@
 <template>
   <div class="wrapper">
-    <span class="icon-close"><i class="el-icon-edit"></i></span>
+    <span class="icon-close"><i class="el-icon-close"></i></span>
 
     <div class="form-box login">
       <h2 style="color: aliceblue;">Login</h2>
