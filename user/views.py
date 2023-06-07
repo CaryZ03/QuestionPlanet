@@ -413,4 +413,4 @@ def check_token(request):
 @csrf_exempt
 @require_http_methods(['POST'])
 def deploy_test(request):
-    return JsonResponse({'errno': 0, 'ver': "7", 'cur_time': now()})
+    return JsonResponse({'errno': 0, 'ver': "8", 'cur_time': now()})
