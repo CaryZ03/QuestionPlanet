@@ -57,6 +57,6 @@ class Admin(Model):
 class UserToken(Model):
     key = CharField(max_length=200, unique=True)
     is_admin = BooleanField(default=False)
-    filler = ForeignKey('Filler', on_delete=CASCADE, null=True)
-    admin = ForeignKey('Admin', on_delete=CASCADE, null=True)
+    filler = ForeignKey('Filler', on_delete=SET_NULL, null=True)
+    admin = ForeignKey('Admin', on_delete=SET_NULL, null=True)
     expire_time = DateTimeField(null=True)

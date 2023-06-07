@@ -402,3 +402,14 @@ nav a.router-link-exact-active {
   color: #42b983;
 }
 </style>
+
+<style scoped>
+@media (max-width: 767.98px){
+  .logo{
+    display: none;
+  }
+  .navigation{
+    display: none;
+  }
+}
+</style>

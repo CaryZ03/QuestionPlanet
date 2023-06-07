@@ -149,14 +149,21 @@
                 <div class="tool-body">
                     <!-- <h5 class="tool-title"><i class="el-icon-star-off"></i>评分题</h5> -->
                     <!-- <p class="tool-text">问卷中用户需要对某个问题进行打分。</p> -->
-                    <el-button type="primary" class="btn btn-primary btn-sm" icon="el-icon-circle-plus" size="small"
+                    <el-tooltip class="item" effect="dark" content="问卷中用户需要对某个问题进行打分。" placement="bottom">
+                        <el-button type="primary" class="btn btn-primary btn-sm" icon="el-icon-circle-plus" size="small"
                         @click="addQuestion('grade',0)" round>添加评分题</el-button>
-
-                    <el-button type="primary" class="btn btn-primary btn-sm" icon="el-icon-circle-plus" size="small"
+                    </el-tooltip>
+                    
+                    <el-tooltip class="item" effect="dark" content="你对原神的喜爱程度" placement="bottom">
+                        <el-button type="primary" class="btn btn-primary btn-sm" icon="el-icon-circle-plus" size="small"
                         @click="addQuestion('grade',1)" round>模板1</el-button>
+                    </el-tooltip>
 
-                    <el-button type="primary" class="btn btn-primary btn-sm" icon="el-icon-circle-plus" size="small"
+                    <el-tooltip class="item" effect="dark" content="你对xxx老师的评价" placement="bottom">
+                        <el-button type="primary" class="btn btn-primary btn-sm" icon="el-icon-circle-plus" size="small"
                         @click="addQuestion('grade',2)" round>模板2</el-button>
+                    </el-tooltip>
+                    
                 </div>
             </el-collapse-item>
 
@@ -168,14 +175,21 @@
                 <div class="tool-body">
                     <!-- <h5 class="tool-title"><i class="el-icon-s-data"></i>排序题</h5> -->
                     <!-- <p class="tool-text">问卷中用户需要将一组选项按照自己的喜好进行排序。</p> -->
-                    <el-button type="primary" class="btn btn-primary btn-sm" icon="el-icon-circle-plus" size="small"
+                    <el-tooltip class="item" effect="dark" content="问卷中用户需要将一组选项按照自己的喜好进行排序。" placement="bottom">
+                        <el-button type="primary" class="btn btn-primary btn-sm" icon="el-icon-circle-plus" size="small"
                         @click="addQuestion('judge',0)" round>添加判断题</el-button>
-
-                    <el-button type="primary" class="btn btn-primary btn-sm" icon="el-icon-circle-plus" size="small"
-                        @click="addQuestion('judge',1)" round>模板1</el-button>
+                    </el-tooltip>
                     
-                    <el-button type="primary" class="btn btn-primary btn-sm" icon="el-icon-circle-plus" size="small"
+                    <el-tooltip class="item" effect="dark" content="原神是世界第一吗" placement="bottom">
+                        <el-button type="primary" class="btn btn-primary btn-sm" icon="el-icon-circle-plus" size="small"
+                        @click="addQuestion('judge',1)" round>模板1</el-button>
+                    </el-tooltip>
+                    
+                    <el-tooltip class="item" effect="dark" content="你是否会向你的朋友推荐本产品" placement="bottom">
+                        <el-button type="primary" class="btn btn-primary btn-sm" icon="el-icon-circle-plus" size="small"
                         @click="addQuestion('judge',2)" round>模板2</el-button>
+                    </el-tooltip>
+                    
                 </div>
             </el-collapse-item>
 
@@ -529,6 +543,7 @@
 </template>
   
 <script>
+import { Message } from 'element-ui';
 // const vm = new Vue({
 //   el: '#question-list',
 //   data:{
@@ -552,7 +567,7 @@ export default {
                 {value: 'application', label: '报名问卷'},
             ],
             qn_description: "",
-            qn_end_time: '',
+            qn_end_time: null,
             qn_refillable: true,
             questions: [],
             activeNames: ['1','2','3','4','5','6','7'],
@@ -903,6 +918,17 @@ export default {
         },
 
         save_questionnaire() {
+            if( this.qn_title == null){
+                 Message.warning("请填写标题");
+                 return;
+            }
+            console.log('Time is:'+this.qn_end_time);
+            if( this.qn_end_time === "None"){
+                Message.warning("请填写截止时间");
+                return;
+            }
+               
+            
             this.save_handler();
             this.$alert('问卷保存成功！', '保存问卷', {
             confirmButtonText: '确定',
@@ -910,6 +936,27 @@ export default {
         },
 
         submit_questionnaire() {
+            try{
+                if(this.qn_title === null || this.qn_title === undefined || this.qn_title === '')
+                {
+                    throw new Error('请注意，您的问卷题目未填写');  
+                }
+                if(this.qn_type === null || this.qn_type === undefined || this.qn_type === '')
+                {
+                    throw new Error('请注意，您的问卷类型未选择');  
+                }
+                if(this.qn_end_time === null || this.qn_end_time === undefined || this.qn_end_time === '')
+                {
+                    throw new Error('请注意，您的问卷截止时间未选择');  
+                }
+            } catch (error)
+            {
+                this.$message({
+                        type: 'error',
+                        message: error.message
+                    }); 
+                return;
+            }
             this.$confirm('是否提交问卷?', '提交问卷', {
                 confirmButtonText: '确定',
                 cancelButtonText: '取消',

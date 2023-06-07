@@ -157,15 +157,18 @@ def user_login(request):
     if User.objects.filter(user_name=username).exists():
         user = User.objects.get(user_name=username)
         if user.user_password == password:
+            filler_ip = get_client_ip(request)
             if Filler.objects.filter(filler_user=user).exists():
                 filler = Filler.objects.get(filler_user=user)
+                filler.filler_ip = filler_ip
+                filler.save()
             else:
-                filler_ip = get_client_ip(request)
                 filler = Filler.objects.create(filler_ip=filler_ip, filler_is_user=True, filler_user=user)
             token_key = request.headers.get('Authorization')
-            if token_key:
+            if token_key and UserToken.objects.filter(key=token_key).exists():
                 token = UserToken.objects.get(key=token_key)
                 token.is_admin = False
+                token.admin = None
                 token.filler = filler
                 token.expire_time = now() + timedelta(days=1)
                 token.save()
@@ -398,6 +401,16 @@ def upload_avatar(request, user):
 
 
 @csrf_exempt
+@require_http_methods(['GET'])
+def check_token(request):
+    token_key = request.headers.get('Authorization')
+    token = UserToken.objects.filter(key=token_key).first()
+    if token is None or token.expire_time < now():
+        return JsonResponse({'errno': 2151, 'msg': "token错误"})
+    return JsonResponse({'errno': 0, 'msg': "token有效"})
+
+
+@csrf_exempt
 @require_http_methods(['POST'])
 def deploy_test(request):
-    return JsonResponse({'errno': 0, 'ver': "7", 'cur_time': now()})
+    return JsonResponse({'errno': 0, 'ver': "8", 'cur_time': now()})

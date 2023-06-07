@@ -268,26 +268,70 @@ export default {
       qn_id = questionnaire.qn_id
 
       if (this.stateType == 0) {
-        const data = {
-          "uid": localStorage.getItem("curUserID"),
+        //已创建文件
+        await this.$confirm('此操作将永久删除该文件, 是否继续?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          this.$message({
+            type: 'success',
+            message: '删除成功!'
+          });
+
+          const data = {
+          "uid": this.$store.state.curUserID,
           "qn_id": qn_id,
           "status": "deleted"
         }
         console.log("deleteQuestionnaire_data:" + data)
+        this.$api.questionnaire.postQuestionnaire_ChangeStatus(data).then((res)=>{
+          //console.log(res.data);
+          //console.log(res.data.errno);
+          if(res.data.errno==0) return this.getManagerQuestionnaireList_Create()
+        })
 
-        await this.$api.questionnaire.postQuestionnaire_ChangeStatus(data)
-        this.getManagerQuestionnaireList_Create()
+        }).catch(() => {
+          this.$message({
+            type: 'info',
+            message: '已取消删除'
+          });          
+        });
+
+        
+        
       } else if (this.stateType == 1) {
+        //已填写问卷
         this.getManagerQuestionnaireList_Filled()
       } else if (this.stateType == 2) {
-        const data = {
-          "uid": localStorage.getItem("curUserID"),
+        //从垃圾箱里删除
+        await this.$confirm('此操作将永久删除该文件, 是否继续?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+
+          const data = {
+          "uid": this.$store.state.curUserID,
           "qn_id": qn_id
         }
-        await this.$api.questionnaire.postQuestionnaire_Delete(data).then((res) => {
-          console.log(res)
+         this.$api.questionnaire.postQuestionnaire_Delete(data).then((res) => {
+          console.log(res);
+          if(res.data.errno == 0) this.getManagerQuestionnaireList_Delete()
         })
-        this.getManagerQuestionnaireList_Delete()
+        this.$message({
+            type: 'success',
+            message: '删除成功!'
+          });
+        }).catch(() => {
+          this.$message({
+            type: 'info',
+            message: '已取消删除'
+          });          
+        });
+
+
+        
       }
     },
     deDeleteQuestionnaire(questionnaire) {
