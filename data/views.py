@@ -273,6 +273,7 @@ def questionnaire_process(request):
     # 获取问题
     questions = questionnaire.qn_questions.all()
     question = questions[1]
+    print(question.q_options[n])
     option = json.loads(question.q_options[n])
     # 进行更新
     option['num'] = option['num']-1
