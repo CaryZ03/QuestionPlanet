@@ -11,6 +11,8 @@
             <button class="btnSort" @click="sortByCreateIDMin" style="float: right;">最小ID</button>
             <button class="btnSort" @click="sortByCreateTimeMAX" style="float: right;">最早发布</button>
             <button class="btnSort" @click="sortByCreateTimeMIN" style="float: right;">最晚发布</button>
+            <button class="btnSort" @click="sortByQuestionnaireCountMAX" style="float: right;">最多收集</button>
+            <button class="btnSort" @click="sortByQuestionnaireCountMIN" style="float: right;">最少收集</button>
 
             <div class="search-box" style="">
               <a class="search-btn" @click.prevent="filteredItems" style="">
@@ -151,7 +153,7 @@ export default {
       })
     },
 
-    getManagerQuestionnaireList_Create() {
+    async getManagerQuestionnaireList_Create() {
       const data = {
         "uid": this.$store.state.curUserID,
         "type": "created"
@@ -207,7 +209,7 @@ export default {
     },
 
 
-    getManagerQuestionnaireList_Delete() {
+    async getManagerQuestionnaireList_Delete() {
       const data = {
         "uid": this.$store.state.curUserID,
         "type": "deleted"
@@ -221,7 +223,7 @@ export default {
       })
       this.stateType = 2
     },
-    getManagerQuestionnaireList_Filled() {
+    async getManagerQuestionnaireList_Filled() {
       const data = {
         "uid": this.$store.state.curUserID,
         "type": "filled"
@@ -243,7 +245,7 @@ export default {
       })
       this.getManagerQuestionnaireList_Create()
     },
-    deleteQuestionnaire(questionnaire) {
+    async deleteQuestionnaire(questionnaire) {
       console.dir(questionnaire)
       questionnaire = JSON.parse(questionnaire)
       console.log(questionnaire.qn_id)
@@ -258,9 +260,7 @@ export default {
         }
         console.log("deleteQuestionnaire_data:" + data)
 
-        this.$api.questionnaire.postQuestionnaire_ChangeStatus(data).then((res) => {
-          console.log(res)
-        })
+        await this.$api.questionnaire.postQuestionnaire_ChangeStatus(data)
         this.getManagerQuestionnaireList_Create()
       } else if (this.stateType == 1) {
         this.getManagerQuestionnaireList_Filled()
@@ -269,7 +269,7 @@ export default {
           "uid": this.$store.state.curUserID,
           "qn_id": qn_id
         }
-        this.$api.questionnaire.postQuestionnaire_Delete(data).then((res) => {
+        await this.$api.questionnaire.postQuestionnaire_Delete(data).then((res) => {
           console.log(res)
         })
         this.getManagerQuestionnaireList_Delete()
@@ -328,21 +328,21 @@ export default {
 
 
     // 按ID排序
-    sortByCreateIDMax() {
+    async sortByCreateIDMax() {
       console.log(this.questionnaireListShow)
       this.questionnaireList = this.questionnaireListShow.sort((a, b) => JSON.parse(b).qn_id - JSON.parse(a).qn_id);
       console.log(this.questionnaireListShow)
       return this.questionnaireListShow
     },
 
-    sortByCreateIDMin() {
+    async sortByCreateIDMin() {
       console.log(this.questionnaireListShow)
       this.questionnaireList = this.questionnaireListShow.sort((b, a) => JSON.parse(b).qn_id - JSON.parse(a).qn_id);
       console.log(this.questionnaireListShow)
       return this.questionnaireListShow
     },
     // 创建时间排序
-    sortByCreateTimeMIN() {
+    async sortByCreateTimeMIN() {
       console.log(JSON.parse(this.questionnaireListShow[0]).qn_create_time)
       console.log(JSON.parse(this.questionnaireListShow[0]).qn_create_time.substring(0, 19))
 
@@ -350,7 +350,7 @@ export default {
         new Date(JSON.parse(b).qn_create_time.substring()) - new Date(JSON.parse(a).qn_create_time.substring()));
       return this.questionnaireListShow
     },
-    sortByCreateTimeMAX() {
+    async sortByCreateTimeMAX() {
       console.log(JSON.parse(this.questionnaireListShow[0]).qn_create_time)
       console.log(JSON.parse(this.questionnaireListShow[0]).qn_create_time.substring(0, 19))
 
@@ -362,8 +362,11 @@ export default {
 
 
     // 按问卷回收量排序
-    sortByQuestionnaireCount() {
-      return this.questionnaireListShow.sort((a, b) => JSON.parse(a).questionnaireCount - JSON.parse(b).questionnaireCount);
+    async sortByQuestionnaireCountMIN() {
+      return this.questionnaireListShow.sort((a, b) => JSON.parse(a).qn_answersheet_count - JSON.parse(b).qn_answersheet_count);
+    },
+    async sortByQuestionnaireCountMAX() {
+      return this.questionnaireListShow.sort((b, a) => JSON.parse(a).qn_answersheet_count - JSON.parse(b).qn_answersheet_count);
     },
 
     // 根据当前排序方式显示数据列表
@@ -407,6 +410,7 @@ export default {
 };
 </script>
 <!-- 下拉栏 -->
+
 <style scoped>
 .btnSort {
   width: 130px;
