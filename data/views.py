@@ -275,6 +275,8 @@ def questionnaire_process(request):
     question = questions[1]
     options = list(json.loads(question.q_options))
     # 进行更新
+    if options[n]['num'] <= 0:
+        return JsonResponse({'errno': 3091, 'msg': '当前无剩余名额'})
     options[n]['num'] = options[n]['num']-1
     question.q_options = json.dumps(options)
     if options[n]['num'] == 0:
@@ -461,7 +463,7 @@ def import_questionnaire(request, user):
         user.save()
         return JsonResponse({'errno': 0, 'msg': '问卷导入成功'})
 
-    return JsonResponse({'errno': 3058, 'msg': '无效的请求'})
+    return JsonResponse({'errno': 3081, 'msg': '无效的请求'})
 
 
 def import_questionnaire_text(request):
