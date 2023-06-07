@@ -228,6 +228,7 @@
             
                 <el-container class="card mb-2" style="box-shadow: 0 2px 4px rgba(0, 0, 0, .12), 0 0 6px rgba(0, 0, 0, .04)">
                     <el-main>
+                        <span class="red_star">*&nbsp;</span>
                         <span class="title">问卷类型</span>
                         <br>
                         <el-select v-model="qn_type" placeholder="请选择" @change="updateQnType">
@@ -251,6 +252,7 @@
                             v-model="qn_end_time"
                             type="datetime"
                             placeholder="选择日期时间"
+                            default-time="12:00:00"
                             format="yyyy-MM-dd HH:mm:ss">
                             </el-date-picker>
                     </el-main>
