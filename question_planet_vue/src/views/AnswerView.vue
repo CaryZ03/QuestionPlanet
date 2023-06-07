@@ -134,8 +134,11 @@
                 <div style="line-height: 30px;">&emsp;</div>
                 
             </div>
-            <el-button type="success" style="margin: 0 0 0 214px" round v-on:click="submit_handler()">保存回答</el-button>
-            <el-button type="primary" round v-on:click="submit_answer()">提交回答</el-button>
+            
+                <el-button type="success" style="margin: 0 0 0 214px" round v-on:click="submit_handler()" class="button">保存回答</el-button>
+                <el-button type="primary" round v-on:click="submit_answer()" class="button">提交回答</el-button>
+            
+            
         </div>
         
 
@@ -866,4 +869,50 @@ body>.el-container {
 
 .el-container:nth-child(7) .el-aside {
     line-height: 320px;
-}</style>
+}
+
+@media (max-width: 767.98px) {
+
+    .button{
+        float: left !important;
+        margin: 0 0 0 0px !important;
+        width: 40%;
+    }
+
+    
+    .sidebar {
+    display: none;
+  }
+
+  .outline-area {
+    width: 100%;
+    left: 0;
+  }
+
+  .outline-list {
+    top: 4rem;
+    left: 0;
+    right: 0;
+    height: calc(100% - 4rem);
+    padding: 0.5rem;
+  }
+
+  .tool {
+    width: 100%;
+    margin: 0.5rem 0;
+  }
+
+  .question-card {
+    width: 100%;
+    top: 4rem;
+    left: 20%;
+  }
+
+  .image-question {
+    flex-wrap: nowrap;
+    overflow-x: scroll;
+    -webkit-overflow-scrolling: touch;
+  }
+}
+
+</style>
