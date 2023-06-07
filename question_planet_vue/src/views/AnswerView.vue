@@ -412,6 +412,21 @@ export default {
         },
 
         submit_answer() {
+            try{
+                this.questions.forEach((question, index_question) => {
+                if(question.q_mandatory && (question.a_content === null || question.a_content === undefined || question.a_content === ''))
+                {
+                    throw new Error('请注意，您有必答题目未填写');  
+                }
+            });
+            } catch (error)
+            {
+                this.$message({
+                        type: 'error',
+                        message: error.message
+                    }); 
+                return;
+            }
             if(this.qn_type === "normal" || this.qn_type === "application")
             {
                 this.$confirm('是否提交回答?', '提交回答', {
