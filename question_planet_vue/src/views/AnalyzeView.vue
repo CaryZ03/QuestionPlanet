@@ -49,6 +49,35 @@
               </el-table-column>
 
             </el-table>
+
+            <el-table
+            :data="question.q_options"
+            style="width: 100%"
+            show-summary
+            :default-sort = "{prop: 'label.label', order: 'ascending'}"
+            v-if="question.q_type === 'judge' || question.q_type === 'grade'"
+            >
+              <el-table-column
+                prop="label "
+                label="选项"
+                sortable
+                width="500">
+              </el-table-column>
+              <el-table-column
+                prop="num"
+                label="小计"
+                sortable
+                width="140">
+              </el-table-column>
+              <el-table-column
+                label="比例"
+                width="100">
+                <template slot-scope="scope">
+                {{ calculatePercentage(scope.row.num, a_count) }}
+                </template>
+              </el-table-column>
+
+            </el-table>
   
             <div v-if="question.q_type === 'text'">
               <div class="division"><span class="title">内容</span></div>
@@ -133,37 +162,71 @@
       drawBarCharts() {
 
       this.questions.forEach((question, index) => {
-        const chartId = 'barChart-' + index;
-        const chartContainer = document.getElementById(chartId);
+        if (question.q_type === "single" || question.q_type === "multiple")
+        {
+          const chartId = 'barChart-' + index;
+          const chartContainer = document.getElementById(chartId);
 
-        console.log(chartContainer);
-        // 使用 ECharts 初始化图表
-        const myChart = echarts.init(chartContainer);
+          console.log(chartContainer);
+          // 使用 ECharts 初始化图表
+          const myChart = echarts.init(chartContainer);
 
-        // 绘制柱状图
-        const option = {
-          // 配置项
-            xAxis: {
-            data: question.q_options.map(option => option.label.label)
-          },
-          yAxis: {},
-          series: [
-            {
-              type: "bar", //形状为柱状图
-              data: question.q_options.map(option => option.num)
-            }
-          ]
+          // 绘制柱状图
+          const option = {
+            // 配置项
+              xAxis: {
+              data: question.q_options.map(option => option.label.label)
+            },
+            yAxis: {},
+            series: [
+              {
+                type: "bar", //形状为柱状图
+                data: question.q_options.map(option => option.num)
+              }
+            ]
           };
-        myChart.setOption(option);
-        //随着屏幕大小调节图表
-        window.addEventListener("resize", () => {
-        myChart.resize();
-      });
+          myChart.setOption(option);
+          //随着屏幕大小调节图表
+          window.addEventListener("resize", () => {
+          myChart.resize();
+        });
+      }
+      else if (question.q_type === "judge" || question.q_type === "grade")
+        {
+          const chartId = 'barChart-' + index;
+          const chartContainer = document.getElementById(chartId);
+
+          console.log(chartContainer);
+          // 使用 ECharts 初始化图表
+          const myChart = echarts.init(chartContainer);
+
+          // 绘制柱状图
+          const option = {
+            // 配置项
+              xAxis: {
+              data: question.q_options.map(option => option.label)
+            },
+            yAxis: {},
+            series: [
+              {
+                type: "bar", //形状为柱状图
+                data: question.q_options.map(option => option.num)
+              }
+            ]
+          };
+          myChart.setOption(option);
+          //随着屏幕大小调节图表
+          window.addEventListener("resize", () => {
+          myChart.resize();
+        });
+      }
       });
     },
 
     drawLineCharts() {
       this.questions.forEach((question, index) => {
+        if (question.q_type === "single" || question.q_type === "multiple")
+        {
         const chartId = 'lineChart-' + index;
         const chartContainer = document.getElementById(chartId);
 
@@ -189,12 +252,43 @@
         window.addEventListener("resize", () => {
         myChart.resize();
       });
+    }
+    else if (question.q_type === "judge" || question.q_type === "grade")
+        {
+        const chartId = 'lineChart-' + index;
+        const chartContainer = document.getElementById(chartId);
+
+        // 使用 ECharts 初始化图表
+        const myChart = echarts.init(chartContainer);
+
+        // 绘制柱状图
+        const option = {
+          // 配置项
+            xAxis: {
+            data: question.q_options.map(option => option.label)
+          },
+          yAxis: {},
+          series: [
+            {
+              type: "line", //形状为折线图
+              data: question.q_options.map(option => option.num)
+            }
+          ]
+          }; 
+        myChart.setOption(option);
+        //随着屏幕大小调节图表
+        window.addEventListener("resize", () => {
+        myChart.resize();
+      });
+    }
       });
     },
       
     drawPieCharts() {
       this.questions.forEach((question, index) => {
-        const chartId = 'pieChart-' + index;
+        if (question.q_type === "single" || question.q_type === "multiple")
+        {
+          const chartId = 'pieChart-' + index;
         const chartContainer = document.getElementById(chartId);
 
         // 使用 ECharts 初始化图表
@@ -218,12 +312,42 @@
         window.addEventListener("resize", () => {
         myChart.resize();
       });
+        }
+        else if (question.q_type === "judge" || question.q_type === "grade")
+        {
+          const chartId = 'pieChart-' + index;
+        const chartContainer = document.getElementById(chartId);
+
+        // 使用 ECharts 初始化图表
+        const myChart = echarts.init(chartContainer);
+
+        // 绘制柱状图
+        const option = {
+          // 配置项
+          series: [
+            {
+              type: "pie", //形状为饼状图
+              data: question.q_options.map(option => ({
+                name: option.label,
+                value: option.num
+              }))
+            }
+          ]
+          };
+        myChart.setOption(option);
+        //随着屏幕大小调节图表
+        window.addEventListener("resize", () => {
+        myChart.resize();
+      });
+        }
       });
     },
 
     drawRingCharts() {
       this.questions.forEach((question, index) => {
-        const chartId = 'ringChart-' + index;
+        if (question.q_type === "single" || question.q_type === "multiple")
+        {
+          const chartId = 'ringChart-' + index;
         const chartContainer = document.getElementById(chartId);
 
         // 使用 ECharts 初始化图表
@@ -248,11 +372,42 @@
         window.addEventListener("resize", () => {
         myChart.resize();
       });
+        }
+        else if (question.q_type === "judge" || question.q_type === "grade")
+        {
+          const chartId = 'ringChart-' + index;
+        const chartContainer = document.getElementById(chartId);
+
+        // 使用 ECharts 初始化图表
+        const myChart = echarts.init(chartContainer);
+
+        // 绘制柱状图
+        const option = {
+          // 配置项
+          series: [
+            {
+              type: "pie", //形状为饼状图
+              radius: ['50%', '70%'],
+              data: question.q_options.map(option => ({
+                name: option.label,
+                value: option.num
+              }))
+            }
+          ]
+          };
+        myChart.setOption(option);
+        //随着屏幕大小调节图表
+        window.addEventListener("resize", () => {
+        myChart.resize();
+      });
+        }
       });
     },
 
     destroyBarCharts() {
     this.questions.forEach((question, index) => {
+      if (question.q_type === "single" || question.q_type === "multiple")
+      {
       const chartId = 'barChart-' + index;
       const chartContainer = document.getElementById(chartId);
 
@@ -266,11 +421,14 @@
       window.removeEventListener('resize', () => {
         myChart.resize();
       });
+    }
     });
   },
 
     destroyLineCharts() {
     this.questions.forEach((question, index) => {
+      if (question.q_type === "single" || question.q_type === "multiple")
+      {
       const chartId = 'lineChart-' + index;
       const chartContainer = document.getElementById(chartId);
 
@@ -284,11 +442,15 @@
       window.removeEventListener('resize', () => {
         myChart.resize();
       });
+    }
     });
   },
 
     destroyPieCharts() {
     this.questions.forEach((question, index) => {
+      if (question.q_type === "single" || question.q_type === "multiple")
+      {
+
       const chartId = 'pieChart-' + index;
       const chartContainer = document.getElementById(chartId);
 
@@ -302,11 +464,14 @@
       window.removeEventListener('resize', () => {
         myChart.resize();
       });
+    }
     });
   },
 
     destroyRingCharts() {
     this.questions.forEach((question, index) => {
+      if (question.q_type === "single" || question.q_type === "multiple")
+      {
       const chartId = 'ringChart-' + index;
       const chartContainer = document.getElementById(chartId);
 
@@ -320,6 +485,7 @@
       window.removeEventListener('resize', () => {
         myChart.resize();
       });
+    }
     });
   },
 
