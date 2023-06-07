@@ -21,7 +21,7 @@
 
             <div v-for="(question, index) in questions" :key="index" class="card mb-2" v-bind:id="question.id">
                 <el-container style="box-shadow: 0 2px 4px rgba(0, 0, 0, .12), 0 0 6px rgba(0, 0, 0, .04)">
-                    <el-main>
+                    <el-main :id="`question-${index}`">
                         <div v-if="qn_is_normal || qn_is_test">
                             <span class="red_star" v-if="question.q_mandatory">*&nbsp;</span>
                             <span class="red_star" v-else></span>
@@ -88,7 +88,7 @@
                         </div>
                         <div v-else>
                             <div v-if="question.q_type === 'single' || question.q_type === 'multiple'">
-                                <div class="division"><span class="title">选项</span></div>
+                                <div class="division"><span class="title" style="color: #F3F2F2;">选项</span></div>
                                 <div v-if="question.q_type === 'single'">
                                     <el-radio-group v-model="question.a_content">
                                         <el-radio v-for="(option, index_option) in question.q_options" :label="index_option"
@@ -125,12 +125,13 @@
                                 </el-rate>
                             </div>
                         </div>
+                        <div v-if="qn_is_test" style="color: #F3F2F2;"> {{ question.q_reflect }} </div>
                         <div class="echart" :id="'barChart'" :style="myChartStyle" v-if="qn_is_vote"></div>
                     </el-main>
                 </el-container>
 
                 <div style="line-height: 30px;">&emsp;</div>
-
+                
             </div>
             <el-button type="success" style="margin: 0 0 0 214px" round v-on:click="submit_handler()">保存回答</el-button>
             <el-button type="primary" round v-on:click="submit_answer()">提交回答</el-button>
@@ -267,6 +268,7 @@ export default {
             qn_list.forEach(question => {
                 const item = JSON.parse(question);
                 item.q_options = JSON.parse(item.q_options);
+                item.q_reflect = "";
                 _this.questions.push(item);
             })
             //_this.questions = qn_list;
@@ -343,20 +345,57 @@ export default {
             }
         },  
         
+        judge_handler(index_question, is_correct)
+        {
+            if(this.questions[index_question].q_type === "text")
+            {
+                this.questions[index_question].q_reflect = "填空题需要人工评判";
+                return;
+            }
+            if(is_correct === true)
+            {
+                this.questions[index_question].q_reflect = "回答正确";
+            }
+            else 
+            {
+                this.questions[index_question].q_reflect = "回答错误，正确答案为第" + this.questions[index_question].q_correct_answer + "项。";
+            }
+        },
+
         test_judge()
         {
             this.questions.forEach((question, index_question) => {
                 if(question.q_type === "single")
                 {
                     const answer = question.a_content.toString();
-                    if(answer == question.q_answer)
+                    if(answer == question.q_correct_answer)
                     {
-                        
+                        console.log(`${index_question} 单选题回答正确`);
+                        this.judge_handler(index_question, true);
+                    }
+                    else
+                    {
+                        console.log(`${index_question} 单选题回答错误`);
+                        this.judge_handler(index_question, false);
                     }
                 }
                 else if(question.q_type === "multiple")
                 {
-
+                    if(question.a_content == question.q_correct_answer)
+                    {
+                        console.log(`${index_question} 多选题回答正确`);
+                        this.judge_handler(index_question, true);
+                    }
+                    else
+                    {
+                        console.log(`${index_question} 多选题回答错误`);
+                        this.judge_handler(index_question, false);
+                    }
+                }
+                else if(question.q_type === "text")
+                {
+                    console.log(`${index_question} 填空题需要人工评判`);
+                    this.judge_handler(index_question, false);
                 }
             });
         },
@@ -695,7 +734,7 @@ export default {
 }
 
 .el-main {
-    background-color: rgba(233, 238, 243, .27) !important;
+    background-color: rgba(233, 238, 243, .27);
     color: #333;
     text-align: left;
 }
