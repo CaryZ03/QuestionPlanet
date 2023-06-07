@@ -43,7 +43,7 @@
             <div class="questionnaire_body">
               <el-button v-show="stateType == 0" @click="pushCreate(questionnaire)" round
                 style="background-color:rgba(227, 227, 227, 0.1);color:#ffffff !important;">设计问卷</el-button>
-              <el-button v-show="stateType == 0" @click="generateQuestionnaireLink(JSON.parse(questionnaire).qn_id)"
+              <el-button v-show="stateType == 0" @click="publicQuestionnaire(JSON.parse(questionnaire).qn_id)"
                 class="copyLink" round
                 style="background-color:rgba(227, 227, 227, 0.1);color:#ffffff !important;">发送问卷</el-button>
               <el-button v-show="stateType == 0" @click="pushAnalyze(questionnaire)" round
