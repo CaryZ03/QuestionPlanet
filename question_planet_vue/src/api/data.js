@@ -54,6 +54,14 @@ export function postAnswers_Delete(data) {
     })
 }
 
+export function postAnswers_process(data) {
+    return request({
+        method: 'POST',
+        url: `/data/questionnaire_process`,
+        data,
+    })
+}
+
 // import_questionnaire
 export function postQuestionnaire_Import(data) {
     return request({
