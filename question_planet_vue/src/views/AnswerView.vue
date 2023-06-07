@@ -21,7 +21,7 @@
 
             <div v-for="(question, index) in questions" :key="index" class="card mb-2" v-bind:id="question.id">
                 <el-container style="box-shadow: 0 2px 4px rgba(0, 0, 0, .12), 0 0 6px rgba(0, 0, 0, .04)">
-                    <el-main>
+                    <el-main :id="`question-${index}`">
                         <div v-if="qn_is_normal || qn_is_test">
                             <span class="red_star" v-if="question.q_mandatory">*&nbsp;</span>
                             <span class="red_star" v-else></span>
@@ -88,7 +88,7 @@
                         </div>
                         <div v-else>
                             <div v-if="question.q_type === 'single' || question.q_type === 'multiple'">
-                                <div class="division"><span class="title">选项</span></div>
+                                <div class="division"><span class="title" style="color: #F3F2F2;">选项</span></div>
                                 <div v-if="question.q_type === 'single'">
                                     <el-radio-group v-model="question.a_content">
                                         <el-radio v-for="(option, index_option) in question.q_options" :label="index_option"
@@ -125,12 +125,14 @@
                                 </el-rate>
                             </div>
                         </div>
+                        <div style="line-height: 30px;">&emsp;</div>
+                        <div v-if="qn_is_test" style="color: #F3F2F2;"> {{ question.q_reflect }} </div>
                         <div class="echart" :id="'barChart'" :style="myChartStyle" v-if="qn_is_vote"></div>
                     </el-main>
                 </el-container>
 
                 <div style="line-height: 30px;">&emsp;</div>
-
+                
             </div>
             <el-button type="success" style="margin: 0 0 0 214px" round v-on:click="submit_handler()">保存回答</el-button>
             <el-button type="primary" round v-on:click="submit_answer()">提交回答</el-button>
@@ -180,6 +182,7 @@ export default {
             qn_is_application: true,
             questions_vote: [],
             myChartStyle: { float: "left", width: "100%", height: "400px"},
+            test_is_submitted: false,
         };
     },
     created() {
@@ -267,6 +270,7 @@ export default {
             qn_list.forEach(question => {
                 const item = JSON.parse(question);
                 item.q_options = JSON.parse(item.q_options);
+                item.q_reflect = "";
                 _this.questions.push(item);
             })
             //_this.questions = qn_list;
@@ -337,47 +341,154 @@ export default {
                 this.drawBarCharts();
                 }, 100);
             }
-            else if(this.qn_type === "test")
-            {
-                this.test_judge();
-            }
+            this.$message({
+                    type: 'success',
+                    message: '保存成功'
+                });
         },  
         
+        judge_handler(index_question, is_correct)
+        {
+            const div_id = 'question-' + index_question;
+            const my_div = document.getElementById(div_id);
+            console.log(my_div);
+            if(this.questions[index_question].q_type === "text")
+            {
+                this.questions[index_question].q_reflect = "填空题需要人工评判";
+                my_div.style.backgroundColor = "rgba(255, 221, 5, 0.4)";
+                return;
+            }
+            if(is_correct === true)
+            {
+                this.questions[index_question].q_reflect = "回答正确";
+                my_div.style.backgroundColor = "rgba(75, 201, 70, 0.52)";
+            }
+            else 
+            {
+                this.questions[index_question].q_reflect = "回答错误，正确答案为第" + this.questions[index_question].q_correct_answer + "项。";
+                my_div.style.backgroundColor = "rgba(209, 48, 48, 0.47)";
+            }
+        },
+
         test_judge()
         {
             this.questions.forEach((question, index_question) => {
                 if(question.q_type === "single")
                 {
                     const answer = question.a_content.toString();
-                    if(answer == question.q_answer)
+                    if(answer == question.q_correct_answer)
                     {
-                        
+                        console.log(`${index_question} 单选题回答正确`);
+                        this.judge_handler(index_question, true);
+                    }
+                    else
+                    {
+                        console.log(`${index_question} 单选题回答错误`);
+                        this.judge_handler(index_question, false);
                     }
                 }
                 else if(question.q_type === "multiple")
                 {
-
+                    if(question.a_content == question.q_correct_answer)
+                    {
+                        console.log(`${index_question} 多选题回答正确`);
+                        this.judge_handler(index_question, true);
+                    }
+                    else
+                    {
+                        console.log(`${index_question} 多选题回答错误`);
+                        this.judge_handler(index_question, false);
+                    }
+                }
+                else if(question.q_type === "text")
+                {
+                    console.log(`${index_question} 填空题需要人工评判`);
+                    this.judge_handler(index_question, false);
                 }
             });
         },
 
         submit_answer() {
-            this.$confirm('是否提交回答?', '提交回答', {
-                confirmButtonText: '确定',
-                cancelButtonText: '取消',
-                type: 'warning'
-            }).then(() => {
-                this.submit_handler();
-                this.$message({
-                    type: 'success',
-                    message: '提交成功,已展示投票结果'
+            if(this.qn_type === "normal" || this.qn_type === "application")
+            {
+                this.$confirm('是否提交回答?', '提交回答', {
+                    confirmButtonText: '确定',
+                    cancelButtonText: '取消',
+                    type: 'warning'
+                }).then(() => {
+                    this.submit_handler();
+                    this.$message({
+                        type: 'success',
+                        message: '提交成功'
+                    });
+                }).catch(() => {
+                    this.$message({
+                        type: 'info',
+                        message: '已取消提交'
+                    });          
                 });
-            }).catch(() => {
-                this.$message({
-                    type: 'info',
-                    message: '已取消提交'
-                });          
-            });
+            }
+            else if (this.qn_type === "test")
+            {
+                if(this.test_is_submitted)
+                {
+                    this.$confirm('是否提交回答?', '提交回答', {
+                        confirmButtonText: '确定',
+                        cancelButtonText: '取消',
+                        type: 'warning'
+                    }).then(() => {
+                        this.$message({
+                            type: 'error',
+                            message: '已经提交过一次了哦'
+                        });
+                    }).catch(() => {
+                        this.$message({
+                            type: 'info',
+                            message: '已取消提交'
+                        });          
+                    });
+                }
+                else
+                {
+                    this.test_is_submitted = true;
+                    this.$confirm('是否提交回答?', '提交回答', {
+                        confirmButtonText: '确定',
+                        cancelButtonText: '取消',
+                        type: 'warning'
+                    }).then(() => {
+                        this.submit_handler();
+                        this.test_judge();
+                        this.$message({
+                            type: 'success',
+                            message: '提交成功,已展示测试结果'
+                        });
+                    }).catch(() => {
+                        this.$message({
+                            type: 'info',
+                            message: '已取消提交'
+                        });          
+                    });
+                }
+            }
+            else if (this.qn_type === "vote")
+            {
+                this.$confirm('是否提交投票?', '提交投票', {
+                    confirmButtonText: '确定',
+                    cancelButtonText: '取消',
+                    type: 'warning'
+                }).then(() => {
+                    this.submit_handler();
+                    this.$message({
+                        type: 'success',
+                        message: '提交成功,已展示投票结果'
+                    });
+                }).catch(() => {
+                    this.$message({
+                        type: 'info',
+                        message: '已取消提交'
+                    });          
+                });
+            }
         },
         
         drawBarCharts() {
@@ -695,7 +806,8 @@ export default {
 }
 
 .el-main {
-    background-color: rgba(233, 238, 243, .27) !important;
+    background-color: rgba(233, 238, 243, .27);
+
     color: #333;
     text-align: left;
 }
