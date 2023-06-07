@@ -250,11 +250,13 @@
                         <br>
                         <el-date-picker
                             v-model="qn_end_time"
-                            type="datetime"
-                            placeholder="选择日期时间"
-                            default-time="12:00:00"
-                            format="yyyy-MM-dd HH:mm:ss">
-                            </el-date-picker>
+                            type="date"
+                            placeholder="选择日期">
+                        </el-date-picker>
+                        <el-time-picker
+                            v-model="qn_end_time"
+                            placeholder="任意时间点">
+                        </el-time-picker>
                     </el-main>
                 </el-container>
 
@@ -874,7 +876,7 @@ export default {
             const timeString = date.toLocaleTimeString('en-US', {hour12:false});
 
             // 调整日期格式
-            const [YYYY, MM, DD] = dateString.split('-');
+            const [MM, YYYY, DD] = dateString.split('-');
             const formattedDate = `${DD}-${MM}-${YYYY} ${timeString}`;
             console.log(formattedDate);   // 输出： 19-04-2023 20:06:11
 
@@ -1467,6 +1469,7 @@ body>.el-container {
 .el-container:nth-child(7) .el-aside {
     line-height: 320px;
 }
+
 
 </style>
 
