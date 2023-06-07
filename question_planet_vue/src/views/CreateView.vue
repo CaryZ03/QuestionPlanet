@@ -567,7 +567,7 @@ export default {
                 {value: 'application', label: '报名问卷'},
             ],
             qn_description: "",
-            qn_end_time: '',
+            qn_end_time: null,
             qn_refillable: true,
             questions: [],
             activeNames: ['1','2','3','4','5','6','7'],
@@ -936,6 +936,27 @@ export default {
         },
 
         submit_questionnaire() {
+            try{
+                if(this.qn_title === null || this.qn_title === undefined || this.qn_title === '')
+                {
+                    throw new Error('请注意，您的问卷题目未填写');  
+                }
+                if(this.qn_type === null || this.qn_type === undefined || this.qn_type === '')
+                {
+                    throw new Error('请注意，您的问卷类型未选择');  
+                }
+                if(this.qn_end_time === null || this.qn_end_time === undefined || this.qn_end_time === '')
+                {
+                    throw new Error('请注意，您的问卷截止时间未选择');  
+                }
+            } catch (error)
+            {
+                this.$message({
+                        type: 'error',
+                        message: error.message
+                    }); 
+                return;
+            }
             this.$confirm('是否提交问卷?', '提交问卷', {
                 confirmButtonText: '确定',
                 cancelButtonText: '取消',
