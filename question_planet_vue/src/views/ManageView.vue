@@ -32,7 +32,7 @@
                   <div class="pull-left item-id">ID:{{ JSON.parse(questionnaire).qn_id }}</div>
                   <div class="pull-left item-running" v-if="(JSON.parse(questionnaire).qn_status == 'unpublished')">状态:未发布
                   </div>
-                  <div class="pull-left item-running" v-else>状态:已发布{{ JSON.parse(questionnaire).qn_status }}</div>
+                  <div class="pull-left item-running" v-else>状态:已发布</div>
                   <div class="pull-left item-data">回收数量:{{ JSON.parse(questionnaire).qn_answersheet_count }}</div>
                   <div class="pull-left item-data">{{ JSON.parse(questionnaire).qn_create_time.substring(0, 19) }}
                   </div>

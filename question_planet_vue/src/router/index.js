@@ -22,7 +22,7 @@ const routes = [
     // route level code-splitting
     // this generates a separate chunk (about.[hash].js) for this route
     // which is lazy-loaded when the route is visited.
-    component: () => import(/* webpackChunkName: "about" */ '../views/AboutView.vue')
+    component: () => import('../views/AboutView.vue')
   },
   {
     path: '/manage/:userID',
@@ -96,5 +96,16 @@ const router = new VueRouter({
   base: process.env.BASE_URL,
   routes
 })
+
+router.beforeEach((to, from, next) => {
+  if (to.path === from.path) {  // 判断目标路径是否相同
+    return next(false)  // 阻止路由跳转
+  }
+  next()  // 允许路由跳转
+})
+const routerRePush = VueRouter.prototype.push
+VueRouter.prototype.push = function (location) {
+  return routerRePush.call(this, location).catch(error => error)
+}
 
 export default router
