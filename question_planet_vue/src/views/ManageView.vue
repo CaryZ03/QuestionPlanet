@@ -112,11 +112,11 @@ export default {
           params: {
             "qn_id": id
           }
-        }),
-        alert(this.$store.state.is_creating)
+        })
+        // alert(this.$store.state.is_creating)
     },
     // 生成问卷链接
-    publicQuestionnaire(qn_id) {
+    async publicQuestionnaire(qn_id) {
       var text = `http://182.92.102.246:1145/answer/${qn_id}`
 
       alert(text)
@@ -139,9 +139,8 @@ export default {
       }
       console.log("publishQuestionnaire_data:" + data)
 
-      this.$api.questionnaire.postQuestionnaire_ChangeStatus(data).then((res) => {
-        console.log(res)
-      })
+      await this.$api.questionnaire.postQuestionnaire_ChangeStatus(data)
+      this.getManagerQuestionnaireList_Create()
     },
     preViewQuestionnaire(questionnaire){
       var data = JSON.parse(questionnaire)
@@ -175,13 +174,14 @@ export default {
       }
       console.log(this.$store.state.token_key)
       console.log(this.$store.state.curUserID)
-      this.$api.userInfo.getUserInfo_GetQList(data).then((res) => {
+      await this.$api.userInfo.getUserInfo_GetQList(data).then((res) => {
 
         this.questionnaireList = res.data['qn_info']
         this.questionnaireListShow = res.data['qn_info']
         console.log(typeof (res.data['qn_info']))
       })
       this.stateType = 0
+      this.sortByCreateTimeMAX()
     },
 
     onFileSelected(file) {
@@ -269,7 +269,7 @@ export default {
 
       if (this.stateType == 0) {
         //已创建文件
-        await this.$confirm('此操作将永久删除该文件, 是否继续?', '提示', {
+        await this.$confirm('此操作将该文件移到垃圾箱, 是否继续?', '提示', {
           confirmButtonText: '确定',
           cancelButtonText: '取消',
           type: 'warning'
@@ -334,7 +334,7 @@ export default {
         
       }
     },
-    deDeleteQuestionnaire(questionnaire) {
+    async deDeleteQuestionnaire(questionnaire) {
       console.dir(questionnaire)
       questionnaire = JSON.parse(questionnaire)
       console.log(questionnaire.qn_id)
@@ -347,9 +347,10 @@ export default {
       }
       console.log("deleteQuestionnaire_data:" + data)
 
-      this.$api.questionnaire.postQuestionnaire_ChangeStatus(data).then((res) => {
+      await this.$api.questionnaire.postQuestionnaire_ChangeStatus(data).then((res) => {
         console.log(res)
       })
+      this.getManagerQuestionnaireList_Delete()
     },
 
     exportQuestionnaire(questionnaire) {

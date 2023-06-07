@@ -3,7 +3,7 @@
     <el-header>
       <header>
 
-        <h2 class="logo">花季猪狗兔开发组</h2>
+        <h2 class="logo"> 问卷猩球 </h2>
         <nav class="navigation">
           <a href="" @click.prevent="pushHome">主页</a>
           <a href="" @click.prevent="pushAbout">关于 </a>
@@ -104,6 +104,11 @@ export default {
       this.$store.state.curUserID = -1
       this.$store.state.curUserName = ''
       this.$store.state.token_key = ''
+      localStorage.setItem("curUserID", "")
+      localStorage.setItem("isLogin", false)
+      localStorage.setItem("curUserName", "")
+      localStorage.setItem("token", "")
+
 
       this.$api.userInfo.postUserInfo_Logout().then((res) => {
         console.log(res)
@@ -120,32 +125,32 @@ export default {
     newhome: Newhome,
   },
   created() {
-    if(localStorage.getItem("curUserID")==null){
+    if (localStorage.getItem("curUserID") == null) {
       console.log("localStorage.getItem=null")
-      localStorage.setItem("curUserID","")
+      localStorage.setItem("curUserID", "")
     }
-    if(localStorage.getItem("isLogin")==null){
+    if (localStorage.getItem("isLogin") == null) {
       console.log("localStorage.getItem=null")
-      localStorage.setItem("isLogin",false)
+      localStorage.setItem("isLogin", false)
     }
-    if(localStorage.getItem("curUserName")==null){
+    if (localStorage.getItem("curUserName") == null) {
       console.log("localStorage.getItem=null")
-      localStorage.setItem("curUserName","")
+      localStorage.setItem("curUserName", "")
     }
-    if(localStorage.getItem("token")==null){
+    if (localStorage.getItem("token") == null) {
       console.log("localStorage.getItem=null")
-      localStorage.setItem("token","")
+      localStorage.setItem("token", "")
     }
 
     this.$api.userInfo.getUserInfo_CheckToken().then((res) => {
-      console.log("localStorage.getItem"+localStorage.getItem("token"))
-      console.log("res.data.errno"+(res.data).errno)
+      console.log("localStorage.getItem" + localStorage.getItem("token"))
+      console.log("res.data.errno" + (res.data).errno)
       if ((res.data).errno != 0) {
         console.log("JSON.stringify(res.data).errno != 0")
-        localStorage.setItem("curUserID","")
-        localStorage.setItem("isLogin",false)
-        localStorage.setItem("curUserName","")
-        localStorage.setItem("token","")
+        localStorage.setItem("curUserID", "")
+        localStorage.setItem("isLogin", false)
+        localStorage.setItem("curUserName", "")
+        localStorage.setItem("token", "")
         this.$store.state.isLogin = false
         this.$store.state.curUserID = -1
         this.$store.state.curUserName = ''
@@ -404,11 +409,12 @@ nav a.router-link-exact-active {
 </style>
 
 <style scoped>
-@media (max-width: 767.98px){
-  .logo{
+@media (max-width: 767.98px) {
+  .logo {
     display: none;
   }
-  .navigation{
+
+  .navigation {
     display: none;
   }
 }

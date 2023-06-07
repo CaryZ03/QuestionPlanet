@@ -57,36 +57,7 @@
                         <div class="ricon"></div>
                     </div>
                 </div>
-                <div class="line"></div>
-                <div class="title">
-                    <p>Sever 6</p>
-                </div>
-                <div class="serve">
-                    <div class="item">
-                        <div class="licon"><span class="iconfont icon-caidan"></span></div>
-                        <div class="con">Software</div>
-                        <div class="ricon">
-                            <span class="iconfont icon-Dashboard"></span>
-                        </div>
-                    </div>
-                    <div class="item">
-                        <div class="licon"><span class="iconfont icon-renqun"></span></div>
-                        <div class="con">Chat</div>
-                        <div class="ricon"></div>
-                    </div>
-                    <div class="item">
-                        <div class="licon"><span class="iconfont icon-sousuo"></span></div>
-                        <div class="con">Intercom</div>
-                        <div class="ricon"><span class="iconfont icon-caidan1"></span></div>
-                    </div>
-                    <div class="item">
-                        <div class="licon">
-                            <span class="iconfont icon-gengduo-a"></span>
-                        </div>
-                        <div class="con">Setting</div>
-                        <div class="ricon"></div>
-                    </div>
-                </div>
+
             </div>
         </div>
     </body>
@@ -249,6 +220,7 @@ export default {
     width: 60px;
     margin-left: 25px;
     margin-bottom: 20px;
+    text-align: center;
 }
 
 .title p {
@@ -263,6 +235,7 @@ export default {
 .item {
     display: flex;
     position: relative;
+    height: 90px;
     transition: 0.5s;
     border-radius: 6px;
 }
@@ -330,7 +303,7 @@ export default {
 
 .light {
     width: 6px;
-    height: 50px;
+    height: 90px;
     background: #eb5a56;
     position: absolute;
     left: -25px;
