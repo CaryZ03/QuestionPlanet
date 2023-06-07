@@ -32,7 +32,7 @@
                   <div class="pull-left item-id">ID:{{ JSON.parse(questionnaire).qn_id }}</div>
                   <div class="pull-left item-running" v-if="(JSON.parse(questionnaire).qn_status == 'unpublished')">状态:未发布
                   </div>
-                  <div class="pull-left item-running" v-else>状态:已发布{{ JSON.parse(questionnaire).qn_status }}</div>
+                  <div class="pull-left item-running" v-else>状态:已发布</div>
                   <div class="pull-left item-data">回收数量:{{ JSON.parse(questionnaire).qn_answersheet_count }}</div>
                   <div class="pull-left item-data">{{ JSON.parse(questionnaire).qn_create_time.substring(0, 19) }}
                   </div>
@@ -261,26 +261,70 @@ export default {
       qn_id = questionnaire.qn_id
 
       if (this.stateType == 0) {
-        const data = {
+        //已创建文件
+        await this.$confirm('此操作将永久删除该文件, 是否继续?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          this.$message({
+            type: 'success',
+            message: '删除成功!'
+          });
+
+          const data = {
           "uid": this.$store.state.curUserID,
           "qn_id": qn_id,
           "status": "deleted"
         }
         console.log("deleteQuestionnaire_data:" + data)
+        this.$api.questionnaire.postQuestionnaire_ChangeStatus(data).then((res)=>{
+          //console.log(res.data);
+          //console.log(res.data.errno);
+          if(res.data.errno==0) return this.getManagerQuestionnaireList_Create()
+        })
 
-        await this.$api.questionnaire.postQuestionnaire_ChangeStatus(data)
-        this.getManagerQuestionnaireList_Create()
+        }).catch(() => {
+          this.$message({
+            type: 'info',
+            message: '已取消删除'
+          });          
+        });
+
+        
+        
       } else if (this.stateType == 1) {
+        //已填写问卷
         this.getManagerQuestionnaireList_Filled()
       } else if (this.stateType == 2) {
-        const data = {
+        //从垃圾箱里删除
+        await this.$confirm('此操作将永久删除该文件, 是否继续?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+
+          const data = {
           "uid": this.$store.state.curUserID,
           "qn_id": qn_id
         }
-        await this.$api.questionnaire.postQuestionnaire_Delete(data).then((res) => {
-          console.log(res)
+         this.$api.questionnaire.postQuestionnaire_Delete(data).then((res) => {
+          console.log(res);
+          if(res.data.errno == 0) this.getManagerQuestionnaireList_Delete()
         })
-        this.getManagerQuestionnaireList_Delete()
+        this.$message({
+            type: 'success',
+            message: '删除成功!'
+          });
+        }).catch(() => {
+          this.$message({
+            type: 'info',
+            message: '已取消删除'
+          });          
+        });
+
+
+        
       }
     },
     deDeleteQuestionnaire(questionnaire) {
