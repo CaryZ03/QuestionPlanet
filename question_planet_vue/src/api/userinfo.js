@@ -118,6 +118,13 @@ export function postUserInfo_ChangeUserStatus(user) {
         data: user
     })
 }
+//检查token是否过期
+export async function getUserInfo_CheckToken() {
+    return request({
+        method: 'GET',
+        url:  '/user/check_token',
+    })
+}
 
 
 

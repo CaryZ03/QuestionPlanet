@@ -470,6 +470,47 @@ export default {
                     });
                 }
             }
+            else if (this.qn_type === "application")
+            {
+                if(this.test_is_submitted)
+                {
+                    this.$confirm('是否提交回答?', '提交回答', {
+                        confirmButtonText: '确定',
+                        cancelButtonText: '取消',
+                        type: 'warning'
+                    }).then(() => {
+                        this.$message({
+                            type: 'error',
+                            message: '已经提交过一次了哦'
+                        });
+                    }).catch(() => {
+                        this.$message({
+                            type: 'info',
+                            message: '已取消提交'
+                        });          
+                    });
+                }
+                else
+                {
+                    this.test_is_submitted = true;
+                    this.$confirm('是否提交回答?', '提交回答', {
+                        confirmButtonText: '确定',
+                        cancelButtonText: '取消',
+                        type: 'warning'
+                    }).then(() => {
+                        this.submit_handler();
+                        this.$message({
+                            type: 'success',
+                            message: '提交成功'
+                        });
+                    }).catch(() => {
+                        this.$message({
+                            type: 'info',
+                            message: '已取消提交'
+                        });          
+                    });
+                }
+            }
             else if (this.qn_type === "vote")
             {
                 this.$confirm('是否提交投票?', '提交投票', {
@@ -488,6 +529,7 @@ export default {
                         message: '已取消提交'
                     });          
                 });
+                
             }
         },
         

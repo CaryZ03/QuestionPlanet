@@ -133,7 +133,7 @@ export default {
       });
 
       const data = {
-        "uid": this.$store.state.curUserID,
+        "uid": localStorage.getItem("curUserID"),
         "qn_id": qn_id,
         "status": "published"
       }
@@ -144,7 +144,14 @@ export default {
       })
     },
     preViewQuestionnaire(questionnaire){
-
+      var data = JSON.parse(questionnaire)
+      var id = data.qn_id
+      this.$router.push({
+        name: 'Preview',
+        params: {
+          "qn_id": id
+        }
+      })
     },
 
     pushAnalyze(questionnaire) {
@@ -163,7 +170,7 @@ export default {
 
     async getManagerQuestionnaireList_Create() {
       const data = {
-        "uid": this.$store.state.curUserID,
+        "uid": localStorage.getItem("curUserID"),
         "type": "created"
       }
       console.log(this.$store.state.token_key)
@@ -219,7 +226,7 @@ export default {
 
     async getManagerQuestionnaireList_Delete() {
       const data = {
-        "uid": this.$store.state.curUserID,
+        "uid": localStorage.getItem("curUserID"),
         "type": "deleted"
       }
       console.log(this.$store.state.token_key)
@@ -233,7 +240,7 @@ export default {
     },
     async getManagerQuestionnaireList_Filled() {
       const data = {
-        "uid": this.$store.state.curUserID,
+        "uid": localStorage.getItem("curUserID"),
         "type": "filled"
       }
       console.log(this.$store.state.token_key)
@@ -262,7 +269,7 @@ export default {
 
       if (this.stateType == 0) {
         const data = {
-          "uid": this.$store.state.curUserID,
+          "uid": localStorage.getItem("curUserID"),
           "qn_id": qn_id,
           "status": "deleted"
         }
@@ -274,7 +281,7 @@ export default {
         this.getManagerQuestionnaireList_Filled()
       } else if (this.stateType == 2) {
         const data = {
-          "uid": this.$store.state.curUserID,
+          "uid": localStorage.getItem("curUserID"),
           "qn_id": qn_id
         }
         await this.$api.questionnaire.postQuestionnaire_Delete(data).then((res) => {
@@ -290,7 +297,7 @@ export default {
       var qn_id
       qn_id = questionnaire.qn_id
       const data = {
-        "uid": this.$store.state.curUserID,
+        "uid": localStorage.getItem("curUserID"),
         "qn_id": qn_id,
         "status": "unpublished"
       }
@@ -405,6 +412,7 @@ export default {
     }
   },
   mounted() {
+    
     this.getManagerQuestionnaireList_Create();
     this.$store.state.isAnalyzing = false
     this.$store.state.is_creating = false

@@ -23,7 +23,6 @@
         </div>
 
         <button class="btn" @click="login">Login</button>
-        <button class="btn" @click="test">test</button>
 
         <div class="login-register">
           <p style="color: aliceblue;">Don't have an account?<a href="#" class="register-link"
@@ -61,7 +60,7 @@
         <button class="btn" @click="register">Register</button>
 
         <div class="login-register">
-          <p>Already have an account?<a href="#" class="login-link">Login</a></p>
+          <p style="color: aliceblue;">Already have an account?<a href="#" style="color: aliceblue;" class="login-link">Login</a></p>
         </div>
       </form>
     </div>
@@ -105,6 +104,7 @@ export default {
           console.log(response.data)
 
           this.$store.state.token_key=response.data['token_key']
+          
           console.log(response.data.token_key)
 
           console.log(response.data)
@@ -114,10 +114,24 @@ export default {
           this.$store.state.curUsername = this.user.username
           this.$store.state.isLogin = true
 
+          localStorage.setItem("curUserID",this.$store.state.curUserID)
+          localStorage.setItem("curUserName",this.$store.state.curUsername)
+          localStorage.setItem("token", response.data['token_key'])
+          console.log("localStorage token register:"+localStorage.getItem("token"))
+          localStorage.setItem("isLogin",true)
+
+        //   this.$store.state.isLogin = true
+        // this.$store.state.curUserID = localStorage.getItem("curUserID")
+        // this.$store.state.curUserName = localStorage.getItem("curUserName")
+        // this.$store.state.token_key = localStorage.getItem("token")
+
           console.log(`/manage/${this.$store.state.curUserID}`)
           // set cookie
           this.$router.push({
             path: `/manage/${this.$store.state.curUserID}`
+          })
+          this.$api.userInfo.getUserInfo_CheckToken().then((res)=>{
+            console.log(res)
           })
         }
         else {
@@ -132,11 +146,6 @@ export default {
 
 
       })
-    },
-    test(){
-      this.$router.push({
-            path: "/manage/" + this.$store.state.curUserID
-          })
     },
     register() {
       console.log("isagree:"+this.isAgree)

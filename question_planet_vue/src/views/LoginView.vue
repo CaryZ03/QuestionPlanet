@@ -80,11 +80,8 @@ export default {
     align-items: center;
     min-height: 100vh;
     background: url('../assets/background2.jpg');
-
     background-size: cover;
     background-position: center;
-  
-  
 }
 
 

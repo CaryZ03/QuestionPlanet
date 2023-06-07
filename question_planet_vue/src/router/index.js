@@ -8,6 +8,7 @@ const CreateQuestionnaireView = () => import('../views/CreateView.vue');
 const UserInfoView = () => import('../views/UserInfoView.vue')
 const Analyze = () => import('../views/AnalyzeView.vue')
 const Answer = () => import('@/views/AnswerView.vue')
+const Preview = () => import('@/views/PreviewView.vue')
 Vue.use(VueRouter)
 
 const routes = [
@@ -86,6 +87,11 @@ const routes = [
     path: '/answer/:qn_id',
     name: 'Answer',
     component: Answer
+  },
+  {
+    path: '/preview/:qn_id',
+    name: 'Preview',
+    component: Preview
   },
 
 

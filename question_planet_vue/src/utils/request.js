@@ -10,31 +10,36 @@ import store from "@/store";
 axios.defaults.withCredentials = true;
 
 const request = axios.create({
-    baseURL: 'http://182.92.102.246:1145/api',
-    timeout: 10000,
-    headers: {
-        'Content-Type': 'application/json',
-    }
+  baseURL: 'http://182.92.102.246:1145/api',
+  timeout: 10000,
+  headers: {
+    'Content-Type': 'application/json',
+  }
 })
 
 request.interceptors.request.use(
-    config => {
-      var token_key=''
-      if(store.state.token_key!=='')
-      token_key = store.state.token_key;
-      console.log(token_key)
-      if (token_key) {
-        config.headers['Authorization'] = token_key ;
-      }
-      return config;
-    },
-    error => {
-      console.log(error)
-      return Promise.reject(error);
-    }
-  );
+  config => {
+    var token_key = localStorage.getItem("token")
 
-    
+    // if (store.state.token_key !== '')
+    //   token_key = store.state.token_key;
+    // else{
+    // if (localStorage.getItem("token") != null)
+    //   token_key = localStorage.getItem("token")
+    // }
+    // console.log(token_key)
+    if (token_key) {
+      config.headers['Authorization'] = token_key;
+    }
+    return config;
+  },
+  error => {
+    console.log(error)
+    return Promise.reject(error);
+  }
+);
+
+
 // 请求拦截器，自动注入 cookie
 // request.interceptors.request.use((config) => {
 //     const session_id = getCookie('session_id');

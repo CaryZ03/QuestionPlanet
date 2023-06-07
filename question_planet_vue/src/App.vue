@@ -83,7 +83,6 @@ export default {
       // wrapper.classList.add('active-popup');
 
       const elements = document.getElementsByClassName('wrapper');
-      console.log(elements)
       for (let i = 0; i < elements.length; i++) {
         elements[i].classList.add('active-popup');
       }
@@ -119,6 +118,46 @@ export default {
   },
   components: {
     newhome: Newhome,
+  },
+  created() {
+    if(localStorage.getItem("curUserID")==null){
+      console.log("localStorage.getItem=null")
+      localStorage.setItem("curUserID","")
+    }
+    if(localStorage.getItem("isLogin")==null){
+      console.log("localStorage.getItem=null")
+      localStorage.setItem("isLogin",false)
+    }
+    if(localStorage.getItem("curUserName")==null){
+      console.log("localStorage.getItem=null")
+      localStorage.setItem("curUserName","")
+    }
+    if(localStorage.getItem("token")==null){
+      console.log("localStorage.getItem=null")
+      localStorage.setItem("token","")
+    }
+
+    this.$api.userInfo.getUserInfo_CheckToken().then((res) => {
+      console.log("localStorage.getItem"+localStorage.getItem("token"))
+      console.log("res.data.errno"+(res.data).errno)
+      if ((res.data).errno != 0) {
+        console.log("JSON.stringify(res.data).errno != 0")
+        localStorage.setItem("curUserID","")
+        localStorage.setItem("isLogin",false)
+        localStorage.setItem("curUserName","")
+        localStorage.setItem("token","")
+        this.$store.state.isLogin = false
+        this.$store.state.curUserID = -1
+        this.$store.state.curUserName = ''
+        this.$store.state.token_key = ''
+      }
+      else {
+        this.$store.state.isLogin = true
+        this.$store.state.curUserID = localStorage.getItem("curUserID")
+        this.$store.state.curUserName = localStorage.getItem("curUserName")
+        this.$store.state.token_key = localStorage.getItem("token")
+      }
+    })
   },
 }
 </script>
