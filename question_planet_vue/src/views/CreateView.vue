@@ -1194,6 +1194,15 @@ export default {
     background-color: #0069d9;
 }
 
+div .el-collapse-item__content{
+    background-image: linear-gradient(163.3deg, #A8C1ED 11.54%, #F3C1EB 90.45%) !important;
+}
+
+.el-collapse__item {
+  background-color: #7b86c8 !important;
+  border-radius: 5px !important;
+}
+
 .sidebar::-webkit-scrollbar {
     display: none;
 }
@@ -1280,7 +1289,7 @@ export default {
     justify-content: space-between;
     flex-direction: row;
     flex-wrap: wrap;
-    background-color: rgba(255, 255, 255, 0.103);
+    background-color: rgba(255, 255, 255, 0.103) !important;
 }
 
 .tool-title {
@@ -1339,14 +1348,20 @@ export default {
 }
 
 .btn-primary {
-    background-color: #007bff !important;
+    /* background-color: #007bff !important; */
+    /* background-image: linear-gradient(220.55deg, #565656 0%, #181818 100%); */
+    /* background-image: linear-gradient(rgb(255, 128, 0), rgb(255, 179, 102)); */
+    background-image: linear-gradient(161.15deg, #6974DC 12.73%, #9679DD 72.95%);
     border-color: #007bff !important;
     width: 30%;
+    height: 25px;
     margin: 1%;
 }
 
 .btn-primary:hover {
-    background-color: #0069d9 !important;
+    /* background-color: #0069d9 !important; */
+    /* background-image: linear-gradient(rgba(175, 89, 4, 1), rgb(255, 179, 102)); */
+    background-image: linear-gradient(142.29deg, #6973DB 21.8%, #FE9CA1 73.22%);
     border-color: #0062cc !important;
 }
 
@@ -1467,4 +1482,26 @@ body>.el-container {
 }
 
 </style>
+
+<style lang="scss" scoped>
+// .sidebar{
+// 	...
+// }
+::v-deep .el-collapse-item__header{
+          color: #fff;
+          background-color: #313743 !important;
+          position: relative;
+        }
+::v-deep .el-collapse-item__content{
+          text-align: left;
+          color: #fff ;
+          background-color: #313743;
+          padding-bottom: 0;
+        //   div{
+        //     height: .96rem;
+        //     line-height: .96rem;
+        //   }
+        }
+</style>
+
 
