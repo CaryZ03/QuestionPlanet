@@ -267,7 +267,7 @@ def questionnaire_analysis(request, qn_id):
 @require_http_methods(['POST'])
 def questionnaire_process(request):
     qn_id = json.loads(request.body.decode('utf-8')).get('qn_id')
-    n = json.loads(request.body.decode('utf-8')).get('n')
+    n = int(json.loads(request.body.decode('utf-8')).get('n'))
     # 查找问卷
     questionnaire = Questionnaire.objects.get(qn_id=qn_id)
     # 获取问题
