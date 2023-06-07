@@ -3,17 +3,17 @@
         <div class="wrap">
             <div class="nav">
                 <!--按钮-->
-                <div class="btn">
+                <!-- <div class="btn">
                     <div class="btn-item"></div>
                     <div class="btn-item"></div>
                     <div class="btn-item"></div>
-                </div>
+                </div> -->
                 <!--头像-->
                 <div class="icon">
-                    <div class="icon-img"><img src="../assets/background.png" alt="" /></div>
+                    <div class="icon-img"><img src="../assets/pig.jpg" alt="" /></div>
                     <div class="icon-con">
-                        <p>Good Day</p>
-                        <h2>Vitaliy D.</h2>
+                        <p>非常好问卷</p>
+                        <h2>爱来自Pig</h2>
                     </div>
                 </div>
                 <div class="line"></div>
@@ -30,7 +30,7 @@
                     <div class="item">
                         <div class="light"></div>
                         <div class="licon"><span class="iconfont icon-qipao1"></span></div>
-                        <div @click="$refs.fileInput.click()" class="con" >从模板创建</div>
+                        <div @click="$refs.fileInput.click()" class="con">从模板创建</div>
                         <input ref="fileInput" type="file" @change="onFileChange" style="display: none">
                         <div class="ricon"></div>
                     </div>
@@ -100,20 +100,16 @@ export default {
         }
     },
     methods: {
-        createNewQ() {
+        async createNewQ() {
             const data = {
                 "uid": this.$store.state.curUserID
             }
             console.log(data)
             // this.triggerParentEvent(0)
-            this.$emit('childEvent', 0)
+             
 
-            this.$api.questionnaire.postQuestionnaire_Create(data).then((res) => {
-                console.log(res.data.errno + res.data.qn_id)
-
-            }).catch((err) => {
-                console.log(err)
-            })
+             await this.$api.questionnaire.postQuestionnaire_Create(data);
+             this.$emit('childEvent', 0)
 
         },
         triggerParentEvent(state) {
@@ -159,15 +155,15 @@ export default {
     font-family: "Helvetica Neue", Helvetica, Arial, "PingFang SC", "Microsoft YaHei", "Microsoft YaHei UI", 微软雅黑, sans-serif;
     font-size: 12px;
     height: 820px;
+    margin: 0 180px -119px 15px;
     overflow: hidden;
     padding: 0;
     text-align: left;
     top: 15%;
     transition: all .5s;
     width: 110px;
-    margin: 0 180px -119px 15px;
     background-color: #0093E9;
-    background-image: linear-gradient(160deg, #6672F2 0%, #E04B5B 98.2%);
+    background-image: conic-gradient(from 90deg at 370% 67%, #65103E 0%, rgba(200, 152, 152, 0) 100%), linear-gradient(160deg, #183765 0%, #110E4F 29.9%, #3B124F 50.5%, #72134F 72.6%, #0E1B48 98.2%);
 }
 
 .nav:hover {

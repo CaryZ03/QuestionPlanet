@@ -1,3 +1,4 @@
+import os
 import re
 from django.db.models import Q
 from django.utils.timezone import now
@@ -14,6 +15,9 @@ from random import randint
 import smtplib
 from email.mime.text import MIMEText
 from email.header import Header
+
+import base64
+from django.core.files.base import ContentFile
 
 
 def send_email_verification(email, code):
@@ -55,6 +59,23 @@ def create_token(uid, is_admin):
     token.save()
 
     return token.key
+
+
+def get_avatar_base64(image):
+    if image is None:
+        return None
+    with open(image.path, 'rb') as file:
+        image_data = file.read()
+        ext = os.path.splitext(image.path)[-1]
+        base64_encoded = 'data:image/' + ext + ';base64,' + base64.b64encode(image_data).decode('utf-8')
+
+    return base64_encoded
+
+
+# def get_image_url(request):
+#     city_name = request.POST.get('city_name')
+#     city = City.objects.get(name=city_name)
+#     return JsonResponse({'image_url': city.img.url})
 
 
 def login_required(view_func):
@@ -238,7 +259,10 @@ def cancel_account(request, user):
 @require_http_methods(['GET'])
 def check_profile(request, user):
     user_info = user.to_json()
-    return JsonResponse({'errno': 0, 'msg': '返回用户信息成功', 'user_info': user_info})
+    user_avatar = None
+    if user.user_avatar:
+        user_avatar = get_avatar_base64(user.user_avatar)
+    return JsonResponse({'errno': 0, 'msg': '返回用户信息成功', 'user_info': user_info, 'user_avatar': user_avatar})
 
 
 @csrf_exempt
@@ -354,6 +378,26 @@ def change_user_status(request):
 
 
 @csrf_exempt
+@login_required
+@require_http_methods(['POST'])
+def upload_avatar(request, user):
+    # 获取 JSON 数据
+    data_json = json.loads(request.body)
+    data = data_json.get('data')
+    user_id = user.user_id
+
+    # 解码 Base64 图片数据
+    format, imgstr = data.split(';base64,')
+    ext = format.split('/')[-1]
+    image = ContentFile(base64.b64decode(imgstr), name=f"{user_id}.{ext}")
+
+    user.user_avatar.save(image.name, image)
+    user.save()
+
+    return JsonResponse({'errno': 0, 'msg': "用户头像上传成功"})
+
+
+@csrf_exempt
 @require_http_methods(['POST'])
 def deploy_test(request):
-    return JsonResponse({'errno': 0, 'ver': "6", 'cur_time': now()})
+    return JsonResponse({'errno': 0, 'ver': "7", 'cur_time': now()})

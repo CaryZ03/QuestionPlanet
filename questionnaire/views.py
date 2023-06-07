@@ -123,6 +123,7 @@ def submit_answers(request):
 
     answer_sheet.as_temporary_save = answer_data
     answer_sheet.as_submitted = True
+    answer_sheet.as_questionnaire.qn_answersheets.add(answer_sheet)
     answer_sheet.save()
     return JsonResponse({'code': 0, 'message': '答卷提交成功'})
 
