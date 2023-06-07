@@ -273,14 +273,13 @@ def questionnaire_process(request):
     # 获取问题
     questions = questionnaire.qn_questions.all()
     question = questions[1]
-    print(question.q_options[n])
-    option = json.loads(question.q_options[n])
+    options = list(json.loads(question.q_options))
     # 进行更新
-    option['num'] = option['num']-1
-    question.q_options[n] = json.dumps(option)
-    if option['num'] == 0:
-        option['disabled'] = True
-        question.q_options[n] = json.dumps(option)
+    options[n]['num'] = options[n]['num']-1
+    question.q_options = json.dumps(options)
+    if options[n]['num'] == 0:
+        options[n]['disabled'] = True
+        question.q_options = json.dumps(options)
     # 保存更新后的选项
     question.save()
 
