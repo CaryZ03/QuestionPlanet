@@ -267,16 +267,21 @@ def questionnaire_analysis(request, qn_id):
 @require_http_methods(['POST'])
 def questionnaire_process(request):
     qn_id = json.loads(request.body.decode('utf-8')).get('qn_id')
-    n = json.loads(request.body.decode('utf-8')).get('n')
+    n = int(json.loads(request.body.decode('utf-8')).get('n'))
     # 查找问卷
     questionnaire = Questionnaire.objects.get(qn_id=qn_id)
     # 获取问题
     questions = questionnaire.qn_questions.all()
     question = questions[1]
+    options = list(json.loads(question.q_options))
     # 进行更新
-    question.q_options[n]['num'] = question.q_options[n]['num']-1
-    if question.q_options[n]['num'] == 0:
-        question.q_options[n]['disabled'] = True
+    if options[n]['num'] <= 0:
+        return JsonResponse({'errno': 3091, 'msg': '当前无剩余名额'})
+    options[n]['num'] = options[n]['num']-1
+    question.q_options = json.dumps(options)
+    if options[n]['num'] == 0:
+        options[n]['disabled'] = True
+        question.q_options = json.dumps(options)
     # 保存更新后的选项
     question.save()
 
@@ -458,7 +463,7 @@ def import_questionnaire(request, user):
         user.save()
         return JsonResponse({'errno': 0, 'msg': '问卷导入成功'})
 
-    return JsonResponse({'errno': 3058, 'msg': '无效的请求'})
+    return JsonResponse({'errno': 3081, 'msg': '无效的请求'})
 
 
 def import_questionnaire_text(request):
