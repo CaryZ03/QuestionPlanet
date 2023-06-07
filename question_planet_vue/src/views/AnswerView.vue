@@ -11,60 +11,121 @@
 
                 <div style="line-height: 30px;">&emsp;</div>
 
+                <el-container class="card mb-2" style="box-shadow: 0 2px 4px rgba(0, 0, 0, .12), 0 0 6px rgba(0, 0, 0, .04)">
+                    <el-main>
+                        <span style="color: #F3F2F2;">问卷描述：{{ this.qn_description }}</span>
+                    </el-main>
+                </el-container>
+
+                <div style="line-height: 30px;">&emsp;</div>
+
             <div v-for="(question, index) in questions" :key="index" class="card mb-2" v-bind:id="question.id">
                 <el-container style="box-shadow: 0 2px 4px rgba(0, 0, 0, .12), 0 0 6px rgba(0, 0, 0, .04)">
                     <el-main>
-                        <span class="red_star" v-if="question.q_mandatory">*&nbsp;</span>
-                        <span class="red_star" v-else></span>
-                        <span v-if="question.q_type === 'single'" style="color: #F3F2F2;">{{ index + 1 }}.单选题</span>
-                        <span v-if="question.q_type === 'multiple'" style="color: #F3F2F2;">{{ index + 1 }}.多选题</span>
-                        <span v-if="question.q_type === 'text'" style="color: #F3F2F2;">{{ index + 1 }}.填空题</span>
-                        <span v-if="question.q_type === 'judge'" style="color: #F3F2F2;">{{ index + 1 }}.判断题</span>
-                        <span v-if="question.q_type === 'grade'" style="color: #F3F2F2;">{{ index + 1 }}.打分题</span>
+                        <div v-if="qn_is_normal || qn_is_test">
+                            <span class="red_star" v-if="question.q_mandatory">*&nbsp;</span>
+                            <span class="red_star" v-else></span>
+                            <span v-if="question.q_type === 'single'" style="color: #F3F2F2;">{{ index + 1 }}.单选题</span>
+                            <span v-if="question.q_type === 'multiple'" style="color: #F3F2F2;">{{ index + 1 }}.多选题</span>
+                            <span v-if="question.q_type === 'text'" style="color: #F3F2F2;">{{ index + 1 }}.填空题</span>
+                            <span v-if="question.q_type === 'judge'" style="color: #F3F2F2;">{{ index + 1 }}.判断题</span>
+                            <span v-if="question.q_type === 'grade'" style="color: #F3F2F2;">{{ index + 1 }}.打分题</span>
+                        </div>
+                        <div v-else-if="qn_is_vote">
+                            <span style="color: #F3F2F2;">投票</span>
+                        </div>
+                        <div v-else-if="qn_is_application">
+                            <span style="color: #F3F2F2;">报名</span>
+                        </div>
+
                         <div style="line-height: 30px;">&emsp;</div>
                         <div style="color: #F3F2F2;">题目：{{ question.q_title }}</div>
+                        <div style="line-height: 30px;">&emsp;</div>
+                        <div style="color: #F3F2F2;">问题描述：{{ question.q_description }}</div>
 
                         <div style="line-height: 30px;">&emsp;</div>
 
-                        <div v-if="question.q_type === 'single' || question.q_type === 'multiple'">
-                            <div class="division"><span class="title" style="color: #F3F2F2;">选项</span></div>
-                            <div v-if="question.q_type === 'single'">
+                        <div v-if="qn_is_application">
+                            <div v-if="question.q_type === 'single' || question.q_type === 'multiple'">
+                                <div class="division"><span class="title">选项</span></div>
+                                <div v-if="question.q_type === 'single'">
+                                    <el-radio-group v-model="question.a_content">
+                                        <el-radio v-for="(option, index_option) in question.q_options" :label="index_option"
+                                            :key="index_option" :disabled="option.disabled"
+                 
+                                            style="color: #F3F2F2;">{{ option.label }} &nbsp;&nbsp; 剩余人数：{{ option.num }}</el-radio>
+                                        
+                                    </el-radio-group>
+                                </div>
+
+                                <div v-if="question.q_type === 'multiple'">
+                                    <div v-for="(option, index_option) in question.q_options" :key="index_option">
+                                        <el-checkbox :label="index_option" v-model="option.checked" style="color: #F3F2F2;">{{ option.label
+                                        }}&nbsp;&nbsp; 剩余人数：{{ option.num }}</el-checkbox>
+                                    </div>
+                                </div>
+                            </div>
+                            <div v-else-if="question.q_type === 'text'">
+                                <div class="division"><span class="title" style="color: #F3F2F2;">内容</span></div>
+                                <el-input type="textarea" autosize placeholder="请输入内容" v-model="question.a_content"></el-input>
+                            </div>
+
+                            <div v-else-if="question.q_type === 'judge'">
+                                <div class="division"><span class="title" style="color: #F3F2F2;">选项</span></div>
                                 <el-radio-group v-model="question.a_content">
-                                    <el-radio v-for="(option, index_option) in question.q_options" :label="index_option"
-                                        :key="index_option" style="color: #F3F2F2;">{{ option.label }}</el-radio>
-                                    
+                                    <el-radio :label="0" style="color: #F3F2F2;">错误</el-radio>
+                                    <el-radio :label="1" style="color: #F3F2F2;">正确</el-radio>
                                 </el-radio-group>
                             </div>
 
-                            <div v-if="question.q_type === 'multiple'">
-                                <div v-for="(option, index_option) in question.q_options" :key="index_option">
-                                    <el-checkbox :label="index_option" v-model="option.checked" style="color: #F3F2F2;">{{ option.label
-                                    }}</el-checkbox>
-                                </div>
+                            <div v-else-if="question.q_type === 'grade'">
+                                <div class="division"><span class="title" style="color: #F3F2F2;">评分</span></div>
+                                <el-rate
+                                    v-model="question.a_content"
+                                    :colors="grade_colors">
+                                </el-rate>
                             </div>
                         </div>
+                        <div v-else>
+                            <div v-if="question.q_type === 'single' || question.q_type === 'multiple'">
+                                <div class="division"><span class="title">选项</span></div>
+                                <div v-if="question.q_type === 'single'">
+                                    <el-radio-group v-model="question.a_content">
+                                        <el-radio v-for="(option, index_option) in question.q_options" :label="index_option"
+                                            :key="index_option" style="color: #F3F2F2;">{{ option.label }}</el-radio>
+                                        
+                                    </el-radio-group>
+                                </div>
 
-                        <div v-else-if="question.q_type === 'text'">
-                            <div class="division"><span class="title" style="color: #F3F2F2;">内容</span></div>
-                            <el-input type="textarea" autosize placeholder="请输入内容" v-model="question.a_content"></el-input>
+                                <div v-if="question.q_type === 'multiple'">
+                                    <div v-for="(option, index_option) in question.q_options" :key="index_option">
+                                        <el-checkbox :label="index_option" v-model="option.checked" style="color: #F3F2F2;">{{ option.label
+                                        }}</el-checkbox>
+                                    </div>
+                                </div>
+                            </div>
+                            <div v-else-if="question.q_type === 'text'">
+                                <div class="division"><span class="title" style="color: #F3F2F2;">内容</span></div>
+                                <el-input type="textarea" autosize placeholder="请输入内容" v-model="question.a_content"></el-input>
+                            </div>
+
+                            <div v-else-if="question.q_type === 'judge'">
+                                <div class="division"><span class="title" style="color: #F3F2F2;">选项</span></div>
+                                <el-radio-group v-model="question.a_content">
+                                    <el-radio :label="0" style="color: #F3F2F2;">错误</el-radio>
+                                    <el-radio :label="1" style="color: #F3F2F2;">正确</el-radio>
+                                </el-radio-group>
+                            </div>
+
+                            <div v-else-if="question.q_type === 'grade'">
+                                <div class="division"><span class="title" style="color: #F3F2F2;">评分</span></div>
+                                <el-rate
+                                    v-model="question.a_content"
+                                    :colors="grade_colors">
+                                </el-rate>
+                            </div>
                         </div>
-
-                        <div v-else-if="question.q_type === 'judge'">
-                            <div class="division"><span class="title" style="color: #F3F2F2;">选项</span></div>
-                            <el-radio-group v-model="question.a_content">
-                                <el-radio :label="0" style="color: #F3F2F2;">错误</el-radio>
-                                <el-radio :label="1" style="color: #F3F2F2;">正确</el-radio>
-                            </el-radio-group>
-                        </div>
-
-                        <div v-else-if="question.q_type === 'grade'">
-                            <div class="division"><span class="title" style="color: #F3F2F2;">评分</span></div>
-                            <el-rate
-                                v-model="question.a_content"
-                                :colors="grade_colors">
-                            </el-rate>
-                        </div>
-
+                        <div class="echart" :id="'barChart'" :style="myChartStyle" v-if="qn_is_vote"></div>
                     </el-main>
                 </el-container>
 
@@ -74,7 +135,7 @@
             <el-button type="success" style="margin: 0 0 0 214px" round v-on:click="submit_handler()">保存回答</el-button>
             <el-button type="primary" round v-on:click="submit_answer()">提交回答</el-button>
         </div>
-
+        
 
 
         <router-view></router-view>
@@ -83,6 +144,7 @@
   
 <script>
 import axios from 'axios';
+import * as echarts from "echarts";
 // const vm = new Vue({
 //   el: '#question-list',
 //   data:{
@@ -99,12 +161,25 @@ export default {
             qn_id: "",
             as_id: "",
             qn_title: "这是问卷标题",
+            qn_type: "normal",
+            qn_type_options: [
+                {value: 'normal', label: '普通问卷'},
+                {value: 'test', label: '考试问卷'},
+                {value: 'vote', label: '投票问卷'},
+                {value: 'application', label: '报名问卷'},
+            ],
             qn_description: "",
             qn_end_time: "",
             qn_refillable: "",
             questions: [],
             answer_sheet: [],
-            grade_colors: ['#99A9BF', '#F7BA2A', '#FF9900']
+            grade_colors: ['#99A9BF', '#F7BA2A', '#FF9900'],
+            qn_is_normal: false,
+            qn_is_test: false,
+            qn_is_vote: false,
+            qn_is_application: true,
+            questions_vote: [],
+            myChartStyle: { float: "left", width: "100%", height: "400px"},
         };
     },
     created() {
@@ -113,6 +188,34 @@ export default {
         this.create_as();
     },
     methods: {
+        change_to_qn_normal(){
+            this.qn_is_normal = true;
+            this.qn_is_test = false;
+            this.qn_is_vote = false;
+            this.qn_is_application = false;
+        },
+        
+        change_to_qn_test(){
+            this.qn_is_normal = false;
+            this.qn_is_test = true;
+            this.qn_is_vote = false;
+            this.qn_is_application = false;
+        },
+
+        change_to_qn_vote(){
+            this.qn_is_normal = false;
+            this.qn_is_test = false;
+            this.qn_is_vote = true;
+            this.qn_is_application = false;
+        },
+
+        change_to_qn_application(){
+            this.qn_is_normal = false;
+            this.qn_is_test = false;
+            this.qn_is_vote = false;
+            this.qn_is_application = true;
+        },
+
         create_as()
         {
             var _this = this;
@@ -134,13 +237,31 @@ export default {
             .then(function (response) {
             //console.log(response);
             //console.log(response.data.qn_info);
-            //console.log(response.data.question_list);
+            console.log(response.data);
+            console.log(response.data.question_list);
             const qn_info = JSON.parse(response.data.qn_info);
             const qn_list = response.data.question_list;
-            console.log(qn_info);
+            //console.log(qn_info);
             _this.qn_title = qn_info.qn_title;
             _this.qn_id = qn_info.qn_id;
             _this.qn_end_time = qn_info.qn_end_time;
+            _this.qn_type = qn_info.qn_type;
+            if(_this.qn_type === "normal")
+            {
+                _this.change_to_qn_normal();
+            }
+            else if(_this.qn_type === "test")
+            {
+                _this.change_to_qn_test();
+            }
+            if(_this.qn_type === "vote")
+            {
+                _this.change_to_qn_vote();
+            }
+            if(_this.qn_type === "application")
+            {
+                _this.change_to_qn_application();
+            }
             _this.qn_description = qn_info.qn_description;
             _this.qn_refillable = qn_info.qn_refillable;
             qn_list.forEach(question => {
@@ -155,7 +276,22 @@ export default {
             });
             console.log(this.qn_id);
         },
-
+        application_handler(){
+            const dataObject = { 
+                qn_id: this.qn_id,
+                n: this.questions[1].a_content,
+            };
+            const jsonString = JSON.stringify(dataObject);
+            console.log(this.questions[1].a_content);
+            console.log(jsonString);
+            this.$api.data.postAnswers_process(jsonString)
+            .then(function (response) {
+                console.log(response);
+            })
+            .catch(function (error) {
+                console.log(error);
+            });
+        },
         submit_handler(){
             this.answer_sheet.splice(0, this.answer_sheet.length);
             this.questions.forEach((question, index_question) => {
@@ -189,6 +325,18 @@ export default {
             .catch(function (error) {
                 console.log(error);
             });
+            if (this.qn_type === "application")
+            {
+                this.application_handler();
+            }
+            if(this.qn_type === "vote")
+            {
+                this.vote_analyze();
+                console.log(this.questions_vote);
+                setTimeout(() => {
+                this.drawBarCharts();
+                }, 100);
+            }
         },  
         
         submit_answer() {
@@ -200,7 +348,7 @@ export default {
                 this.submit_handler();
                 this.$message({
                     type: 'success',
-                    message: '提交成功!'
+                    message: '提交成功,已展示投票结果'
                 });
             }).catch(() => {
                 this.$message({
@@ -209,7 +357,52 @@ export default {
                 });          
             });
         },
+        
+        drawBarCharts() {
+            const chartId = 'barChart';
+            const chartContainer = document.getElementById(chartId);
 
+            console.log(chartContainer);
+            console.log(this.questions_vote);
+            // 使用 ECharts 初始化图表
+            const myChart = echarts.init(chartContainer);
+
+            // 绘制柱状图
+            const option = {
+                // 配置项
+                xAxis: {
+                data: this.questions_vote[0].q_options.map(option => option.label.label)
+                },
+                yAxis: {},
+                series: [
+                {
+                    type: "bar", //形状为柱状图
+                    data: this.questions_vote[0].q_options.map(option => option.num)
+                }
+                ]
+                };
+            myChart.setOption(option);
+            //随着屏幕大小调节图表
+            window.addEventListener("resize", () => {
+            myChart.resize();
+            });
+        },
+
+        vote_analyze()
+        {
+            var _this = this;
+            this.$api.data.getQuestionnaire_Analyze(this.qn_id)
+            .then(function (response) {
+            //console.log(response);
+            //console.log(response.data.result);
+            console.log(response.data.result.questionnaire_title);
+            _this.questions_vote = response.data.result.q_results;
+            console.log(_this.questions_vote);
+            })
+            .catch(function (error) {
+            console.log(error);
+            });
+        },
     },
 
 };
