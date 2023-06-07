@@ -157,7 +157,7 @@
                                             &nbsp;
                                         </el-col>
                                         <el-col :span="6">
-                                            <div><el-input placeholder="请输入报名个数" v-model="item.num" clearable></el-input>
+                                            <div><el-input placeholder="请输入报名个数" v-model.number="item.num" clearable type="number"></el-input>
                                             </div>
                                         </el-col>
                                     </el-row>
@@ -249,6 +249,8 @@
                         </div>
                         <div style="line-height: 30px;">&emsp;</div>
                         <div style="color: #F3F2F2;">题目：{{ question.q_title }}</div>
+                        <div style="line-height: 30px;">&emsp;</div>
+                        <div style="color: #F3F2F2;">问题描述：{{ question.q_description }}</div>
 
                         <div style="line-height: 30px;">&emsp;</div>
 
@@ -762,6 +764,20 @@ export default {
             {
                 this.change_to_qn_application();
                 this.questions.splice(0, this.questions.length);
+                let question_name = {
+                    q_type: "text",
+                    isEdit: true,
+                    q_mandatory: true,
+                    q_title: "个人信息",
+                    q_options: [],
+                    q_description: "",
+                    a_content: "",
+                    q_correct_answer: "",
+                    q_score: 0.0,
+                };
+                // 为题目卡片动态生成唯一 ID
+                question_name.id = 'question-' + (this.questions.length + 1);
+                this.questions.push(question_name);
                 let question = {
                     q_type: "single",
                     isEdit: true,
