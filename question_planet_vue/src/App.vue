@@ -3,7 +3,7 @@
     <el-header>
       <header>
 
-        <h2 class="logo">logo</h2>
+        <h2 class="logo">花季猪狗兔开发组</h2>
         <nav class="navigation">
           <a href="" @click.prevent="pushHome">主页</a>
           <a href="" @click.prevent="pushAbout">关于 </a>

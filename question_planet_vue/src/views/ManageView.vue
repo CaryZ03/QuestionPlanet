@@ -23,40 +23,45 @@
             </div>
           </div>
 
-          <el-row v-for="questionnaire in questionnaireListShow" :key="questionnaire.qn_id"
-            class="single_questionnaire_box hvr-grow-shadow">
-            <div class="questionnaire_title">
-
-              <div class="pull-left">
-                <div class="questionnaire_title">{{ JSON.parse(questionnaire).qn_title }}</div>
-              </div>
-              <div class="pull-right">
-                <div class="pull-left item-id">ID:{{ JSON.parse(questionnaire).qn_id }}</div>
-                <div class="pull-left item-running">Status:{{ JSON.parse(questionnaire).qn_status }}</div>
-                <div class="pull-left item-data">receive:0</div>
-                <div class="pull-left item-data">创建时间:{{ JSON.parse(questionnaire).qn_create_time.substring(0, 19) }}
+          <TransitionGroup tag="ul" name="moveR" style="background: transparent ;margin: 0;padding: 0;border: 0;">
+            <div v-for="questionnaire in questionnaireListShow" :key="questionnaire"
+              class="single_questionnaire_box hvr-grow-shadow">
+              <div class="questionnaire_title">
+                <div class="pull-right">
+                  <div class="pull-left item-id">{{ JSON.parse(questionnaire).qn_title }}</div>
+                  <div class="pull-left item-id">ID:{{ JSON.parse(questionnaire).qn_id }}</div>
+                  <div class="pull-left item-running" v-if="(JSON.parse(questionnaire).qn_status == 'unpublished')">状态:未发布
+                  </div>
+                  <div class="pull-left item-running" v-else>状态:已发布{{ JSON.parse(questionnaire).qn_status }}</div>
+                  <div class="pull-left item-data">回收数量:{{ JSON.parse(questionnaire).qn_answersheet_count }}</div>
+                  <div class="pull-left item-data">{{ JSON.parse(questionnaire).qn_create_time.substring(0, 19) }}
+                  </div>
+                  <!-- <div class="pull-left item-data">结束时间:{{ JSON.parse(questionnaire).qn_end_time.substring(0, 19) }}
+                  </div> -->
                 </div>
-                <div class="pull-left item-data">结束时间:{{ JSON.parse(questionnaire).qn_end_time.substring(0, 19) }}</div>
               </div>
-            </div>
-            <el-divider></el-divider>
-            <div class="questionnaire_body">
-              <el-button v-show="stateType == 0" @click="pushCreate(questionnaire)" round
-                style="background-color:rgba(227, 227, 227, 0.1);color:#ffffff !important;">设计问卷</el-button>
-              <el-button v-show="stateType == 0" @click="publicQuestionnaire(JSON.parse(questionnaire).qn_id)"
-                class="copyLink" round
-                style="background-color:rgba(227, 227, 227, 0.1);color:#ffffff !important;">发送问卷</el-button>
-              <el-button v-show="stateType == 0" @click="pushAnalyze(questionnaire)" round
-                style="background-color:rgba(227, 227, 227, 0.1);color:#ffffff !important;">分析问卷</el-button>
-              <el-button v-show="stateType == 0" @click="deleteQuestionnaire(questionnaire)" round
-                style="background-color:rgba(227, 227, 227, 0.1);color:#ffffff !important;">删除问卷</el-button>
-              <el-button v-show="stateType == 2" @click="deleteQuestionnaire(questionnaire)" round
-                style="background-color:rgba(227, 227, 227, 0.1);color:#ffffff !important;">移除问卷</el-button>
-              <el-button v-show="stateType == 2" @click="deDeleteQuestionnaire(questionnaire)" round
-                style="background-color:rgba(227, 227, 227, 0.1);color:#ffffff !important;">撤销删除</el-button>
-            </div>
+              <el-divider></el-divider>
+              <div class="questionnaire_body">
+                <el-button v-show="stateType == 0" @click="pushCreate(questionnaire)" round
+                  style="background-color:rgba(227, 227, 227, 0.1);color:#ffffff !important;">设计问卷</el-button>
+                <el-button v-show="stateType == 0" @click="publicQuestionnaire(JSON.parse(questionnaire).qn_id)"
+                  class="copyLink" round
+                  style="background-color:rgba(227, 227, 227, 0.1);color:#ffffff !important;">发送问卷</el-button>
+                <el-button v-show="stateType == 0" @click="pushAnalyze(questionnaire)" round
+                  style="background-color:rgba(227, 227, 227, 0.1);color:#ffffff !important;">分析问卷</el-button>
+                <el-button v-show="stateType == 0" @click="deleteQuestionnaire(questionnaire)" round
+                  style="background-color:rgba(227, 227, 227, 0.1);color:#ffffff !important;">删除问卷</el-button>
+                <el-button v-show="stateType == 2" @click="deleteQuestionnaire(questionnaire)" round
+                  style="background-color:rgba(227, 227, 227, 0.1);color:#ffffff !important;">移除问卷</el-button>
+                <el-button v-show="stateType == 2" @click="deDeleteQuestionnaire(questionnaire)" round
+                  style="background-color:rgba(227, 227, 227, 0.1);color:#ffffff !important;">撤销删除</el-button>
+                <el-button v-show="stateType == 0" @click="preViewQuestionnaire(questionnaire)" round
+                  style="background-color:rgba(227, 227, 227, 0.1);color:#ffffff !important;">预览问卷</el-button>
+              </div>
 
-          </el-row>
+            </div>
+          </TransitionGroup>
+
         </el-main>
       </main>
     </div>
@@ -70,6 +75,7 @@
 <script>
 import Clipboard from 'clipboard';
 import AsideMenu from '@/components/AsideMenu.vue'
+// import router from '../router'
 export default {
   data() {
     const item = {
@@ -137,7 +143,9 @@ export default {
         console.log(res)
       })
     },
+    preViewQuestionnaire(questionnaire){
 
+    },
 
     pushAnalyze(questionnaire) {
       var data = JSON.parse(questionnaire)
@@ -412,18 +420,36 @@ export default {
 <!-- 下拉栏 -->
 
 <style scoped>
+.fade-move,
+.fade-enter-active,
+.fade-leave-active {
+  transition: all 0.5s cubic-bezier(0.55, 0, 0.1, 1);
+}
+
+.fade-enter-from,
+.fade-leave-to {
+  opacity: 0;
+  transform: scaleY(0.01) translate(30px, 0);
+}
+
+.fade-leave-active {
+  position: absolute;
+}
+
+
 .btnSort {
   width: 130px;
   height: 50px;
   background: transparent;
   border: 2px solid #fff;
+
   outline: none;
   border-radius: 6px;
   cursor: pointer;
   font-size: 1.1em;
   color: #fff;
   font-weight: 500;
-  margin-left: 40px;
+  margin-left: 10px;
   transition: .3s;
 }
 
@@ -968,6 +994,40 @@ div {
   background-size: 80px 80px, auto, auto;
 }
 
+
+
+/* 确保将离开的元素从布局流中删除
+  以便能够正确地计算移动的动画。 */
+.moveR-leave-active {
+  position: absolute;
+  transition: all 0.3s ease;
+  transform: translateX(100%);
+}
+
+.moveR-enter-active {
+  transition: all 0.3s ease;
+  transform: translateX(0);
+}
+
+.moveR-enter {
+  transform: translateX(100%);
+}
+
+.moveR-enter-from {
+  transform: translateX(100%);
+}
+
+.moveR-leave {
+  transform: translateX(0);
+}
+
+.moveR-leave-to {
+  transform: translateX(100%);
+}
+
+
+
+
 .questionnaire_title {
   margin: 0;
   padding: 0;
@@ -1011,8 +1071,13 @@ div {
 
 .pull-left {
   float: left;
-  padding-left: 2px;
-  padding-right: 4px;
+  ;
+  /* float: right !important;
+   */
+  /* 
+  line-height: 22px; */
+  font-size: 12px;
+  padding-right: 12px;
 }
 
 .pull-right {
