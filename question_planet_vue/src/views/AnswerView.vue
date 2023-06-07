@@ -329,7 +329,7 @@ export default {
             {
                 this.application_handler();
             }
-            if(this.qn_type === "vote")
+            else if(this.qn_type === "vote")
             {
                 this.vote_analyze();
                 console.log(this.questions_vote);
@@ -337,8 +337,30 @@ export default {
                 this.drawBarCharts();
                 }, 100);
             }
+            else if(this.qn_type === "test")
+            {
+                this.test_judge();
+            }
         },  
         
+        test_judge()
+        {
+            this.questions.forEach((question, index_question) => {
+                if(question.q_type === "single")
+                {
+                    const answer = question.a_content.toString();
+                    if(answer == question.q_answer)
+                    {
+                        
+                    }
+                }
+                else if(question.q_type === "multiple")
+                {
+
+                }
+            });
+        },
+
         submit_answer() {
             this.$confirm('是否提交回答?', '提交回答', {
                 confirmButtonText: '确定',
