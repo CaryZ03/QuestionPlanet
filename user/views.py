@@ -71,8 +71,8 @@ def get_avatar_base64(image):
     with open(image.path, 'rb') as file:
         image_data = file.read()
         ext = os.path.splitext(image.path)[-1]
-        base64_encoded = 'data:image/' + ext + ';base64,' + base64.b64encode(image_data).decode('utf-8')
-
+        base64_encoded = base64.b64encode(image_data).decode('utf-8')
+    # 'data:image/' + ext + ';base64,' +
     return base64_encoded
 
 
@@ -403,9 +403,9 @@ def upload_avatar(request, user):
     user_id = user.user_id
 
     # 解码 Base64 图片数据
-    format, imgstr = data.split(';base64,')
-    ext = format.split('/')[-1]
-    image = ContentFile(base64.b64decode(imgstr), name=f"{user_id}.{ext}")
+    # format, imgstr = data.split(';base64,')
+    # ext = format.split('/')[-1]
+    image = ContentFile(base64.b64decode(data), name=f"{user_id}.png")
 
     user.user_avatar.save(image.name, image)
     user.save()
