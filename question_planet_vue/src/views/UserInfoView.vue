@@ -138,10 +138,16 @@ export default {
         var value1=value
 
         this.$api.userInfo.postUserInfo_SendVeri(data).then((res) => {
-          alert("sent email")
+          // alert("sent email")
+          // this.$message("发送验证码中。。。")
           if (res.data.errno == 0) {
             //发送邮箱成功，等验证码
-            alert("send email success")
+            // alert("send email success")
+            this.$message({
+              type:'success',
+              message: '验证码发送成功，请查收'
+            }
+            )
 
             this.$prompt('请输入验证码', '提示', {
               confirmButtonText: '确定',
@@ -295,6 +301,7 @@ export default {
 
     changeSign() {
       this.$prompt('请输入新的签名', '提示', {
+        inputValue: this.sign,
         confirmButtonText: '确定',
         cancelButtonText: '取消',
       }).then(({ value }) => {
@@ -303,6 +310,17 @@ export default {
           message: '签名设置成功 '
         });
         this.sign = value;
+
+        const tmp = {
+          "uid": this.userId,
+          "username": this.userName,
+          "password1": this.userKey,
+          "password2": this.userKey,
+          "signature": this.sign,
+          "email": this.address,
+          "tel": this.phone
+        }
+        this.uploadData(tmp);
       }).catch(() => {
         this.$message({
           type: 'info',
@@ -377,6 +395,8 @@ export default {
       addressIsBind: false,
       phoneIsBind: false,
       phone: null,
+      company:null,
+    
 
       userKey: 114514,
       sign: '还没有签名捏',
@@ -410,6 +430,10 @@ export default {
         this.userKey = userObj.user_password;
         this.address = userObj.user_email;
         this.phone = userObj.user_tel;
+        this.sign = userObj.user_signature;
+        this.company = userObj.user_company;
+        if(this.sign == null)
+          this.sign = "还没有签名捏";
         if (this.address != null)
           this.addressIsBind = true;
         if (this.phone != null)

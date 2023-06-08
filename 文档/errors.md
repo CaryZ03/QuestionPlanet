@@ -315,7 +315,8 @@ class UserToken(Model):
     "password2": password2,
     "signature": signature,
     "email": email*,
-    "tel": tel*
+    "tel": tel*,
+    "company":company,
 }
 ```
 
