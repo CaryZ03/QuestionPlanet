@@ -71,8 +71,8 @@ def get_avatar_base64(image):
     with open(image.path, 'rb') as file:
         image_data = file.read()
         ext = os.path.splitext(image.path)[-1]
-        base64_encoded = 'data:image/' + ext + ';base64,' + base64.b64encode(image_data).decode('utf-8')
-
+        base64_encoded = base64.b64encode(image_data).decode('utf-8')
+    # 'data:image/' + ext + ';base64,' +
     return base64_encoded
 
 
@@ -300,6 +300,7 @@ def change_profile(request, user):
     password1 = data_json.get('password1')
     password2 = data_json.get('password2')
     signature = data_json.get('signature')
+    company = data_json.get('company')
     email = data_json.get('email')
     tel = data_json.get('tel')
     if not bool(re.match("^[A-Za-z0-9][A-Za-z0-9_]{2,29}$", str(username))):
@@ -314,6 +315,7 @@ def change_profile(request, user):
         user.user_name = username
         user.user_password = password1
         user.user_signature = signature
+        user.user_company = company
         user.user_email = email
         user.user_tel = tel
         user.save()
@@ -401,9 +403,9 @@ def upload_avatar(request, user):
     user_id = user.user_id
 
     # 解码 Base64 图片数据
-    format, imgstr = data.split(';base64,')
-    ext = format.split('/')[-1]
-    image = ContentFile(base64.b64decode(imgstr), name=f"{user_id}.{ext}")
+    # format, imgstr = data.split(';base64,')
+    # ext = format.split('/')[-1]
+    image = ContentFile(base64.b64decode(data), name=f"{user_id}.png")
 
     user.user_avatar.save(image.name, image)
     user.save()

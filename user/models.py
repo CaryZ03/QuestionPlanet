@@ -17,6 +17,7 @@ class User(Model):
     user_password = CharField(max_length=20)
     user_signature = TextField(null=True)
     user_avatar = ImageField(upload_to='avatar/', max_length=225, blank=True, null=True)
+    user_company = TextField(null=True)
     user_email = EmailField(max_length=50, default=None, blank=True, null=True)
     user_tel = TextField(null=True)
     status_choices = (
@@ -34,6 +35,7 @@ class User(Model):
             "user_password": self.user_password,
             "user_signature": self.user_signature,
             "user_email": self.user_email,
+            "user_company": self.user_company,
             "user_tel": self.user_tel,
             "user_status": self.user_status
         }
