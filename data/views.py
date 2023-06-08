@@ -425,10 +425,9 @@ def import_questionnaire(request, user):
         questionnaire = Questionnaire.objects.create(
             qn_title=qn_title,
             qn_description=qn_description,
-            qn_type=qn_type,
             qn_creator=user
         )
-
+        questionnaire.save()
         # 解析问题信息并创建问题
         next(reader)  # Skip empty row
         next(reader)  # Skip header row
@@ -455,7 +454,7 @@ def import_questionnaire(request, user):
                 q_title=q_title,
                 q_description=q_description,
                 q_option_count=q_option_count,
-                q_options=q_options
+                q_options=json.dumps(q_options)
             )
             print(json.loads(question.to_json()))
             question.save()
