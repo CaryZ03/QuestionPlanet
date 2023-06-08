@@ -18,7 +18,7 @@
                 </div>
                 <div class="line"></div>
                 <div class="title">
-                    <p>Menu 6</p>
+                    <p>Menu </p>
                 </div>
                 <div class="menu">
                     <div class="item">
@@ -217,14 +217,14 @@ export default {
 }
 
 .title {
-    width: 60px;
-    margin-left: 25px;
-    margin-bottom: 20px;
-    text-align: center;
+    width: 100%;
+    height: 30px;
+    /* text-align: center; */
 }
 
 .title p {
     font-size: 14px;
+    text-align: center;
 }
 
 .menu {
@@ -253,16 +253,23 @@ export default {
 }
 
 .con {
-    width: 0px;
-    height: 50px;
-    display: flex;
-    justify-content: center;
     align-items: center;
-    transition: 0.5s;
-    overflow: hidden;
-    position: relative;
-    left: -20px;
-    opacity: 0;
+box-sizing: border-box;
+color: rgba(255, 255, 255, 0.6);
+display: flex;
+font-family: "Helvetica Neue", Helvetica, Arial, "PingFang SC", "Microsoft YaHei", "Microsoft YaHei UI", 微软雅黑, sans-serif;
+font-size: 12px;
+height: 50px;
+justify-content: center;
+left: -20px;
+opacity: 1;
+overflow: hidden;
+padding: 0;
+position: relative;
+text-align: left;
+transition: all .5s;
+width: 160px;
+margin: 0 0 0 41px;
 }
 
 .nav:hover .con {

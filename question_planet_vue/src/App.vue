@@ -1,5 +1,6 @@
 <template>
   <body>
+    <home-view/>
     <el-header>
       <header>
 
@@ -28,7 +29,8 @@
 </template>
 
 <script>
-import Newhome from '@/components/Newhome.vue';
+import HomeView from './views/HomeView.vue'
+// import Newhome from '@/components/Newhome.vue';
 export default {
 
   name: 'app',
@@ -122,7 +124,7 @@ export default {
     },
   },
   components: {
-    newhome: Newhome,
+    homeView: HomeView
   },
   created() {
     if (localStorage.getItem("curUserID") == null) {
