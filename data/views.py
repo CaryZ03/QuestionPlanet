@@ -175,11 +175,11 @@ def questionnaire_export_file(request, user, qn_id):
     writer = csv.writer(response)
 
     # 写入问卷信息
-    writer.writerow(['Questionnaire ID', 'Questionnaire Title', 'Questionnaire Description', 'Questions Count',
-                     'Answer Sheet Count', 'Score Average', 'Score Standard Deviation', 'Single Choice Count',
+    writer.writerow(['Questionnaire ID', 'Questionnaire Title', 'Questionnaire Description', 'Questionnaire Type',
+                     'Questions Count','Answer Sheet Count', 'Score Average', 'Score Standard Deviation', 'Single Choice Count',
                      'Multiple Choice Count', 'Judge Count', 'Fill Count', 'Essay Count', 'Grade Count'])
-    writer.writerow([questionnaire.qn_id, questionnaire.qn_title, questionnaire.qn_description, questions_count,
-                     answer_sheet_count, score_avg, score_stddev, single_count, multiple_count, judge_count,
+    writer.writerow([questionnaire.qn_id, questionnaire.qn_title, questionnaire.qn_description, questionnaire.qn_type,
+                     questions_count, answer_sheet_count, score_avg, score_stddev, single_count, multiple_count, judge_count,
                      fill_count, essay_count, grade_count])
 
     writer.writerow([])
@@ -189,7 +189,7 @@ def questionnaire_export_file(request, user, qn_id):
         ['Question ID', 'Question Type', 'Question Title', 'Question Description', 'Option Count', 'Options'])
     for question in questions:
         if question.q_type == 'single' or question.q_type == 'multiple':
-            options = ", ".join(option['label'] for option in question.q_options)
+            options = ", ".join(option['label'] for option in list(json.loads(question.q_options)))
         else:
             options = ''
 
@@ -421,9 +421,11 @@ def import_questionnaire(request, user):
         questionnaire_info = next(reader)
         qn_title = questionnaire_info[1]
         qn_description = questionnaire_info[2]
+        qn_type = questionnaire_info[3]
         questionnaire = Questionnaire.objects.create(
             qn_title=qn_title,
             qn_description=qn_description,
+            qn_type=qn_type,
             qn_creator=user
         )
 
@@ -443,7 +445,7 @@ def import_questionnaire(request, user):
             if q_type in ['single', 'multiple']:
                 options = row[5].split(', ')
                 for option in options:
-                    q_options.append({'label': option, 'checked': false, num: 0})
+                    q_options.append({'label': option, 'checked': False, 'num': 0})
 
             # 创建问题并加入问卷
             question = Question.objects.create(
@@ -455,6 +457,7 @@ def import_questionnaire(request, user):
                 q_option_count=q_option_count,
                 q_options=q_options
             )
+            print(json.loads(question.to_json()))
             question.save()
             questionnaire.qn_questions.add(question)
             i = i+1
