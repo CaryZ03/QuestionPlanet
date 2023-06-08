@@ -454,7 +454,7 @@ def import_questionnaire(request, user):
                 q_title=q_title,
                 q_description=q_description,
                 q_option_count=q_option_count,
-                q_options=q_options
+                q_options=json.dumps(q_options)
             )
             print(json.loads(question.to_json()))
             question.save()
