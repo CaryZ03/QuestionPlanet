@@ -101,6 +101,7 @@
 
 <script>
 import { dataTool } from 'echarts';
+import Compressor from 'compressorjs';
 import UserInfo from '@/components/UserInfo.vue';
 export default {
   methods: {
@@ -135,27 +136,33 @@ export default {
         const data = {
           "email": value
         }
-        var value1=value
+        var value1 = value
 
         this.$api.userInfo.postUserInfo_SendVeri(data).then((res) => {
-          alert("sent email")
+          // alert("sent email")
+          // this.$message("发送验证码中。。。")
           if (res.data.errno == 0) {
             //发送邮箱成功，等验证码
-            alert("send email success")
+            // alert("send email success")
+            this.$message({
+              type:'success',
+              message: '验证码发送成功，请查收'
+            }
+            )
 
             this.$prompt('请输入验证码', '提示', {
               confirmButtonText: '确定',
               cancelButtonText: '取消',
             }).then(({ value }) => {
-              console.log("value2:jsontring"+JSON.stringify(value))
+              console.log("value2:jsontring" + JSON.stringify(value))
               // console.log("value2:jsontring"+JSON.stringify(value2))
-              console.log("value2:"+value)
-              console.log("res.data.code"+res.data.code)
+              console.log("value2:" + value)
+              console.log("res.data.code" + res.data.code)
               if (value == res.data.code) {
 
                 //改邮箱
                 this.$message({
-                  type: 'success', 
+                  type: 'success',
                   message: '验证码验证成功，你的邮箱是: ' + value1
                 });
                 this.addressIsBind = true;
@@ -166,6 +173,7 @@ export default {
                   "username": this.userName,
                   "password1": this.userKey,
                   "password2": this.userKey,
+                  "signature": this.sign,
                   "email": this.address,
                   "tel": this.phone
                 }
@@ -218,6 +226,7 @@ export default {
           "username": this.userName,
           "password1": this.userKey,
           "password2": this.userKey,
+          "signature": this.sign,
           "email": this.address,
           "tel": this.phone
         }
@@ -250,6 +259,7 @@ export default {
           "username": this.userName,
           "password1": this.userKey,
           "password2": this.userKey,
+          "signature": this.sign,
           "email": this.address,
           "tel": this.phone
         }
@@ -280,6 +290,7 @@ export default {
           "username": this.userName,
           "password1": this.userKey,
           "password2": this.userKey,
+          "signature": this.sign,
           "email": this.address,
           "tel": this.phone
         }
@@ -295,6 +306,7 @@ export default {
 
     changeSign() {
       this.$prompt('请输入新的签名', '提示', {
+        inputValue: this.sign,
         confirmButtonText: '确定',
         cancelButtonText: '取消',
       }).then(({ value }) => {
@@ -303,6 +315,17 @@ export default {
           message: '签名设置成功 '
         });
         this.sign = value;
+
+        const tmp = {
+          "uid": this.userId,
+          "username": this.userName,
+          "password1": this.userKey,
+          "password2": this.userKey,
+          "signature": this.sign,
+          "email": this.address,
+          "tel": this.phone
+        }
+        this.uploadData(tmp);
       }).catch(() => {
         this.$message({
           type: 'info',
@@ -311,9 +334,24 @@ export default {
       });
     },
 
-    handleAvatarUpload(event) {
-      // 处理上传头像逻辑
+   async handleAvatarUpload(event) {
+      const file = event.target.files[0];
+      const options = {
+        quality: 0.4, // 压缩质量，范围：0 到 1 之间
+        success: result => {
+          this.avatar = result; // 存储压缩后的头像图片
+        }
+      };
+      await new Compressor(file, options);
+
+      const data={
+        "data": this.avatar
+      }
+      this.$api.userInfo.postUserInfo_upload_avatar(data).then((res)=>{
+        console.log(res)
+      })
     },
+
     editUserInfo() {
       // 进入用户信息编辑页面
     },
@@ -348,6 +386,7 @@ export default {
             "username": this.userName,
             "password1": value,
             "password2": value,
+            "signature": this.sign,
             "email": this.address,
             "tel": this.phone
           }
@@ -377,6 +416,7 @@ export default {
       addressIsBind: false,
       phoneIsBind: false,
       phone: null,
+      avatar: '',
 
       userKey: 114514,
       sign: '还没有签名捏',
@@ -410,6 +450,10 @@ export default {
         this.userKey = userObj.user_password;
         this.address = userObj.user_email;
         this.phone = userObj.user_tel;
+        this.sign = userObj.user_signature;
+        this.company = userObj.user_company;
+        if(this.sign == null)
+          this.sign = "还没有签名捏";
         if (this.address != null)
           this.addressIsBind = true;
         if (this.phone != null)

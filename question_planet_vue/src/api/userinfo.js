@@ -125,8 +125,14 @@ export async function getUserInfo_CheckToken() {
         url:  '/user/check_token',
     })
 }
-
-
+// upload_avatar
+export async function postUserInfo_upload_avatar(data){
+    return request({
+        method: 'POST',
+        url:  '/user/upload_avatar',
+        data: data
+    })
+}
 
 
 
