@@ -101,6 +101,7 @@
 
 <script>
 import { dataTool } from 'echarts';
+import Compressor from 'compressorjs';
 import UserInfo from '@/components/UserInfo.vue';
 export default {
   methods: {
@@ -135,7 +136,7 @@ export default {
         const data = {
           "email": value
         }
-        var value1=value
+        var value1 = value
 
         this.$api.userInfo.postUserInfo_SendVeri(data).then((res) => {
           alert("sent email")
@@ -147,15 +148,15 @@ export default {
               confirmButtonText: '确定',
               cancelButtonText: '取消',
             }).then(({ value }) => {
-              console.log("value2:jsontring"+JSON.stringify(value))
+              console.log("value2:jsontring" + JSON.stringify(value))
               // console.log("value2:jsontring"+JSON.stringify(value2))
-              console.log("value2:"+value)
-              console.log("res.data.code"+res.data.code)
+              console.log("value2:" + value)
+              console.log("res.data.code" + res.data.code)
               if (value == res.data.code) {
 
                 //改邮箱
                 this.$message({
-                  type: 'success', 
+                  type: 'success',
                   message: '验证码验证成功，你的邮箱是: ' + value1
                 });
                 this.addressIsBind = true;
@@ -311,9 +312,24 @@ export default {
       });
     },
 
-    handleAvatarUpload(event) {
-      // 处理上传头像逻辑
+   async handleAvatarUpload(event) {
+      const file = event.target.files[0];
+      const options = {
+        quality: 0.4, // 压缩质量，范围：0 到 1 之间
+        success: result => {
+          this.avatar = result; // 存储压缩后的头像图片
+        }
+      };
+      await new Compressor(file, options);
+
+      const data={
+        "data": this.avatar
+      }
+      this.$api.userInfo.postUserInfo_upload_avatar(data).then((res)=>{
+        console.log(res)
+      })
     },
+
     editUserInfo() {
       // 进入用户信息编辑页面
     },
@@ -377,6 +393,7 @@ export default {
       addressIsBind: false,
       phoneIsBind: false,
       phone: null,
+      avatar: '',
 
       userKey: 114514,
       sign: '还没有签名捏',
