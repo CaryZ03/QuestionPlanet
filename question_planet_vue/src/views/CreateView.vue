@@ -348,6 +348,7 @@
                         <div v-if="qn_is_test && (question.q_type === 'single' || question.q_type === 'multiple')">
                             <span class="red_star">*&nbsp;</span>
                             <span class="title">正确答案</span>
+                            <span class="title">[答案应由诸如0,1,2,3的选项以及英文逗号组成]</span>
                             <el-input placeholder="请输入正确答案" v-model="question.q_correct_answer" clearable></el-input>
                         </div>
 
