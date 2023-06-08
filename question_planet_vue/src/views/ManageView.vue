@@ -42,6 +42,8 @@
               </div>
               <el-divider></el-divider>
               <div class="questionnaire_body">
+                <el-button v-show="stateType == 0" @click="copyQuestionnaire(questionnaire)" round
+                  style="background-color:rgba(227, 227, 227, 0.1);color:#ffffff !important;">复制问卷</el-button>
                 <el-button v-show="stateType == 0" @click="pushCreate(questionnaire)" round
                   style="background-color:rgba(227, 227, 227, 0.1);color:#ffffff !important;">设计问卷</el-button>
                 <el-button v-show="stateType == 0" @click="publicQuestionnaire(JSON.parse(questionnaire).qn_id)"
@@ -57,6 +59,16 @@
                   style="background-color:rgba(227, 227, 227, 0.1);color:#ffffff !important;">撤销删除</el-button>
                 <el-button v-show="stateType == 0" @click="preViewQuestionnaire(questionnaire)" round
                   style="background-color:rgba(227, 227, 227, 0.1);color:#ffffff !important;">预览问卷</el-button>
+                <el-button v-show="stateType == 0" @click="exportQuestionnaire(questionnaire)" round
+                  style="background-color:rgba(227, 227, 227, 0.1);color:#ffffff !important;">导出问卷</el-button>
+
+                <el-button v-show="stateType == 1" @click="exportQuestionnaire(questionnaire)" round
+                  style="background-color:rgba(227, 227, 227, 0.1);color:#ffffff !important;">导出问卷</el-button>
+                <el-button v-show="stateType == 1" @click="deleteQuestionnaire(questionnaire)" round
+                  style="background-color:rgba(227, 227, 227, 0.1);color:#ffffff !important;">删除问卷</el-button>
+
+
+                <!--   -->
               </div>
 
             </div>
@@ -113,7 +125,7 @@ export default {
             "qn_id": id
           }
         })
-        // alert(this.$store.state.is_creating)
+      // alert(this.$store.state.is_creating)
     },
     // 生成问卷链接
     async publicQuestionnaire(qn_id) {
@@ -142,7 +154,7 @@ export default {
       await this.$api.questionnaire.postQuestionnaire_ChangeStatus(data)
       this.getManagerQuestionnaireList_Create()
     },
-    preViewQuestionnaire(questionnaire){
+    preViewQuestionnaire(questionnaire) {
       var data = JSON.parse(questionnaire)
       var id = data.qn_id
       this.$router.push({
@@ -253,9 +265,9 @@ export default {
       })
       this.stateType = 1
     },
-    copyQuestionnaire(questionnaire) {
+    async copyQuestionnaire(questionnaire) {
       var qn_id = JSON.parse(questionnaire).qn_id
-      this.$api.questionnaire.getQuestionnaire_copy(qn_id).then((res) => {
+      await this.$api.questionnaire.getQuestionnaire_copy(qn_id).then((res) => {
         console.log(res)
       })
       this.getManagerQuestionnaireList_Create()
@@ -280,26 +292,26 @@ export default {
           });
 
           const data = {
-          "uid": this.$store.state.curUserID,
-          "qn_id": qn_id,
-          "status": "deleted"
-        }
-        console.log("deleteQuestionnaire_data:" + data)
-        this.$api.questionnaire.postQuestionnaire_ChangeStatus(data).then((res)=>{
-          //console.log(res.data);
-          //console.log(res.data.errno);
-          if(res.data.errno==0) return this.getManagerQuestionnaireList_Create()
-        })
+            "uid": this.$store.state.curUserID,
+            "qn_id": qn_id,
+            "status": "deleted"
+          }
+          console.log("deleteQuestionnaire_data:" + data)
+          this.$api.questionnaire.postQuestionnaire_ChangeStatus(data).then((res) => {
+            //console.log(res.data);
+            //console.log(res.data.errno);
+            if (res.data.errno == 0) return this.getManagerQuestionnaireList_Create()
+          })
 
         }).catch(() => {
           this.$message({
             type: 'info',
             message: '已取消删除'
-          });          
+          });
         });
 
-        
-        
+
+
       } else if (this.stateType == 1) {
         //已填写问卷
         this.getManagerQuestionnaireList_Filled()
@@ -312,14 +324,14 @@ export default {
         }).then(() => {
 
           const data = {
-          "uid": this.$store.state.curUserID,
-          "qn_id": qn_id
-        }
-         this.$api.questionnaire.postQuestionnaire_Delete(data).then((res) => {
-          console.log(res);
-          if(res.data.errno == 0) this.getManagerQuestionnaireList_Delete()
-        })
-        this.$message({
+            "uid": this.$store.state.curUserID,
+            "qn_id": qn_id
+          }
+          this.$api.questionnaire.postQuestionnaire_Delete(data).then((res) => {
+            console.log(res);
+            if (res.data.errno == 0) this.getManagerQuestionnaireList_Delete()
+          })
+          this.$message({
             type: 'success',
             message: '删除成功!'
           });
@@ -327,11 +339,11 @@ export default {
           this.$message({
             type: 'info',
             message: '已取消删除'
-          });          
+          });
         });
 
 
-        
+
       }
     },
     async deDeleteQuestionnaire(questionnaire) {

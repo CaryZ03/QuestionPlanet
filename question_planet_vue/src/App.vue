@@ -1,6 +1,5 @@
 <template>
   <body>
-    <home-view/>
     <el-header>
       <header>
 
@@ -28,104 +27,104 @@
   </body>
 </template>
 
+
 <script>
-import HomeView from './views/HomeView.vue'
-// import Newhome from '@/components/Newhome.vue';
+import Newhome from '@/components/Newhome.vue';
 export default {
 
-  name: 'app',
-  data() {
-    return {
-    }
+name: 'app',
+data() {
+  return {
+  }
+},
+
+
+methods: {
+  pushHome() {
+
+    this.$router.push({
+      name: 'home',
+    })
   },
-
-
-  methods: {
-    pushHome() {
-
-      this.$router.push({
-        name: 'home',
-      })
-    },
-    pushUserInfo() {
-      if (this.$store.state.isLogin == false) {
-        this.$router.push({
-          name: 'Login',
-        })
-        return;
-      }
-      this.$router.push({
-        name: 'UserInfo',
-        params: {
-          userID: this.$store.state.curUserID,
-        }
-      })
-      // alert("my new ")
-    },
-    pushManage() {
-      this.$store.state.isAnalyzing = false
-      this.$store.state.is_creating = false
-      if (this.$store.state.isLogin == false) {
-        this.$router.push({
-          name: 'Login',
-        })
-        return;
-      }
-      this.$router.push({
-        name: 'Manager',
-        params: {
-          userID: this.$store.state.curUserID,
-        }
-      })
-      // alert("my new ")
-    },
-    pushLogin() {
-      // const wrapper = document.querySelector('.wrapper')
-      // const btnLogin = document.querySelector('.btnLogin-popup')
-      // wrapper.classList.add('active-popup');
-
-      const elements = document.getElementsByClassName('wrapper');
-      for (let i = 0; i < elements.length; i++) {
-        elements[i].classList.add('active-popup');
-      }
-
+  pushUserInfo() {
+    if (this.$store.state.isLogin == false) {
       this.$router.push({
         name: 'Login',
       })
-      // alert("my new ")
-    },
-    pushAbout() {
-
+      return;
+    }
+    this.$router.push({
+      name: 'UserInfo',
+      params: {
+        userID: this.$store.state.curUserID,
+      }
+    })
+    // alert("my new ")
+  },
+  pushManage() {
+    this.$store.state.isAnalyzing = false
+    this.$store.state.is_creating = false
+    if (this.$store.state.isLogin == false) {
       this.$router.push({
-        name: 'About',
+        name: 'Login',
       })
-      // alert("my new ")
-    },
-    logout() {
-      this.$store.state.isLogin = false
-      this.$store.state.curUserID = -1
-      this.$store.state.curUserName = ''
-      this.$store.state.token_key = ''
-      localStorage.setItem("curUserID", "")
-      localStorage.setItem("isLogin", false)
-      localStorage.setItem("curUserName", "")
-      localStorage.setItem("token", "")
+      return;
+    }
+    this.$router.push({
+      name: 'Manager',
+      params: {
+        userID: this.$store.state.curUserID,
+      }
+    })
+    // alert("my new ")
+  },
+  pushLogin() {
+    // const wrapper = document.querySelector('.wrapper')
+    // const btnLogin = document.querySelector('.btnLogin-popup')
+    // wrapper.classList.add('active-popup');
+
+    const elements = document.getElementsByClassName('wrapper');
+    for (let i = 0; i < elements.length; i++) {
+      elements[i].classList.add('active-popup');
+    }
+
+    this.$router.push({
+      name: 'Login',
+    })
+    // alert("my new ")
+  },
+  pushAbout() {
+
+    this.$router.push({
+      name: 'About',
+    })
+    // alert("my new ")
+  },
+  logout() {
+    this.$store.state.isLogin = false
+    this.$store.state.curUserID = -1
+    this.$store.state.curUserName = ''
+    this.$store.state.token_key = ''
+    localStorage.setItem("curUserID", "")
+    localStorage.setItem("isLogin", false)
+    localStorage.setItem("curUserName", "")
+    localStorage.setItem("token", "")
 
 
-      this.$api.userInfo.postUserInfo_Logout().then((res) => {
-        console.log(res)
-      }),
-        this.$nextTick(() => {
-          this.$router.push({
-            name: 'Login',
-          })
+    this.$api.userInfo.postUserInfo_Logout().then((res) => {
+      console.log(res)
+    }),
+      this.$nextTick(() => {
+        this.$router.push({
+          name: 'Login',
         })
+      })
 
-    },
   },
-  components: {
-    homeView: HomeView
-  },
+},
+components: {
+  newhome: Newhome,
+},
   created() {
     if (localStorage.getItem("curUserID") == null) {
       console.log("localStorage.getItem=null")
@@ -246,7 +245,7 @@ body {
   justify-content: center;
   align-items: center;
   min-height: 100vh;
-  /* background: url('./assets/background2.jpg'); */
+  background: url('./assets/background2.jpg');
   background: url('./assets/homebackground.jpg');
 
   background-size: cover;

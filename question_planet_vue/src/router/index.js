@@ -1,6 +1,6 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
-
+import HomeView from '../views/HomeView.vue'
 const Login = () => import('../views/LoginView.vue');
 const CreateQuestionnaireView = () => import('../views/CreateView.vue');
 const UserInfoView = () => import('../views/UserInfoView.vue')
@@ -10,6 +10,11 @@ const Preview = () => import('@/views/PreviewView.vue')
 Vue.use(VueRouter)
 
 const routes = [
+  {
+    path: '/',
+    name: 'home',
+    component: HomeView
+  },
   {
     path: '/about',
     name: 'About',
