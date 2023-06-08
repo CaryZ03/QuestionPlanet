@@ -189,7 +189,7 @@ def questionnaire_export_file(request, user, qn_id):
         ['Question ID', 'Question Type', 'Question Title', 'Question Description', 'Option Count', 'Options'])
     for question in questions:
         if question.q_type == 'single' or question.q_type == 'multiple':
-            options = ", ".join(option['label'] for option in question.q_options)
+            options = ", ".join(option['label'] for option in list(json.loads(question.q_options)))
         else:
             options = ''
 
