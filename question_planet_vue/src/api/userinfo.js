@@ -25,7 +25,7 @@ export function postUserInfo_AdminLogin(data) {
     })
 }
 //发验证码
-export function postUserInfo_SendVeri(data) {
+export async function postUserInfo_SendVeri(data) {
     return request({
         method: 'POST',
         url:  '/user/send_verification_code',
@@ -33,7 +33,7 @@ export function postUserInfo_SendVeri(data) {
     })
 }
 //重置密码
-export function postUserInfo_ResetPassword(data) {
+export async function postUserInfo_ResetPassword(data) {
     return request({
         method: 'POST',
         url:  '/user/reset_password',

@@ -22,6 +22,9 @@
     goBack() {
       this.$router.push('/');
     },
+    mounted() {
+      this.$store.state.showMultiImg=false
+    },
 
     payment(){
       this.$alert(' <img src="' + require('@/assets/付款码.jpg') + '" alt="图片" style="max-width: 100%;">', '这是付款码捏~', {

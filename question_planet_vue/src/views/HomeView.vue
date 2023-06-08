@@ -1,22 +1,8 @@
 <template>
-  <!-- <div>
-    <div>
-
-      <div class="box-btn" v-show="!this.$store.state.isLogin">
-        <el-row>
-          <router-link to="/login"><el-button round>登录</el-button></router-link>
-          <router-link to="/register"><el-button round>注册</el-button></router-link><br>
-          <router-link v-if="this.$store.state.isLogin" to="/new"><el-button round>创建问卷</el-button></router-link>
-          <router-link v-else to="/login"><el-button round>创建问卷</el-button></router-link>
-          <br>
-        </el-row>
-      </div>
-
+    <div class="bg">
+      <newhome></newhome>
     </div>
-  </div> -->
-  <div class="bg">
-    <newhome></newhome>
-  </div>
+
 </template>
 
 <script>
@@ -25,7 +11,11 @@
 import Newhome from '@/components/Newhome.vue';
 export default ({
   name: 'HomeViewVue',
-
+  data() {
+    return {
+      isShow: true
+    }
+  },
 
   components: {
     newhome: Newhome,

@@ -109,6 +109,7 @@ export default {
     this.load_qn();
   },
   mounted() {
+    this.$store.state.showMultiImg=false
   },
   watch: {
     questions: {

@@ -1,66 +1,69 @@
 <template>
   <div class="background">
     <div class="css_pro-edited-element-0 inherited-styles-for-exported-element">
-    
-        <!-- 用户头像 -->
-        <div class="user-info hvr-grow-shadow" id="content">
-          <div class="avatar-wrapper" >
-            <img :src="avatarUrl" alt="Avatar"  style="height: auto; object-fit: contain; width: 120px;">
-            <input type="file" @change="handleAvatarUpload">
-          </div>
-          <div class="user-data" >
-            <h2>{{userName}}</h2>
-            <!-- <p>{{address}}</p>
-            <p>{{phone}}</p> -->
-             <!-- <button @click="editUserInfo">编辑</button> -->
-            <el-card class="box-card">{{ sign }}</el-card> 
-            <el-button type="text" icon="el-icon-edit"  @click="changeSign" class="fr"></el-button>
-          </div>
+
+      <!-- 用户头像 -->
+      <div class="user-info hvr-grow-shadow" id="content">
+        <div class="avatar-wrapper">
+          <img :src="avatarUrl" alt="Avatar" style="height: auto; object-fit: contain; width: 120px;">
+          <input type="file" @change="handleAvatarUpload">
         </div>
-  
+        <div class="user-data">
+          <h2>{{ userName }}</h2>
+          <!-- <p>{{address}}</p>
+            <p>{{phone}}</p> -->
+          <!-- <button @click="editUserInfo">编辑</button> -->
+          <el-card class="box-card">{{ sign }}</el-card>
+          <el-button type="text" icon="el-icon-edit" @click="changeSign" class="fr"></el-button>
+        </div>
+      </div>
 
-        <!-- 注册信息 -->
-        <div class="title"> 注册信息 </div>
-        <div class="content hvr-grow-shadow" style="height: 328px;" id="content">
-    <div class="items">
-      <div style="float: left;"><b>用户名</b><span id="ctl00_ContentPlaceHolder1_lblLoginName" style="margin-right: 10px;">{{userName}}</span></div>
-      <div style="clear: both;"></div>
-    </div>
-    <div class="items">
-        <b>账号ID</b><span id="ctl00_ContentPlaceHolder1_lblUserId">{{userId}}</span>
-    </div>
 
-    <!-- <div id="ctl00_ContentPlaceHolder1_divAccount" class="items">
+      <!-- 注册信息 -->
+      <div class="title"> 注册信息 </div>
+      <div class="content hvr-grow-shadow" style="height: 328px;" id="content">
+        <div class="items">
+          <div style="float: left;"><b>用户名</b><span id="ctl00_ContentPlaceHolder1_lblLoginName"
+              style="margin-right: 10px;">{{ userName }}</span></div>
+          <div style="clear: both;"></div>
+        </div>
+        <div class="items">
+          <b>账号ID</b><span id="ctl00_ContentPlaceHolder1_lblUserId">{{ userId }}</span>
+        </div>
+
+        <!-- <div id="ctl00_ContentPlaceHolder1_divAccount" class="items">
         <b>账户类型</b>
         <span id="ctl00_ContentPlaceHolder1_lbType">免费版</span>
         &nbsp;&nbsp;
         <a href="https://www.wjx.cn/register/upgradevip.aspx?upgradeReason=18" id="ctl00_ContentPlaceHolder1_hrefUpgrade" title="立即升级" class="wjxui-btn wjxui-btn-orange wjxui-btn-sm fr" style="margin-right: 26px;">升级</a>
     </div> -->
 
-    <div id="ctl00_ContentPlaceHolder1_divEmail" class="items">
-        <b>邮件地址</b>
-        <span id="ctl00_ContentPlaceHolder1_lblEmail" v-if="addressIsBind==false">未设置</span>
-        <span id="ctl00_ContentPlaceHolder1_lblEmail" v-if="addressIsBind==true">{{address}}</span>
-        <span class="fr">
-            <el-button type="text" @click="bindAddress" v-if="addressIsBind==false">绑定邮箱</el-button>
-            <span id="ctl00_ContentPlaceHolder1_lblEmail" v-if="addressIsBind==true">已绑定,  </span><el-button type="text" @click="unbindAddress" v-if="addressIsBind==true" >解绑</el-button>
+        <div id="ctl00_ContentPlaceHolder1_divEmail" class="items">
+          <b>邮件地址</b>
+          <span id="ctl00_ContentPlaceHolder1_lblEmail" v-if="addressIsBind == false">未设置</span>
+          <span id="ctl00_ContentPlaceHolder1_lblEmail" v-if="addressIsBind == true">{{ address }}</span>
+          <span class="fr">
+            <el-button type="text" @click="bindAddress" v-if="addressIsBind == false">绑定邮箱</el-button>
+            <span id="ctl00_ContentPlaceHolder1_lblEmail" v-if="addressIsBind == true">已绑定, </span><el-button type="text"
+              @click="unbindAddress" v-if="addressIsBind == true">解绑</el-button>
             <!-- <span id="ctl00_ContentPlaceHolder1_lbAccountStatus" @click="bindAddress">绑定邮箱</span> -->
             <!-- <a id="ctl00_ContentPlaceHolder1_lkChangEmail" title="点击更改" onclick="" class="fr index_iconfont changeIcon"></a> -->
-            <el-button type="text" icon="el-icon-edit"  @click="bindAddress"></el-button>
-        </span>
-    </div>
-    <div id="ctl00_ContentPlaceHolder1_divPhone" class="items">
-        <b>手机号码</b>
-        <span id="ctl00_ContentPlaceHolder1_lblMobile" title="设置" v-if="phoneIsBind==true">{{phone}}</span>
-        <span id="ctl00_ContentPlaceHolder1_lblMobile" title="设置" v-if="phoneIsBind==false">未绑定</span>
-        <span class="fr">
-            <el-button type="text" @click="bindPhone" v-if="phoneIsBind==false">绑定手机号</el-button>
-            <span id="ctl00_ContentPlaceHolder1_lblEmail" v-if="phoneIsBind==true">已绑定,  </span><el-button type="text" @click="unbindPhone" v-if="phoneIsBind==true">解绑</el-button>
-            <el-button type="text" icon="el-icon-edit"  @click="bindPhone" ></el-button>
-        </span>
-    </div>
+            <el-button type="text" icon="el-icon-edit" @click="bindAddress"></el-button>
+          </span>
+        </div>
+        <div id="ctl00_ContentPlaceHolder1_divPhone" class="items">
+          <b>手机号码</b>
+          <span id="ctl00_ContentPlaceHolder1_lblMobile" title="设置" v-if="phoneIsBind == true">{{ phone }}</span>
+          <span id="ctl00_ContentPlaceHolder1_lblMobile" title="设置" v-if="phoneIsBind == false">未绑定</span>
+          <span class="fr">
+            <el-button type="text" @click="bindPhone" v-if="phoneIsBind == false">绑定手机号</el-button>
+            <span id="ctl00_ContentPlaceHolder1_lblEmail" v-if="phoneIsBind == true">已绑定, </span><el-button type="text"
+              @click="unbindPhone" v-if="phoneIsBind == true">解绑</el-button>
+            <el-button type="text" icon="el-icon-edit" @click="bindPhone"></el-button>
+          </span>
+        </div>
 
-    <!-- <div id="ctl00_ContentPlaceHolder1_divWeixin" class="items divWeixin">
+        <!-- <div id="ctl00_ContentPlaceHolder1_divWeixin" class="items divWeixin">
         <b>微信</b>
         <span id="ctl00_ContentPlaceHolder1_lblwx">
             <i class="index_iconfont"></i>未绑定
@@ -72,46 +75,45 @@
     </div> -->
 
 
-    <div id="ctl00_ContentPlaceHolder1_lkPasswordBox" class="items">
-            <b>密码</b>
-            <!-- <a id="ctl00_ContentPlaceHolder1_lkPassword" title="修改密码" causesvalidation="false" onclick="
+        <div id="ctl00_ContentPlaceHolder1_lkPasswordBox" class="items">
+          <b>密码</b>
+          <!-- <a id="ctl00_ContentPlaceHolder1_lkPassword" title="修改密码" causesvalidation="false" onclick="
             " href="" class="wjx_alink" style="display: inline-block; width: 80px;">
             修改密码</a> -->
-            <el-button type="text" @click="changePassword" >修改密码</el-button>
+          <el-button type="text" @click="changePassword">修改密码</el-button>
 
-    </div>
-    <div class="items" style="margin-top: 10px;"></div>
-    <div style="clear: both;"></div>
         </div>
+        <div class="items" style="margin-top: 10px;"></div>
+        <div style="clear: both;"></div>
+      </div>
 
     </div>
 
     <corperation></corperation>
     <div>
-      <img class="moon hvr-grow-shadow" @click="clickfunction" src="../assets/planet4 - 副本.png" alt="Avatar" style="height: auto; object-fit: contain; width: 120px;">
+      <img class="moon hvr-grow-shadow" @click="clickfunction" src="../assets/planet4 - 副本.png" alt="Avatar"
+        style="height: auto; object-fit: contain; width: 120px;">
       <!-- <el-button class="moon-botton" icon="el-icon-search" circle></el-button> -->
     </div>
-    
+
   </div>
-
-
 </template>
 
 <script>
 import { dataTool } from 'echarts';
 import UserInfo from '@/components/UserInfo.vue';
 export default {
-    methods:{
+  methods: {
 
-        clickfunction(){
-          window.open("https://xenonga.github.io/");
-         
-        },
+    clickfunction() {
+      window.open("https://xenonga.github.io/");
+
+    },
 
 
-        uploadData(data){
-          console.log(data);
-          this.$api.userInfo.postUserInfo_ChangeUserInfo(data).then((response) => {
+    uploadData(data) {
+      console.log(data);
+      this.$api.userInfo.postUserInfo_ChangeUserInfo(data).then((response) => {
         console.log(response.data)
         if (response.data.errno == 0) {
           console.log("上传用户信息成功")
@@ -120,159 +122,202 @@ export default {
         alert("上传用户信息失败")
         console.log(error)
       })
-        },
+    },
 
 
-        bindAddress() {
-        this.$prompt('请输入邮箱', '提示', {
-          confirmButtonText: '确定',
-          cancelButtonText: '取消',
-          inputPattern: /[\w!#$%&'*+/=?^_`{|}~-]+(?:\.[\w!#$%&'*+/=?^_`{|}~-]+)*@(?:[\w](?:[\w-]*[\w])?\.)+[\w](?:[\w-]*[\w])?/,
-          inputErrorMessage: '邮箱格式不正确'
-        }).then(({ value }) => {
-          this.$message({
-            type: 'success',
-            message: '你的邮箱是: ' + value
-          });
-          this.addressIsBind = true;
-          this.address = value;
+    async bindAddress() {
+      this.$prompt('请输入邮箱', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        inputPattern: /[\w!#$%&'*+/=?^_`{|}~-]+(?:\.[\w!#$%&'*+/=?^_`{|}~-]+)*@(?:[\w](?:[\w-]*[\w])?\.)+[\w](?:[\w-]*[\w])?/,
+        inputErrorMessage: '邮箱格式不正确'
+      }).then(({ value }) => {
+        const data = {
+          "email": value
+        }
+        var value1=value
 
-          const tmp = {
-              "uid":this.userId,
-              "username": this.userName,
-              "password1":this.userKey,
-              "password2": this.userKey,
-              "email": this.address,
-              "tel":this.phone
+        this.$api.userInfo.postUserInfo_SendVeri(data).then((res) => {
+          alert("sent email")
+          if (res.data.errno == 0) {
+            //发送邮箱成功，等验证码
+            alert("send email success")
+
+            this.$prompt('请输入验证码', '提示', {
+              confirmButtonText: '确定',
+              cancelButtonText: '取消',
+            }).then(({ value }) => {
+              console.log("value2:jsontring"+JSON.stringify(value))
+              // console.log("value2:jsontring"+JSON.stringify(value2))
+              console.log("value2:"+value)
+              console.log("res.data.code"+res.data.code)
+              if (value == res.data.code) {
+
+                //改邮箱
+                this.$message({
+                  type: 'success', 
+                  message: '验证码验证成功，你的邮箱是: ' + value1
+                });
+                this.addressIsBind = true;
+                this.address = value1;
+
+                const tmp = {
+                  "uid": this.userId,
+                  "username": this.userName,
+                  "password1": this.userKey,
+                  "password2": this.userKey,
+                  "email": this.address,
+                  "tel": this.phone
+                }
+                this.uploadData(tmp);
+              }
+              else {
+                this.$message({
+                  type: 'error',
+                  message: '验证码错误'
+                });
+              }
+
+            }).catch(() => {
+              this.$message({
+                type: 'info',
+                message: '取消输入'
+              });
+            })
           }
-          this.uploadData(tmp);
-        
-        }).catch(() => {
-          this.$message({
-            type: 'info',
-            message: '取消输入'
-          });       
-        });
-      },
-
-      unbindAddress() {
-        this.$confirm('此操作将解绑邮箱, 是否继续?', '提示', {
-          confirmButtonText: '确定',
-          cancelButtonText: '取消',
-          type: 'warning'
-        }).then(() => {
-          this.$message({
-            type: 'success',
-            message: '解绑成功!'
-          });
-          this.address = null;
-          this.addressIsBind = false;
-
-          const tmp = {
-              "uid":this.userId,
-              "username": this.userName,
-              "password1":this.userKey,
-              "password2": this.userKey,
-              "email": this.address,
-              "tel":this.phone
+          else {
+            this.$message({
+              type: 'error',
+              message: '验证码发送失败'
+            });
           }
-          this.uploadData(tmp);
-        }).catch(() => {
-          this.$message({
-            type: 'info',
-            message: '已取消'
-          });          
+        })
+      }).catch(() => {
+        this.$message({
+          type: 'info',
+          message: '取消输入'
         });
-      },
+      });
+    },
 
-
-      bindPhone() {
-        this.$prompt('请输入手机号', '提示', {
-          confirmButtonText: '确定',
-          cancelButtonText: '取消',
-          inputPattern: /^1[3456789]\d{9}$/,
-          inputErrorMessage: '手机号格式不正确'
-        }).then(({ value }) => {
-          this.$message({
-            type: 'success',
-            message: '你的手机号是: ' + value
-          });
-          this.phoneIsBind = true;
-          this.phone = value;
-
-          const tmp = {
-              "uid":this.userId,
-              "username": this.userName,
-              "password1":this.userKey,
-              "password2": this.userKey,
-              "email": this.address,
-              "tel":this.phone
-          }
-          this.uploadData(tmp);
-        }).catch(() => {
-          this.$message({
-            type: 'info',
-            message: '取消输入'
-          });       
+    async unbindAddress() {
+      this.$confirm('此操作将解绑邮箱, 是否继续?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        this.$message({
+          type: 'success',
+          message: '解绑成功!'
         });
-      },
+        this.address = null;
+        this.addressIsBind = false;
 
-      unbindPhone() {
-        this.$confirm('此操作将解绑手机号, 是否继续?', '提示', {
-          confirmButtonText: '确定',
-          cancelButtonText: '取消',
-          type: 'warning'
-        }).then(() => {
-          this.$message({
-            type: 'success',
-            message: '解绑成功!'
-          });
-          this.phone= null; 
-          this.phoneIsBind = false;
-
-          const tmp = {
-              "uid":this.userId,
-              "username": this.userName,
-              "password1":this.userKey,
-              "password2": this.userKey,
-              "email": this.address,
-              "tel":this.phone
-          }
-          this.uploadData(tmp);
-        }).catch(() => {
-          this.$message({
-            type: 'info',
-            message: '已取消'
-          });          
+        const tmp = {
+          "uid": this.userId,
+          "username": this.userName,
+          "password1": this.userKey,
+          "password2": this.userKey,
+          "email": this.address,
+          "tel": this.phone
+        }
+        this.uploadData(tmp);
+      }).catch(() => {
+        this.$message({
+          type: 'info',
+          message: '已取消'
         });
-      },
-    
+      });
+    },
 
-      changeSign() {
-        this.$prompt('请输入新的签名', '提示', {
-          confirmButtonText: '确定',
-          cancelButtonText: '取消',
-        }).then(({ value }) => {
-          this.$message({
-            type: 'success',
-            message: '签名设置成功 '
-          });
-          this.sign = value;
-        }).catch(() => {
-          this.$message({
-            type: 'info',
-            message: '取消输入'
-          });       
+
+    async bindPhone() {
+      this.$prompt('请输入手机号', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        inputPattern: /^1[3456789]\d{9}$/,
+        inputErrorMessage: '手机号格式不正确'
+      }).then(({ value }) => {
+        this.$message({
+          type: 'success',
+          message: '你的手机号是: ' + value
         });
-      },
+        this.phoneIsBind = true;
+        this.phone = value;
 
-      handleAvatarUpload (event) {
+        const tmp = {
+          "uid": this.userId,
+          "username": this.userName,
+          "password1": this.userKey,
+          "password2": this.userKey,
+          "email": this.address,
+          "tel": this.phone
+        }
+        this.uploadData(tmp);
+      }).catch(() => {
+        this.$message({
+          type: 'info',
+          message: '取消输入'
+        });
+      });
+    },
+
+    async unbindPhone() {
+      this.$confirm('此操作将解绑手机号, 是否继续?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        this.$message({
+          type: 'success',
+          message: '解绑成功!'
+        });
+        this.phone = null;
+        this.phoneIsBind = false;
+
+        const tmp = {
+          "uid": this.userId,
+          "username": this.userName,
+          "password1": this.userKey,
+          "password2": this.userKey,
+          "email": this.address,
+          "tel": this.phone
+        }
+        this.uploadData(tmp);
+      }).catch(() => {
+        this.$message({
+          type: 'info',
+          message: '已取消'
+        });
+      });
+    },
+
+
+    changeSign() {
+      this.$prompt('请输入新的签名', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+      }).then(({ value }) => {
+        this.$message({
+          type: 'success',
+          message: '签名设置成功 '
+        });
+        this.sign = value;
+      }).catch(() => {
+        this.$message({
+          type: 'info',
+          message: '取消输入'
+        });
+      });
+    },
+
+    handleAvatarUpload(event) {
       // 处理上传头像逻辑
     },
-      editUserInfo () {
+    editUserInfo() {
       // 进入用户信息编辑页面
     },
-    
+
 
     changePassword() {
       this.$prompt('请输入新密码', '修改密码', {
@@ -299,12 +344,12 @@ export default {
             message: '密码修改成功'
           });
           const tmp = {
-              "uid":this.userId,
-              "username": this.userName,
-              "password1":value,
-              "password2": value,
-              "email": this.address,
-              "tel":this.phone
+            "uid": this.userId,
+            "username": this.userName,
+            "password1": value,
+            "password2": value,
+            "email": this.address,
+            "tel": this.phone
           }
           this.uploadData(tmp);
 
@@ -312,123 +357,125 @@ export default {
           this.$message({
             type: 'info',
             message: '取消修改密码'
-          });       
+          });
         });
       }).catch(() => {
         this.$message({
           type: 'info',
           message: '取消修改密码'
-        });       
+        });
       });
     }
 
 
-    },
-
-    
-    data(){
-        return{
-            address:null ,
-            addressIsBind: false,
-            phoneIsBind: false,
-            phone: null,
-
-            userKey:114514,
-            sign: '还没有签名捏',
-
-            userName: this.$store.state.curUsername,
-            userId: this.$store.state.curUserID,
-            avatarUrl: 'https://gimg2.baidu.com/image_search/src=http%3A%2F%2Fc-ssl.duitang.com%2Fuploads%2Fitem%2F202005%2F10%2F20200510010150_2zSAt.thumb.1000_0.jpeg&refer=http%3A%2F%2Fc-ssl.duitang.com&app=2002&size=f9999,10000&q=a80&n=0&g=0n&fmt=auto?sec=1687439195&t=d763d2921c0bd1ae6f6629ed0afcdd65'
-        };
-    },
+  },
 
 
-    components:{
-      corperation: UserInfo,
-    },
+  data() {
+    return {
+      address: null,
+      addressIsBind: false,
+      phoneIsBind: false,
+      phone: null,
 
-    mounted:function(){
-      
-      const tmpUser = {
-        "uid": this.$store.state.curUserID
-      }
-      this.$api.userInfo.getUserInfo_GetUserInfo(this.$store.state.curUserID).then((response) => {
-        console.log(tmpUser)
-        console.log(response.data)
-        if (response.data.errno == 0) {
-          console.log("获取用户信息成功")
-          console.log(response.data.user_info)
-          const userObj = JSON.parse(response.data.user_info);
-         
-          this.userId = userObj.user_id;
-          this.userName = userObj.user_name;
-          this.userKey  = userObj.user_password;
-          this.address  = userObj.user_email;
-          this.phone  = userObj.user_tel;
-          if( this.address != null)
-            this.addressIsBind = true;
-          if( this.phone != null)
-            this.phoneIsBind = true;
-        }
-      }).catch(error => {
-        alert("获取用户信息失败")
-        console.log(error)
-      })
+      userKey: 114514,
+      sign: '还没有签名捏',
 
+      userName: this.$store.state.curUsername,
+      userId: this.$store.state.curUserID,
+      avatarUrl: 'https://gimg2.baidu.com/image_search/src=http%3A%2F%2Fc-ssl.duitang.com%2Fuploads%2Fitem%2F202005%2F10%2F20200510010150_2zSAt.thumb.1000_0.jpeg&refer=http%3A%2F%2Fc-ssl.duitang.com&app=2002&size=f9999,10000&q=a80&n=0&g=0n&fmt=auto?sec=1687439195&t=d763d2921c0bd1ae6f6629ed0afcdd65'
+    };
+  },
+
+
+  components: {
+    corperation: UserInfo,
+  },
+
+  mounted: function () {
+
+    const tmpUser = {
+      "uid": this.$store.state.curUserID
     }
-    
+    this.$api.userInfo.getUserInfo_GetUserInfo(this.$store.state.curUserID).then((response) => {
+      console.log(tmpUser)
+      console.log(response.data)
+      if (response.data.errno == 0) {
+        console.log("获取用户信息成功")
+        console.log(response.data.user_info)
+        const userObj = JSON.parse(response.data.user_info);
+
+        this.userId = userObj.user_id;
+        this.userName = userObj.user_name;
+        this.userKey = userObj.user_password;
+        this.address = userObj.user_email;
+        this.phone = userObj.user_tel;
+        if (this.address != null)
+          this.addressIsBind = true;
+        if (this.phone != null)
+          this.phoneIsBind = true;
+      }
+    }).catch(error => {
+      alert("获取用户信息失败")
+      console.log(error)
+    })
+
+  }
+
 }
 </script>
 
 <style scoped>
-
-.moon{
+.moon {
   box-sizing: border-box;
-font-family: Poppins, sans-serif;
-height: auto;
-margin: 0;
-object-fit: contain;
-padding: 0;
-width: 400px !important;
-position: fixed;
+  font-family: Poppins, sans-serif;
+  height: auto;
+  margin: 0;
+  object-fit: contain;
+  padding: 0;
+  width: 400px !important;
+  position: fixed;
 
-right: 8.9193%;
-top: 45.46%;
-left: 73.5026%;
-bottom: 0.9766%;
-}
-.moon-botton{
-  box-sizing: border-box;
-font-family: Poppins, sans-serif;
-height: auto;
-margin: 0;
-object-fit: contain;
-padding: 0;
-width: 400px !important;
-position: fixed;
-left: 1092px;
-top: 401px;
-right: 149px;
-bottom: 15px;
+  right: 8.9193%;
+  top: 45.46%;
+  left: 73.5026%;
+  bottom: 0.9766%;
 }
 
-#content{
+.moon-botton {
+  box-sizing: border-box;
+  font-family: Poppins, sans-serif;
+  height: auto;
+  margin: 0;
+  object-fit: contain;
+  padding: 0;
+  width: 400px !important;
+  position: fixed;
+  left: 1092px;
+  top: 401px;
+  right: 149px;
+  bottom: 15px;
+}
+
+#content {
   opacity: 80%;
 }
 
-    body {
-  background: #c02f2f ;
+body {
+  background: #c02f2f;
   /* This is just a helper in case the element has a transparent background or white colors. */
 }
 
 /* When exporting elements with child elements that were edited, edited classes has !important on every CSS declaration.
 This will be fixed on future updates (requires a lot of work due to the nature of CSS selectors complexity). Sorry for the inconvenience. You can remove it, but be careful and check if some other selector won't override it. */
-*, div {
+*,
+div {
   margin: 0;
   padding: 0;
 }
 
-*, ::before {
+*,
+::before {
   box-sizing: border-box;
 }
 
@@ -518,7 +565,8 @@ a:active {
   outline: 0;
 }
 
-@media �screen, screen {
+@media �screen,
+screen {
   .fr {
     float: none;
   }
@@ -551,7 +599,8 @@ a:active {
   width: 74px;
 }
 
-.content .items b, .content .items span {
+.content .items b,
+.content .items span {
   vertical-align: middle;
 }
 
@@ -588,15 +637,16 @@ a:active {
   width: 80% !important; */
 
   width: 40%;
-padding: 0 0 0 3.2%;
-margin: 0 -31px 0 168px;
+  padding: 0 0 0 3.2%;
+  margin: 0 -31px 0 168px;
 
   /* background-color: #f7f7f7; */
   /* background-image: url("../assets/waoku.jpg" ) ; */
   /* background-image: linear-gradient(to right, rgb(199, 210, 254), rgb(254, 202, 202), rgb(254, 243, 199)); */
 }
 
-.css_pro-edited-element-0, .css_pro-edited-element-0::before {
+.css_pro-edited-element-0,
+.css_pro-edited-element-0::before {
   box-sizing: border-box !important;
 }
 
@@ -618,7 +668,7 @@ html {
   box-shadow: #e8e8e8 0 1px 4px 0, rgba(0, 0, 0, .01) 0 0 0 1px;
   font-size: 13px;
   height: 30%;
-  
+
 
   width: 90%;
   box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
@@ -660,43 +710,43 @@ html {
   background-color: #66b1ff;
 }
 
-.user-data h2{
+.user-data h2 {
   color: #070606;
   display: inline-block;
   font-weight: 400;
 
   font-size: 31px;
   font-family: Lucida Sans Unicode;
-/* font-weight: normal; */
-list-style: none;
-margin: 0;
-padding: 0;
-text-align: left;
-line-height: 61px;
-letter-spacing: 0px;
+  /* font-weight: normal; */
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  text-align: left;
+  line-height: 61px;
+  letter-spacing: 0px;
 }
 
-.user-data{
-    width: 70%;
+.user-data {
+  width: 70%;
 }
 
-.box-card{
-    font-size: 13px;
-list-style: none;
-text-align: left;
-margin: 0 0 14px;
-padding: 1px 20px 0px;
+.box-card {
+  font-size: 13px;
+  list-style: none;
+  text-align: left;
+  margin: 0 0 14px;
+  padding: 1px 20px 0px;
 }
 
-.background{
+.background {
   /* background-image: linear-gradient(220.55deg, #FFED46 0%, #FF7EC7 100%);
   background:url("../assets/background0.png"); */
   width: 100%;
   height: 100%;
-position:fixed;
-background-size:100% 100%;
-left: -3px;
-top: 108px;
+  position: fixed;
+  background-size: 100% 100%;
+  left: -3px;
+  top: 108px;
 }
 
 .hvr-grow-shadow {
@@ -710,7 +760,10 @@ top: 108px;
   -webkit-transition-property: box-shadow, transform;
   transition-property: box-shadow, transform;
 }
-.hvr-grow-shadow:hover, .hvr-grow-shadow:focus, .hvr-grow-shadow:active {
+
+.hvr-grow-shadow:hover,
+.hvr-grow-shadow:focus,
+.hvr-grow-shadow:active {
   box-shadow: 0 10px 10px -10px rgba(0, 0, 0, 0.5);
   -webkit-transform: scale(1.1);
   transform: scale(1.1);

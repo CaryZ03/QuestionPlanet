@@ -77,10 +77,10 @@ export default {
             }
             console.log(data)
             // this.triggerParentEvent(0)
-             
 
-             await this.$api.questionnaire.postQuestionnaire_Create(data);
-             this.$emit('childEvent', 0)
+
+            await this.$api.questionnaire.postQuestionnaire_Create(data);
+            this.$emit('childEvent', 0)
 
         },
         triggerParentEvent(state) {
@@ -254,22 +254,22 @@ export default {
 
 .con {
     align-items: center;
-box-sizing: border-box;
-color: rgba(255, 255, 255, 0.6);
-display: flex;
-font-family: "Helvetica Neue", Helvetica, Arial, "PingFang SC", "Microsoft YaHei", "Microsoft YaHei UI", 微软雅黑, sans-serif;
-font-size: 12px;
-height: 50px;
-justify-content: center;
-left: -20px;
-opacity: 1;
-overflow: hidden;
-padding: 0;
-position: relative;
-text-align: left;
-transition: all .5s;
-width: 160px;
-margin: 0 0 0 41px;
+    box-sizing: border-box;
+    color: rgba(255, 255, 255, 0.6);
+    display: flex;
+    font-family: "Helvetica Neue", Helvetica, Arial, "PingFang SC", "Microsoft YaHei", "Microsoft YaHei UI", 微软雅黑, sans-serif;
+    font-size: 12px;
+    height: 50px;
+    justify-content: center;
+    left: -20px;
+    opacity: 1;
+    overflow: hidden;
+    padding: 0;
+    position: relative;
+    text-align: left;
+    transition: all .5s;
+    width: 160px;
+    margin: 0 0 0 41px;
 }
 
 .nav:hover .con {

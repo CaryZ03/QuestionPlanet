@@ -13,7 +13,8 @@ export default new Vuex.Store({
     is_creating: false,
     token_key: '',
     isAnalyzing: false,
-    analyzingNumID: -1
+    analyzingNumID: -1,
+    showMultiImg:false
   },
   getters: {
   },
