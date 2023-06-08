@@ -425,7 +425,6 @@ def import_questionnaire(request, user):
         questionnaire = Questionnaire.objects.create(
             qn_title=qn_title,
             qn_description=qn_description,
-            qn_type=qn_type,
             qn_creator=user
         )
 
