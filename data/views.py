@@ -427,7 +427,7 @@ def import_questionnaire(request, user):
             qn_description=qn_description,
             qn_creator=user
         )
-
+        questionnaire.save()
         # 解析问题信息并创建问题
         next(reader)  # Skip empty row
         next(reader)  # Skip header row
