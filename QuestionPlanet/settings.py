@@ -80,13 +80,25 @@ WSGI_APPLICATION = 'QuestionPlanet.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/4.1/ref/settings/#databases
 
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.mysql',
+#         'NAME': 'question_planet',
+#         'USER': 'question_planet_admin',
+#         'PASSWORD': '123456',
+#         'HOST': '182.92.102.246',
+#         'PORT': '3306',
+#     }
+# }
+
+
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'question_planet',
-        'USER': 'question_planet_admin',
-        'PASSWORD': '123456',
-        'HOST': '182.92.102.246',
+        'USER': 'root',
+        'PASSWORD': '123',
+        'HOST': 'localhost',
         'PORT': '3306',
     }
 }
