@@ -57,7 +57,9 @@
                   style="background-color:rgba(227, 227, 227, 0.1);color:#ffffff !important;">撤销删除</el-button>
                 <el-button v-show="stateType == 0" @click="preViewQuestionnaire(questionnaire)" round
                   style="background-color:rgba(227, 227, 227, 0.1);color:#ffffff !important;">预览问卷</el-button>
-              </div>
+                <el-button v-show="stateType == 0" @click="exportQuestionnaire(questionnaire)" round
+                  style="background-color:rgba(227, 227, 227, 0.1);color:#ffffff !important;">导出问卷</el-button>
+                </div>
 
             </div>
           </TransitionGroup>
