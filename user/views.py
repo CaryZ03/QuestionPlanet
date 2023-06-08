@@ -40,11 +40,15 @@ def send_email_verification(email, code):
     # 发件人邮箱和授权码
     username = "2843004375@qq.com"
     password = "atawlpndwpqodfhe"
-    
-    # 连接SMTP服务器并发送邮件
-    with smtplib.SMTP_SSL(smtp_server, smtp_port) as server:
-        server.login(username, password)
-        server.sendmail(sender, receiver, msg.as_string())
+
+    try:
+        # 连接SMTP服务器并发送邮件
+        with smtplib.SMTP_SSL(smtp_server, smtp_port) as server:
+            server.login(username, password)
+            server.sendmail(sender, receiver, msg.as_string())
+            return True
+    except Exception as e:
+        return False
 
 
 def create_token(uid, is_admin):
@@ -206,12 +210,19 @@ def admin_login(request):
 def send_verification_code(request):
     data_json = json.loads(request.body)
     username = data_json.get('username')
+    email = data_json.get('email')
+    if email:
+        code = randint(100000, 999999)
+        if not send_email_verification(email, str(code)):
+            return JsonResponse({'errno': 1043, 'msg': '邮件发送失败'})
+        return JsonResponse({'errno': 0, 'msg': '邮件发送成功', 'code': code})
     if User.objects.filter(user_name=username).exists():
         user = User.objects.get(user_name=username)
         email = user.user_email
         if email:
             code = randint(100000, 999999)
-            send_email_verification(email, str(code))
+            if not send_email_verification(email, str(code)):
+                return JsonResponse({'errno': 1043, 'msg': '邮件发送失败'})
             return JsonResponse({'errno': 0, 'msg': '邮件发送成功', 'code': code})
         return JsonResponse({'errno': 1042, 'msg': '邮箱不存在'})
     else:
@@ -406,7 +417,7 @@ def check_token(request):
     token_key = request.headers.get('Authorization')
     token = UserToken.objects.filter(key=token_key).first()
     if token is None or token.expire_time < now():
-        return JsonResponse({'errno': 2151, 'msg': "token错误"})
+        return JsonResponse({'errno': 1151, 'msg': "token错误"})
     return JsonResponse({'errno': 0, 'msg': "token有效"})
 
 
