@@ -443,7 +443,7 @@ def import_questionnaire(request, user):
             if q_type in ['single', 'multiple']:
                 options = row[5].split(', ')
                 for option in options:
-                    q_options.append({'label': option, 'checked': False, num: 0})
+                    q_options.append({'label': option, 'checked': False, 'num': 0})
 
             # 创建问题并加入问卷
             question = Question.objects.create(
