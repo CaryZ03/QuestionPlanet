@@ -173,6 +173,7 @@ export default {
                   "username": this.userName,
                   "password1": this.userKey,
                   "password2": this.userKey,
+                  "signature": this.sign,
                   "email": this.address,
                   "tel": this.phone
                 }
@@ -225,6 +226,7 @@ export default {
           "username": this.userName,
           "password1": this.userKey,
           "password2": this.userKey,
+          "signature": this.sign,
           "email": this.address,
           "tel": this.phone
         }
@@ -257,6 +259,7 @@ export default {
           "username": this.userName,
           "password1": this.userKey,
           "password2": this.userKey,
+          "signature": this.sign,
           "email": this.address,
           "tel": this.phone
         }
@@ -287,6 +290,7 @@ export default {
           "username": this.userName,
           "password1": this.userKey,
           "password2": this.userKey,
+          "signature": this.sign,
           "email": this.address,
           "tel": this.phone
         }
@@ -382,6 +386,7 @@ export default {
             "username": this.userName,
             "password1": value,
             "password2": value,
+            "signature": this.sign,
             "email": this.address,
             "tel": this.phone
           }
