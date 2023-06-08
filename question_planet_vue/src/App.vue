@@ -1,9 +1,10 @@
 <template>
   <body>
+    <home-view/>
     <el-header>
       <header>
 
-        <h2 class="logo">logo</h2>
+        <h2 class="logo"> 问卷猩球 </h2>
         <nav class="navigation">
           <a href="" @click.prevent="pushHome">主页</a>
           <a href="" @click.prevent="pushAbout">关于 </a>
@@ -28,7 +29,8 @@
 </template>
 
 <script>
-import Newhome from '@/components/Newhome.vue';
+import HomeView from './views/HomeView.vue'
+// import Newhome from '@/components/Newhome.vue';
 export default {
 
   name: 'app',
@@ -83,7 +85,6 @@ export default {
       // wrapper.classList.add('active-popup');
 
       const elements = document.getElementsByClassName('wrapper');
-      console.log(elements)
       for (let i = 0; i < elements.length; i++) {
         elements[i].classList.add('active-popup');
       }
@@ -105,6 +106,11 @@ export default {
       this.$store.state.curUserID = -1
       this.$store.state.curUserName = ''
       this.$store.state.token_key = ''
+      localStorage.setItem("curUserID", "")
+      localStorage.setItem("isLogin", false)
+      localStorage.setItem("curUserName", "")
+      localStorage.setItem("token", "")
+
 
       this.$api.userInfo.postUserInfo_Logout().then((res) => {
         console.log(res)
@@ -118,7 +124,47 @@ export default {
     },
   },
   components: {
-    newhome: Newhome,
+    homeView: HomeView
+  },
+  created() {
+    if (localStorage.getItem("curUserID") == null) {
+      console.log("localStorage.getItem=null")
+      localStorage.setItem("curUserID", "")
+    }
+    if (localStorage.getItem("isLogin") == null) {
+      console.log("localStorage.getItem=null")
+      localStorage.setItem("isLogin", false)
+    }
+    if (localStorage.getItem("curUserName") == null) {
+      console.log("localStorage.getItem=null")
+      localStorage.setItem("curUserName", "")
+    }
+    if (localStorage.getItem("token") == null) {
+      console.log("localStorage.getItem=null")
+      localStorage.setItem("token", "")
+    }
+
+    this.$api.userInfo.getUserInfo_CheckToken().then((res) => {
+      console.log("localStorage.getItem" + localStorage.getItem("token"))
+      console.log("res.data.errno" + (res.data).errno)
+      if ((res.data).errno != 0) {
+        console.log("JSON.stringify(res.data).errno != 0")
+        localStorage.setItem("curUserID", "")
+        localStorage.setItem("isLogin", false)
+        localStorage.setItem("curUserName", "")
+        localStorage.setItem("token", "")
+        this.$store.state.isLogin = false
+        this.$store.state.curUserID = -1
+        this.$store.state.curUserName = ''
+        this.$store.state.token_key = ''
+      }
+      else {
+        this.$store.state.isLogin = true
+        this.$store.state.curUserID = localStorage.getItem("curUserID")
+        this.$store.state.curUserName = localStorage.getItem("curUserName")
+        this.$store.state.token_key = localStorage.getItem("token")
+      }
+    })
   },
 }
 </script>
@@ -222,6 +268,7 @@ body {
   text-decoration: none;
   font-weight: 500;
   margin-left: 40px;
+  z-index: 250;
 }
 
 
@@ -361,5 +408,17 @@ nav a {
 
 nav a.router-link-exact-active {
   color: #42b983;
+}
+</style>
+
+<style scoped>
+@media (max-width: 767.98px) {
+  .logo {
+    display: none;
+  }
+
+  .navigation {
+    display: none;
+  }
 }
 </style>

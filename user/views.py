@@ -40,11 +40,15 @@ def send_email_verification(email, code):
     # 发件人邮箱和授权码
     username = "2843004375@qq.com"
     password = "atawlpndwpqodfhe"
-    
-    # 连接SMTP服务器并发送邮件
-    with smtplib.SMTP_SSL(smtp_server, smtp_port) as server:
-        server.login(username, password)
-        server.sendmail(sender, receiver, msg.as_string())
+
+    try:
+        # 连接SMTP服务器并发送邮件
+        with smtplib.SMTP_SSL(smtp_server, smtp_port) as server:
+            server.login(username, password)
+            server.sendmail(sender, receiver, msg.as_string())
+            return True
+    except Exception as e:
+        return False
 
 
 def create_token(uid, is_admin):
@@ -67,8 +71,8 @@ def get_avatar_base64(image):
     with open(image.path, 'rb') as file:
         image_data = file.read()
         ext = os.path.splitext(image.path)[-1]
-        base64_encoded = 'data:image/' + ext + ';base64,' + base64.b64encode(image_data).decode('utf-8')
-
+        base64_encoded = base64.b64encode(image_data).decode('utf-8')
+    # 'data:image/' + ext + ';base64,' +
     return base64_encoded
 
 
@@ -157,15 +161,18 @@ def user_login(request):
     if User.objects.filter(user_name=username).exists():
         user = User.objects.get(user_name=username)
         if user.user_password == password:
+            filler_ip = get_client_ip(request)
             if Filler.objects.filter(filler_user=user).exists():
                 filler = Filler.objects.get(filler_user=user)
+                filler.filler_ip = filler_ip
+                filler.save()
             else:
-                filler_ip = get_client_ip(request)
                 filler = Filler.objects.create(filler_ip=filler_ip, filler_is_user=True, filler_user=user)
             token_key = request.headers.get('Authorization')
-            if token_key:
+            if token_key and UserToken.objects.filter(key=token_key).exists():
                 token = UserToken.objects.get(key=token_key)
                 token.is_admin = False
+                token.admin = None
                 token.filler = filler
                 token.expire_time = now() + timedelta(days=1)
                 token.save()
@@ -203,12 +210,19 @@ def admin_login(request):
 def send_verification_code(request):
     data_json = json.loads(request.body)
     username = data_json.get('username')
+    email = data_json.get('email')
+    if email:
+        code = randint(100000, 999999)
+        if not send_email_verification(email, str(code)):
+            return JsonResponse({'errno': 1043, 'msg': '邮件发送失败'})
+        return JsonResponse({'errno': 0, 'msg': '邮件发送成功', 'code': code})
     if User.objects.filter(user_name=username).exists():
         user = User.objects.get(user_name=username)
         email = user.user_email
         if email:
             code = randint(100000, 999999)
-            send_email_verification(email, str(code))
+            if not send_email_verification(email, str(code)):
+                return JsonResponse({'errno': 1043, 'msg': '邮件发送失败'})
             return JsonResponse({'errno': 0, 'msg': '邮件发送成功', 'code': code})
         return JsonResponse({'errno': 1042, 'msg': '邮箱不存在'})
     else:
@@ -286,6 +300,7 @@ def change_profile(request, user):
     password1 = data_json.get('password1')
     password2 = data_json.get('password2')
     signature = data_json.get('signature')
+    company = data_json.get('company')
     email = data_json.get('email')
     tel = data_json.get('tel')
     if not bool(re.match("^[A-Za-z0-9][A-Za-z0-9_]{2,29}$", str(username))):
@@ -300,6 +315,7 @@ def change_profile(request, user):
         user.user_name = username
         user.user_password = password1
         user.user_signature = signature
+        user.user_company = company
         user.user_email = email
         user.user_tel = tel
         user.save()
@@ -387,9 +403,9 @@ def upload_avatar(request, user):
     user_id = user.user_id
 
     # 解码 Base64 图片数据
-    format, imgstr = data.split(';base64,')
-    ext = format.split('/')[-1]
-    image = ContentFile(base64.b64decode(imgstr), name=f"{user_id}.{ext}")
+    # format, imgstr = data.split(';base64,')
+    # ext = format.split('/')[-1]
+    image = ContentFile(base64.b64decode(data), name=f"{user_id}.png")
 
     user.user_avatar.save(image.name, image)
     user.save()
@@ -398,6 +414,16 @@ def upload_avatar(request, user):
 
 
 @csrf_exempt
+@require_http_methods(['GET'])
+def check_token(request):
+    token_key = request.headers.get('Authorization')
+    token = UserToken.objects.filter(key=token_key).first()
+    if token is None or token.expire_time < now():
+        return JsonResponse({'errno': 1151, 'msg': "token错误"})
+    return JsonResponse({'errno': 0, 'msg': "token有效"})
+
+
+@csrf_exempt
 @require_http_methods(['POST'])
 def deploy_test(request):
-    return JsonResponse({'errno': 0, 'ver': "7", 'cur_time': now()})
+    return JsonResponse({'errno': 0, 'ver': "8", 'cur_time': now()})

@@ -18,26 +18,26 @@
                 </div>
                 <div class="line"></div>
                 <div class="title">
-                    <p>Menu 6</p>
+                    <p>Menu </p>
                 </div>
                 <div class="menu">
                     <div class="item">
                         <div class="light"></div>
                         <div class="licon"><span class="iconfont icon-wenjian"></span></div>
-                        <div class="con" @click="createNewQ">从空白创建</div>
+                        <div class="con" @click="createNewQ" style="font-size: 20px;">从空白创建</div>
                         <div class="ricon"><span class="iconfont icon-shezhi"></span></div>
                     </div>
                     <div class="item">
                         <div class="light"></div>
                         <div class="licon"><span class="iconfont icon-qipao1"></span></div>
-                        <div @click="$refs.fileInput.click()" class="con">从模板创建</div>
+                        <div @click="$refs.fileInput.click()" class="con" style="font-size: 20px;">从模板创建</div>
                         <input ref="fileInput" type="file" @change="onFileChange" style="display: none">
                         <div class="ricon"></div>
                     </div>
                     <div class="item">
                         <div class="light"></div>
                         <div class="licon"><span class="iconfont icon-qipao1"></span></div>
-                        <div class="con" @click="triggerParentEvent(0)">已创建问卷</div>
+                        <div class="con" @click="triggerParentEvent(0)" style="font-size: 20px;">已创建问卷</div>
                         <div class="ricon"></div>
                     </div>
                     <div class="item">
@@ -45,7 +45,7 @@
                         <div class="licon">
                             <span class="iconfont icon-xiaolian"></span>
                         </div>
-                        <div class="con" @click="triggerParentEvent(1)">已填写问卷</div>
+                        <div class="con" @click="triggerParentEvent(1)" style="font-size: 20px;">已填写问卷</div>
                         <div class="ricon"><span class="iconfont icon-caidan1"></span></div>
                     </div>
                     <div class="item">
@@ -53,40 +53,11 @@
                         <div class="licon">
                             <span class="iconfont icon-shexiang"></span>
                         </div>
-                        <div class="con" @click="triggerParentEvent(2)">垃圾箱</div>
+                        <div class="con" @click="triggerParentEvent(2)" style="font-size: 20px;">垃圾箱</div>
                         <div class="ricon"></div>
                     </div>
                 </div>
-                <div class="line"></div>
-                <div class="title">
-                    <p>Sever 6</p>
-                </div>
-                <div class="serve">
-                    <div class="item">
-                        <div class="licon"><span class="iconfont icon-caidan"></span></div>
-                        <div class="con">Software</div>
-                        <div class="ricon">
-                            <span class="iconfont icon-Dashboard"></span>
-                        </div>
-                    </div>
-                    <div class="item">
-                        <div class="licon"><span class="iconfont icon-renqun"></span></div>
-                        <div class="con">Chat</div>
-                        <div class="ricon"></div>
-                    </div>
-                    <div class="item">
-                        <div class="licon"><span class="iconfont icon-sousuo"></span></div>
-                        <div class="con">Intercom</div>
-                        <div class="ricon"><span class="iconfont icon-caidan1"></span></div>
-                    </div>
-                    <div class="item">
-                        <div class="licon">
-                            <span class="iconfont icon-gengduo-a"></span>
-                        </div>
-                        <div class="con">Setting</div>
-                        <div class="ricon"></div>
-                    </div>
-                </div>
+
             </div>
         </div>
     </body>
@@ -106,10 +77,10 @@ export default {
             }
             console.log(data)
             // this.triggerParentEvent(0)
-             
 
-             await this.$api.questionnaire.postQuestionnaire_Create(data);
-             this.$emit('childEvent', 0)
+
+            await this.$api.questionnaire.postQuestionnaire_Create(data);
+            this.$emit('childEvent', 0)
 
         },
         triggerParentEvent(state) {
@@ -246,13 +217,14 @@ export default {
 }
 
 .title {
-    width: 60px;
-    margin-left: 25px;
-    margin-bottom: 20px;
+    width: 100%;
+    height: 30px;
+    /* text-align: center; */
 }
 
 .title p {
     font-size: 14px;
+    text-align: center;
 }
 
 .menu {
@@ -263,6 +235,7 @@ export default {
 .item {
     display: flex;
     position: relative;
+    height: 90px;
     transition: 0.5s;
     border-radius: 6px;
 }
@@ -280,16 +253,23 @@ export default {
 }
 
 .con {
-    width: 0px;
-    height: 50px;
-    display: flex;
-    justify-content: center;
     align-items: center;
-    transition: 0.5s;
-    overflow: hidden;
-    position: relative;
+    box-sizing: border-box;
+    color: rgba(255, 255, 255, 0.6);
+    display: flex;
+    font-family: "Helvetica Neue", Helvetica, Arial, "PingFang SC", "Microsoft YaHei", "Microsoft YaHei UI", 微软雅黑, sans-serif;
+    font-size: 12px;
+    height: 50px;
+    justify-content: center;
     left: -20px;
-    opacity: 0;
+    opacity: 1;
+    overflow: hidden;
+    padding: 0;
+    position: relative;
+    text-align: left;
+    transition: all .5s;
+    width: 160px;
+    margin: 0 0 0 41px;
 }
 
 .nav:hover .con {
@@ -330,7 +310,7 @@ export default {
 
 .light {
     width: 6px;
-    height: 50px;
+    height: 90px;
     background: #eb5a56;
     position: absolute;
     left: -25px;

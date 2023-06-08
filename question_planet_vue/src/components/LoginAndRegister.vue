@@ -1,67 +1,67 @@
 <template>
   <div class="wrapper">
-    <span class="icon-close"><i class="el-icon-edit"></i></span>
+    <span class="icon-close"><i class="el-icon-close"></i></span>
 
     <div class="form-box login">
-      <h2 style="color: aliceblue;">Login</h2>
+      <h2 style="color: aliceblue;">登录</h2>
       <form @submit.prevent="">
         <div class="input-box">
           <span class="icon"><i class="el-icon-edit"></i></span>
           <input type="text" v-model="user.username" required>
-          <label style="color: aliceblue;">Email</label>
+          <label style="color: aliceblue;">用户名</label>
         </div>
 
         <div class="input-box">
-          <span class="icon"><i class="el-icon-edit"></i></span>
+          <span class="icon"><i class="el-icon-lock"></i></span>
           <input type="password" v-model="user.password" required>
-          <label style="color: aliceblue;">password</label>
+          <label style="color: aliceblue;">密码</label>
         </div>
 
         <div class="remember-forgot">
-          <label><input type="checkbox" v-model="isRemember">Remember Me</label>
-          <a href="" style="color: aliceblue;">Forgot Password</a>
+          <label><input type="checkbox" v-model="isRemember">记住密码</label>
+          <a href="" style="color: aliceblue;">忘记密码</a>
         </div>
 
-        <button class="btn" @click="login">Login</button>
-        <button class="btn" @click="test">test</button>
+        <button class="btn" @click="login">登录</button>
 
         <div class="login-register">
-          <p style="color: aliceblue;">Don't have an account?<a href="#" class="register-link"
-              style="color: aliceblue;">Register</a></p>
+          <p style="color: aliceblue;">没有账号?<a href="#" class="register-link"
+              style="color: aliceblue;">注册一个</a></p>
         </div>
       </form>
     </div>
 
     <div class="form-box register">
-      <h2 style="color: aliceblue;">Registeration </h2>
+      <h2 style="color: aliceblue;">注册 </h2>
       <form @submit.prevent="">
         <div class="input-box">
           <span class="icon"><i class="el-icon-edit"></i></span>
           <input type="text" v-model="userR.username" required>
-          <label style="color: aliceblue;">Username</label>
+          <label style="color: aliceblue;">用户名</label>
         </div>
 
         <div class="input-box">
-          <span class="icon"><i class="el-icon-edit"></i></span>
+          <span class="icon"><i class="el-icon-lock"></i></span>
           <input type="password" v-model="userR.password1" required>
-          <label style="color: aliceblue;">password1</label>
+          <label style="color: aliceblue;">密码</label>
         </div>
 
         <div class="input-box">
-          <span class="icon"><i class="el-icon-edit"></i></span>
+          <span class="icon"><i class="el-icon-lock"></i></span>
           <input type="password" v-model="userR.password2" required>
-          <label style="color: aliceblue;">password2</label>
+          <label style="color: aliceblue;">确认密码</label>
         </div>
 
         <div class="remember-forgot">
-          <label style="color: aliceblue;"><input type="checkbox" v-model="isAgree">agree to the terms &
-            conditions</label>
+          <label style="color: aliceblue;"><input type="checkbox" v-model="isAgree"> 同意用户星球
+            <a href="https://www.wjx.cn/wjx/license.aspx" style="color: aliceblue;">用户协议</a> 以及
+            <a href="https://www.wjx.cn/wjx/license.aspx?type=1" style="color: aliceblue;">隐私条款</a> </label>
         </div>
 
-        <button class="btn" @click="register">Register</button>
+        <button class="btn" @click="register">注册</button>
 
         <div class="login-register">
-          <p>Already have an account?<a href="#" class="login-link">Login</a></p>
+          <p style="color: aliceblue;">已有账号?<a href="#" style="color: aliceblue;" class="login-link">现在登录</a></p>
         </div>
       </form>
     </div>
@@ -105,6 +105,7 @@ export default {
           console.log(response.data)
 
           this.$store.state.token_key=response.data['token_key']
+          
           console.log(response.data.token_key)
 
           console.log(response.data)
@@ -114,10 +115,24 @@ export default {
           this.$store.state.curUsername = this.user.username
           this.$store.state.isLogin = true
 
+          localStorage.setItem("curUserID",this.$store.state.curUserID)
+          localStorage.setItem("curUserName",this.$store.state.curUsername)
+          localStorage.setItem("token", response.data['token_key'])
+          console.log("localStorage token register:"+localStorage.getItem("token"))
+          localStorage.setItem("isLogin",true)
+
+        //   this.$store.state.isLogin = true
+        // this.$store.state.curUserID = localStorage.getItem("curUserID")
+        // this.$store.state.curUserName = localStorage.getItem("curUserName")
+        // this.$store.state.token_key = localStorage.getItem("token")
+
           console.log(`/manage/${this.$store.state.curUserID}`)
           // set cookie
           this.$router.push({
             path: `/manage/${this.$store.state.curUserID}`
+          })
+          this.$api.userInfo.getUserInfo_CheckToken().then((res)=>{
+            console.log(res)
           })
         }
         else {
@@ -132,11 +147,6 @@ export default {
 
 
       })
-    },
-    test(){
-      this.$router.push({
-            path: "/manage/" + this.$store.state.curUserID
-          })
     },
     register() {
       console.log("isagree:"+this.isAgree)
@@ -406,7 +416,7 @@ header {
   position: relative;
   width: 100%;
   height: 50px;
-  border-bottom: 2px solid #162938;
+  border-bottom: 1.2px solid #fff;
   margin: 30px 0;
 }
 

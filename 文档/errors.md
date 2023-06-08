@@ -152,7 +152,8 @@ class UserToken(Model):
 
 ```json
 {
-    "username": username
+    "username": username或
+    "email": email
 }
 ```
 
@@ -171,6 +172,8 @@ class UserToken(Model):
 1041：用户不存在
 
 1042：邮箱不存在
+
+1043：邮件发送失败
 
 ## 105 reset_password
 
@@ -434,6 +437,52 @@ class UserToken(Model):
 ### 错误码：
 
 1131：用户不存在
+
+## 114 upload_avatar
+
+### 请求类型：POST
+
+### Header：Authorization
+
+### 输入数据：
+
+```json
+{
+    "data": base64
+}
+```
+
+### 返回数据：
+
+```json
+{
+    "errno": 0,
+    "msg": "用户头像更改成功"
+}
+```
+
+### 错误码：无
+
+## 114 check_token
+
+### 请求类型：GET
+
+### Header：Authorization
+
+### 输入数据：无
+
+### 返回数据：
+
+```json
+{
+    "errno": 0,
+    "msg": "token有效"
+}
+```
+
+### 错误码：
+
+1151：token错误
 
 # 2 api/questionnaire
 

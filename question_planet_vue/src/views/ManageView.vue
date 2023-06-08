@@ -23,40 +23,47 @@
             </div>
           </div>
 
-          <el-row v-for="questionnaire in questionnaireListShow" :key="questionnaire.qn_id"
-            class="single_questionnaire_box hvr-grow-shadow">
-            <div class="questionnaire_title">
-
-              <div class="pull-left">
-                <div class="questionnaire_title">{{ JSON.parse(questionnaire).qn_title }}</div>
-              </div>
-              <div class="pull-right">
-                <div class="pull-left item-id">ID:{{ JSON.parse(questionnaire).qn_id }}</div>
-                <div class="pull-left item-running">Status:{{ JSON.parse(questionnaire).qn_status }}</div>
-                <div class="pull-left item-data">receive:0</div>
-                <div class="pull-left item-data">创建时间:{{ JSON.parse(questionnaire).qn_create_time.substring(0, 19) }}
+          <TransitionGroup tag="ul" name="moveR" style="background: transparent ;margin: 0;padding: 0;border: 0;">
+            <div v-for="questionnaire in questionnaireListShow" :key="questionnaire"
+              class="single_questionnaire_box hvr-grow-shadow">
+              <div class="questionnaire_title">
+                <div class="pull-right">
+                  <div class="pull-left item-id">{{ JSON.parse(questionnaire).qn_title }}</div>
+                  <div class="pull-left item-id">ID:{{ JSON.parse(questionnaire).qn_id }}</div>
+                  <div class="pull-left item-running" v-if="(JSON.parse(questionnaire).qn_status == 'unpublished')">状态:未发布
+                  </div>
+                  <div class="pull-left item-running" v-else>状态:已发布</div>
+                  <div class="pull-left item-data">回收数量:{{ JSON.parse(questionnaire).qn_answersheet_count }}</div>
+                  <div class="pull-left item-data">{{ JSON.parse(questionnaire).qn_create_time.substring(0, 19) }}
+                  </div>
+                  <!-- <div class="pull-left item-data">结束时间:{{ JSON.parse(questionnaire).qn_end_time.substring(0, 19) }}
+                  </div> -->
                 </div>
-                <div class="pull-left item-data">结束时间:{{ JSON.parse(questionnaire).qn_end_time.substring(0, 19) }}</div>
               </div>
-            </div>
-            <el-divider></el-divider>
-            <div class="questionnaire_body">
-              <el-button v-show="stateType == 0" @click="pushCreate(questionnaire)" round
-                style="background-color:rgba(227, 227, 227, 0.1);color:#ffffff !important;">设计问卷</el-button>
-              <el-button v-show="stateType == 0" @click="publicQuestionnaire(JSON.parse(questionnaire).qn_id)"
-                class="copyLink" round
-                style="background-color:rgba(227, 227, 227, 0.1);color:#ffffff !important;">发送问卷</el-button>
-              <el-button v-show="stateType == 0" @click="pushAnalyze(questionnaire)" round
-                style="background-color:rgba(227, 227, 227, 0.1);color:#ffffff !important;">分析问卷</el-button>
-              <el-button v-show="stateType == 0" @click="deleteQuestionnaire(questionnaire)" round
-                style="background-color:rgba(227, 227, 227, 0.1);color:#ffffff !important;">删除问卷</el-button>
-              <el-button v-show="stateType == 2" @click="deleteQuestionnaire(questionnaire)" round
-                style="background-color:rgba(227, 227, 227, 0.1);color:#ffffff !important;">移除问卷</el-button>
-              <el-button v-show="stateType == 2" @click="deDeleteQuestionnaire(questionnaire)" round
-                style="background-color:rgba(227, 227, 227, 0.1);color:#ffffff !important;">撤销删除</el-button>
-            </div>
+              <el-divider></el-divider>
+              <div class="questionnaire_body">
+                <el-button v-show="stateType == 0" @click="pushCreate(questionnaire)" round
+                  style="background-color:rgba(227, 227, 227, 0.1);color:#ffffff !important;">设计问卷</el-button>
+                <el-button v-show="stateType == 0" @click="publicQuestionnaire(JSON.parse(questionnaire).qn_id)"
+                  class="copyLink" round
+                  style="background-color:rgba(227, 227, 227, 0.1);color:#ffffff !important;">发送问卷</el-button>
+                <el-button v-show="stateType == 0" @click="pushAnalyze(questionnaire)" round
+                  style="background-color:rgba(227, 227, 227, 0.1);color:#ffffff !important;">分析问卷</el-button>
+                <el-button v-show="stateType == 0" @click="deleteQuestionnaire(questionnaire)" round
+                  style="background-color:rgba(227, 227, 227, 0.1);color:#ffffff !important;">删除问卷</el-button>
+                <el-button v-show="stateType == 2" @click="deleteQuestionnaire(questionnaire)" round
+                  style="background-color:rgba(227, 227, 227, 0.1);color:#ffffff !important;">移除问卷</el-button>
+                <el-button v-show="stateType == 2" @click="deDeleteQuestionnaire(questionnaire)" round
+                  style="background-color:rgba(227, 227, 227, 0.1);color:#ffffff !important;">撤销删除</el-button>
+                <el-button v-show="stateType == 0" @click="preViewQuestionnaire(questionnaire)" round
+                  style="background-color:rgba(227, 227, 227, 0.1);color:#ffffff !important;">预览问卷</el-button>
+                <el-button v-show="stateType == 0" @click="exportQuestionnaire(questionnaire)" round
+                  style="background-color:rgba(227, 227, 227, 0.1);color:#ffffff !important;">导出问卷</el-button>
+                </div>
 
-          </el-row>
+            </div>
+          </TransitionGroup>
+
         </el-main>
       </main>
     </div>
@@ -70,6 +77,7 @@
 <script>
 import Clipboard from 'clipboard';
 import AsideMenu from '@/components/AsideMenu.vue'
+// import router from '../router'
 export default {
   data() {
     const item = {
@@ -106,11 +114,11 @@ export default {
           params: {
             "qn_id": id
           }
-        }),
-        alert(this.$store.state.is_creating)
+        })
+        // alert(this.$store.state.is_creating)
     },
     // 生成问卷链接
-    publicQuestionnaire(qn_id) {
+    async publicQuestionnaire(qn_id) {
       var text = `http://182.92.102.246:1145/answer/${qn_id}`
 
       alert(text)
@@ -127,17 +135,25 @@ export default {
       });
 
       const data = {
-        "uid": this.$store.state.curUserID,
+        "uid": localStorage.getItem("curUserID"),
         "qn_id": qn_id,
         "status": "published"
       }
       console.log("publishQuestionnaire_data:" + data)
 
-      this.$api.questionnaire.postQuestionnaire_ChangeStatus(data).then((res) => {
-        console.log(res)
+      await this.$api.questionnaire.postQuestionnaire_ChangeStatus(data)
+      this.getManagerQuestionnaireList_Create()
+    },
+    preViewQuestionnaire(questionnaire){
+      var data = JSON.parse(questionnaire)
+      var id = data.qn_id
+      this.$router.push({
+        name: 'Preview',
+        params: {
+          "qn_id": id
+        }
       })
     },
-
 
     pushAnalyze(questionnaire) {
       var data = JSON.parse(questionnaire)
@@ -155,18 +171,19 @@ export default {
 
     async getManagerQuestionnaireList_Create() {
       const data = {
-        "uid": this.$store.state.curUserID,
+        "uid": localStorage.getItem("curUserID"),
         "type": "created"
       }
       console.log(this.$store.state.token_key)
       console.log(this.$store.state.curUserID)
-      this.$api.userInfo.getUserInfo_GetQList(data).then((res) => {
+      await this.$api.userInfo.getUserInfo_GetQList(data).then((res) => {
 
         this.questionnaireList = res.data['qn_info']
         this.questionnaireListShow = res.data['qn_info']
         console.log(typeof (res.data['qn_info']))
       })
       this.stateType = 0
+      this.sortByCreateTimeMAX()
     },
 
     onFileSelected(file) {
@@ -211,7 +228,7 @@ export default {
 
     async getManagerQuestionnaireList_Delete() {
       const data = {
-        "uid": this.$store.state.curUserID,
+        "uid": localStorage.getItem("curUserID"),
         "type": "deleted"
       }
       console.log(this.$store.state.token_key)
@@ -225,7 +242,7 @@ export default {
     },
     async getManagerQuestionnaireList_Filled() {
       const data = {
-        "uid": this.$store.state.curUserID,
+        "uid": localStorage.getItem("curUserID"),
         "type": "filled"
       }
       console.log(this.$store.state.token_key)
@@ -253,44 +270,89 @@ export default {
       qn_id = questionnaire.qn_id
 
       if (this.stateType == 0) {
-        const data = {
+        //已创建文件
+        await this.$confirm('此操作将该文件移到垃圾箱, 是否继续?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          this.$message({
+            type: 'success',
+            message: '删除成功!'
+          });
+
+          const data = {
           "uid": this.$store.state.curUserID,
           "qn_id": qn_id,
           "status": "deleted"
         }
         console.log("deleteQuestionnaire_data:" + data)
+        this.$api.questionnaire.postQuestionnaire_ChangeStatus(data).then((res)=>{
+          //console.log(res.data);
+          //console.log(res.data.errno);
+          if(res.data.errno==0) return this.getManagerQuestionnaireList_Create()
+        })
 
-        await this.$api.questionnaire.postQuestionnaire_ChangeStatus(data)
-        this.getManagerQuestionnaireList_Create()
+        }).catch(() => {
+          this.$message({
+            type: 'info',
+            message: '已取消删除'
+          });          
+        });
+
+        
+        
       } else if (this.stateType == 1) {
+        //已填写问卷
         this.getManagerQuestionnaireList_Filled()
       } else if (this.stateType == 2) {
-        const data = {
+        //从垃圾箱里删除
+        await this.$confirm('此操作将永久删除该文件, 是否继续?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+
+          const data = {
           "uid": this.$store.state.curUserID,
           "qn_id": qn_id
         }
-        await this.$api.questionnaire.postQuestionnaire_Delete(data).then((res) => {
-          console.log(res)
+         this.$api.questionnaire.postQuestionnaire_Delete(data).then((res) => {
+          console.log(res);
+          if(res.data.errno == 0) this.getManagerQuestionnaireList_Delete()
         })
-        this.getManagerQuestionnaireList_Delete()
+        this.$message({
+            type: 'success',
+            message: '删除成功!'
+          });
+        }).catch(() => {
+          this.$message({
+            type: 'info',
+            message: '已取消删除'
+          });          
+        });
+
+
+        
       }
     },
-    deDeleteQuestionnaire(questionnaire) {
+    async deDeleteQuestionnaire(questionnaire) {
       console.dir(questionnaire)
       questionnaire = JSON.parse(questionnaire)
       console.log(questionnaire.qn_id)
       var qn_id
       qn_id = questionnaire.qn_id
       const data = {
-        "uid": this.$store.state.curUserID,
+        "uid": localStorage.getItem("curUserID"),
         "qn_id": qn_id,
         "status": "unpublished"
       }
       console.log("deleteQuestionnaire_data:" + data)
 
-      this.$api.questionnaire.postQuestionnaire_ChangeStatus(data).then((res) => {
+      await this.$api.questionnaire.postQuestionnaire_ChangeStatus(data).then((res) => {
         console.log(res)
       })
+      this.getManagerQuestionnaireList_Delete()
     },
 
     exportQuestionnaire(questionnaire) {
@@ -412,18 +474,36 @@ export default {
 <!-- 下拉栏 -->
 
 <style scoped>
+.fade-move,
+.fade-enter-active,
+.fade-leave-active {
+  transition: all 0.5s cubic-bezier(0.55, 0, 0.1, 1);
+}
+
+.fade-enter-from,
+.fade-leave-to {
+  opacity: 0;
+  transform: scaleY(0.01) translate(30px, 0);
+}
+
+.fade-leave-active {
+  position: absolute;
+}
+
+
 .btnSort {
   width: 130px;
   height: 50px;
   background: transparent;
   border: 2px solid #fff;
+
   outline: none;
   border-radius: 6px;
   cursor: pointer;
   font-size: 1.1em;
   color: #fff;
   font-weight: 500;
-  margin-left: 40px;
+  margin-left: 10px;
   transition: .3s;
 }
 
@@ -968,6 +1048,40 @@ div {
   background-size: 80px 80px, auto, auto;
 }
 
+
+
+/* 确保将离开的元素从布局流中删除
+  以便能够正确地计算移动的动画。 */
+.moveR-leave-active {
+  position: absolute;
+  transition: all 0.3s ease;
+  transform: translateX(100%);
+}
+
+.moveR-enter-active {
+  transition: all 0.3s ease;
+  transform: translateX(0);
+}
+
+.moveR-enter {
+  transform: translateX(100%);
+}
+
+.moveR-enter-from {
+  transform: translateX(100%);
+}
+
+.moveR-leave {
+  transform: translateX(0);
+}
+
+.moveR-leave-to {
+  transform: translateX(100%);
+}
+
+
+
+
 .questionnaire_title {
   margin: 0;
   padding: 0;
@@ -1011,8 +1125,13 @@ div {
 
 .pull-left {
   float: left;
-  padding-left: 2px;
-  padding-right: 4px;
+  ;
+  /* float: right !important;
+   */
+  /* 
+  line-height: 22px; */
+  font-size: 12px;
+  padding-right: 12px;
 }
 
 .pull-right {
