@@ -268,6 +268,7 @@ body {
   text-decoration: none;
   font-weight: 500;
   margin-left: 40px;
+  z-index: 250;
 }
 
 

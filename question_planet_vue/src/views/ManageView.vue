@@ -457,7 +457,6 @@ export default {
     }
   },
   mounted() {
-    
     this.getManagerQuestionnaireList_Create();
     this.$store.state.isAnalyzing = false
     this.$store.state.is_creating = false
