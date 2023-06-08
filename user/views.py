@@ -300,6 +300,7 @@ def change_profile(request, user):
     password1 = data_json.get('password1')
     password2 = data_json.get('password2')
     signature = data_json.get('signature')
+    company = data_json.get('company')
     email = data_json.get('email')
     tel = data_json.get('tel')
     if not bool(re.match("^[A-Za-z0-9][A-Za-z0-9_]{2,29}$", str(username))):
@@ -314,6 +315,7 @@ def change_profile(request, user):
         user.user_name = username
         user.user_password = password1
         user.user_signature = signature
+        user.user_company = company
         user.user_email = email
         user.user_tel = tel
         user.save()
