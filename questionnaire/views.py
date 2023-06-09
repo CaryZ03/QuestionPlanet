@@ -1,4 +1,5 @@
 import re
+import secrets
 from datetime import datetime
 
 from django.core.management.utils import get_random_secret_key
@@ -140,7 +141,7 @@ def submit_answers(request):
 @login_required
 @require_http_methods(['POST'])
 def create_questionnaire(request, user):
-    qn = Questionnaire.objects.create(qn_creator=user, qn_key=get_random_secret_key())
+    qn = Questionnaire.objects.create(qn_creator=user, qn_key=secrets.token_urlsafe(50).replace('#', ''))
     qn.save()
     user.user_created_questionnaires.add(qn)
     user.save()
