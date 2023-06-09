@@ -189,6 +189,7 @@ export default {
         };
     },
     created() {
+        
         this.create_as();
     },
     methods: {
@@ -220,7 +221,7 @@ export default {
             this.qn_is_application = true;
         },
 
-        async create_as() {
+        create_as() {
             var _this = this;
             this.$api.questionnaire.postQuestionnaire_Fill(this.$route.params.key)
                 .then(function (response) {
@@ -230,10 +231,14 @@ export default {
                         console.log(response);
                         _this.as_id = response.data.as_id;
                         console.log(_this.as_id);
+
                         this.load_qn();
                     }
                     else {
                         alert("寄啦！")
+                        this.$router.push({
+                            name: 'home'
+                        })
                     }
                 })
                 .catch(function (error) {
