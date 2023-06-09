@@ -53,6 +53,7 @@ def fill_questionnaire(request):
             filler.save()
         token_key = create_token(filler.filler_id, False)
     qn_key = request.GET.get('key')
+    print(qn_key)
     if not Questionnaire.objects.filter(qn_key=qn_key).exists():
         return JsonResponse({'errno': 2001, 'msg': "问卷不存在"})
     questionnaire = Questionnaire.objects.get(qn_key=qn_key)
