@@ -4,7 +4,7 @@ from .views import *
 
 urlpatterns = [
     # 填写问卷
-    path('fill_questionnaire/<int:qn_key>', fill_questionnaire, name='fill_questionnaire'),
+    path('fill_questionnaire', fill_questionnaire, name='fill_questionnaire'),
     path('save_answers', save_answers, name='save_answers'),
     path('submit_answers', submit_answers, name='submit_answers'),
     path('save_questionnaire', save_questionnaire, name='save_questionnaire'),

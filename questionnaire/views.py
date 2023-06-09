@@ -39,7 +39,7 @@ def get_client_ip(request):
 # path('fill_questionnaire', fill_questionnaire),
 @csrf_exempt
 @require_http_methods(['POST'])
-def fill_questionnaire(request, qn_key):
+def fill_questionnaire(request):
     token_key = request.headers.get('Authorization')
     if token_key:
         token = UserToken.objects.get(key=token_key)
@@ -52,6 +52,7 @@ def fill_questionnaire(request, qn_key):
             filler = Filler.objects.create(filler_ip=filler_ip)
             filler.save()
         token_key = create_token(filler.filler_id, False)
+    qn_key = request.GET.get('key')
     if not Questionnaire.objects.filter(qn_key=qn_key).exists():
         return JsonResponse({'errno': 2001, 'msg': "问卷不存在"})
     questionnaire = Questionnaire.objects.get(qn_key=qn_key)
