@@ -188,7 +188,7 @@ export default {
             test_is_submitted: false,
         };
     },
-    created() {
+    mounted() {
         
         this.create_as();
     },
