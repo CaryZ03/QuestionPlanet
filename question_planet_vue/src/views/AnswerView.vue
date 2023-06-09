@@ -190,7 +190,7 @@ export default {
     },
     created() {
         this.key = this.$route.params.key;
-        console.log(key)
+        console.log("key!!!!!!!!!!!!!!!"+key)
         this.create_as();
     },
     methods: {
