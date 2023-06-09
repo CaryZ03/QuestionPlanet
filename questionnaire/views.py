@@ -68,7 +68,7 @@ def fill_questionnaire(request):
             filler.filler_user.user_filled_questionnaires.add(questionnaire)
             filler.filler_user.save()
     temp_save = answer_sheet.as_temporary_save
-    return JsonResponse({'errno': 0, 'msg': "答卷创建成功", 'as_id': answer_sheet.as_id, 'temp_save': temp_save, 'token_key': token_key})
+    return JsonResponse({'errno': 0, 'msg': "答卷创建成功", 'qn_id': questionnaire.qn_id, 'as_id': answer_sheet.as_id, 'temp_save': temp_save, 'token_key': token_key})
 
 
 # path('save_answers', save_answers),
