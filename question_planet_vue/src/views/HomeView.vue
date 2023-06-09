@@ -10,7 +10,7 @@
 
 import Newhome from '@/components/Newhome.vue';
 export default ({
-  name: 'HomeViewVue',
+  name: 'home',
   data() {
     return {
       isShow: true
