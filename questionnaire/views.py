@@ -1,6 +1,7 @@
 import re
 from datetime import datetime
 
+from django.core.management.utils import get_random_secret_key
 from django.db.models import Q
 from django.http import JsonResponse
 from django.utils.timezone import now
@@ -37,9 +38,8 @@ def get_client_ip(request):
 
 # path('fill_questionnaire', fill_questionnaire),
 @csrf_exempt
-@questionnaire_exists
 @require_http_methods(['POST'])
-def fill_questionnaire(request, qn_id):
+def fill_questionnaire(request, qn_key):
     token_key = request.headers.get('Authorization')
     if token_key:
         token = UserToken.objects.get(key=token_key)
@@ -52,9 +52,11 @@ def fill_questionnaire(request, qn_id):
             filler = Filler.objects.create(filler_ip=filler_ip)
             filler.save()
         token_key = create_token(filler.filler_id, False)
-    questionnaire = Questionnaire.objects.get(qn_id=qn_id)
+    if not Questionnaire.objects.filter(qn_key=qn_key).exists():
+        return JsonResponse({'errno': 2001, 'msg': "问卷不存在"})
+    questionnaire = Questionnaire.objects.get(qn_key=qn_key)
     if questionnaire.qn_status != 'published':
-        return JsonResponse({'errno': 2011, 'msg': "问卷不存在"})
+        return JsonResponse({'errno': 2011, 'msg': "问卷未发布"})
     if AnswerSheet.objects.filter(as_questionnaire=questionnaire, as_filler=filler).exists():
         answer_sheet = AnswerSheet.objects.get(as_questionnaire=questionnaire, as_filler=filler)
     else:
@@ -136,10 +138,9 @@ def submit_answers(request):
 @login_required
 @require_http_methods(['POST'])
 def create_questionnaire(request, user):
-    qn = Questionnaire.objects.create()
-    qn.qn_creator = user
-    user.user_created_questionnaires.add(qn)
+    qn = Questionnaire.objects.create(qn_creator=user, qn_key=get_random_secret_key())
     qn.save()
+    user.user_created_questionnaires.add(qn)
     user.save()
     # 返回问卷创建成功的响应
     return JsonResponse({'errno': 0, 'message': '问卷创建成功', 'qn_id': qn.qn_id})
@@ -261,6 +262,28 @@ def delete_questionnaire(request, user):
     qn.delete()
     return JsonResponse({'errno': 0, 'msg': "问卷删除成功"})
 
+
+@csrf_exempt
+@login_required
+@questionnaire_exists
+@require_http_methods(['POST'])
+def publish_questionnaire(request, user, qn_id):
+    qn = Questionnaire.objects.get(qn_id=qn_id)
+    qn.qn_status = 'published'
+    qn.save()
+    qn_key = qn.qn_key
+    return JsonResponse({'errno': 0, 'msg': "问卷发布成功", 'key': qn_key})
+
+
+@csrf_exempt
+@login_required
+@questionnaire_exists
+@require_http_methods(['POST'])
+def close_questionnaire(request, user, qn_id):
+    qn = Questionnaire.objects.get(qn_id=qn_id)
+    qn.qn_status = 'closed'
+    an.save()
+    return JsonResponse({'errno': 0, 'msg': "问卷关闭成功"})
 
 @csrf_exempt
 @login_required

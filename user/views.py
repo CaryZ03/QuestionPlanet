@@ -217,6 +217,7 @@ def send_verification_code(request):
         if email:
             code = randint(100000, 999999)
             send_email_verification(email, str(code))
+            print(1)
             return JsonResponse({'errno': 0, 'msg': '邮件发送成功', 'code': code})
         return JsonResponse({'errno': 1042, 'msg': '邮箱不存在'})
     else:
