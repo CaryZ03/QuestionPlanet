@@ -129,20 +129,7 @@ export default {
     },
     // 生成问卷链接
     async publicQuestionnaire(qn_id) {
-      var text = `http://182.92.102.246:1145/answer/${qn_id}`
 
-      alert(text)
-      const clipboard = new Clipboard('.copyLink', {
-        text: () => text
-      });
-      clipboard.on('success', () => {
-        alert('文本已复制到剪贴板！');
-        clipboard.destroy();
-      });
-      clipboard.on('error', () => {
-        alert('Failed to copy text');
-        clipboard.destroy();
-      });
 
       const data = {
         "uid": localStorage.getItem("curUserID"),
@@ -151,8 +138,31 @@ export default {
       }
       console.log("publishQuestionnaire_data:" + data)
 
-      await this.$api.questionnaire.postQuestionnaire_ChangeStatus(data)
-      this.getManagerQuestionnaireList_Create()
+      await this.$api.questionnaire.postQuestionnaire_ChangeStatus(data).then((res) => {
+        console.log(res.data)
+        if (res.data.errno != 0) {
+          clipboard.on('error', () => {
+            alert('Failed to copy text');
+            clipboard.destroy();
+          });
+        }
+
+        var text = `http://182.92.102.246:1145/answer/${res.data.key}`
+
+        alert(text)
+        const clipboard = new Clipboard('.copyLink', {
+          text: () => text
+        });
+        clipboard.on('success', () => {
+          alert('文本已复制到剪贴板！');
+          clipboard.destroy();
+        });
+        clipboard.on('error', () => {
+          alert('Failed to copy text');
+          clipboard.destroy();
+        });
+      })
+      await this.getManagerQuestionnaireList_Create()
     },
     preViewQuestionnaire(questionnaire) {
       var data = JSON.parse(questionnaire)
@@ -193,7 +203,8 @@ export default {
         console.log(typeof (res.data['qn_info']))
       })
       this.stateType = 0
-      this.sortByCreateTimeMAX()
+      if ((this.questionnaireList.length > 0))
+        this.sortByCreateTimeMAX()
     },
 
     onFileSelected(file) {
@@ -209,32 +220,6 @@ export default {
       })
 
     },
-
-    importQuestionnaire() {
-      // 获取文件输入框元素
-      const fileInput = document.getElementById('questionnaireFile');
-      // 监听文件选择事件
-      fileInput.addEventListener('change', (event) => {
-        // 获取选择的文件
-        const file = event.target.files[0];
-        // 创建FormData对象，用于传输文件
-        const formData = new FormData();
-        formData.append('file', file);
-        // 发送POST请求
-        fetch('/import-questionnaire', {
-          method: 'POST',
-          body: formData
-        })
-          .then(response => response.json())
-          .then(data => {
-            console.log(data); // 处理响应数据
-          })
-          .catch(error => {
-            console.error('Error:', error);
-          });
-      });
-    },
-
 
     async getManagerQuestionnaireList_Delete() {
       const data = {
@@ -402,43 +387,59 @@ export default {
     // 按ID排序
     async sortByCreateIDMax() {
       console.log(this.questionnaireListShow)
-      this.questionnaireList = this.questionnaireListShow.sort((a, b) => JSON.parse(b).qn_id - JSON.parse(a).qn_id);
-      console.log(this.questionnaireListShow)
-      return this.questionnaireListShow
+      if (this.questionnaireListShow.length > 0) {
+        this.questionnaireList = this.questionnaireListShow.sort((a, b) => JSON.parse(b).qn_id - JSON.parse(a).qn_id);
+        console.log(this.questionnaireListShow)
+        return this.questionnaireListShow
+      }
+      else return null
     },
 
     async sortByCreateIDMin() {
       console.log(this.questionnaireListShow)
-      this.questionnaireList = this.questionnaireListShow.sort((b, a) => JSON.parse(b).qn_id - JSON.parse(a).qn_id);
-      console.log(this.questionnaireListShow)
-      return this.questionnaireListShow
+      if (this.questionnaireListShow.length > 0) {
+        this.questionnaireList = this.questionnaireListShow.sort((b, a) => JSON.parse(b).qn_id - JSON.parse(a).qn_id);
+        console.log(this.questionnaireListShow)
+        return this.questionnaireListShow
+      }
+
+      else return null
     },
     // 创建时间排序
     async sortByCreateTimeMIN() {
       console.log(JSON.parse(this.questionnaireListShow[0]).qn_create_time)
       console.log(JSON.parse(this.questionnaireListShow[0]).qn_create_time.substring(0, 19))
-
-      this.questionnaireList = this.questionnaireListShow.sort((a, b) =>
-        new Date(JSON.parse(b).qn_create_time.substring()) - new Date(JSON.parse(a).qn_create_time.substring()));
-      return this.questionnaireListShow
+      if (this.questionnaireListShow.length > 0) {
+        this.questionnaireList = this.questionnaireListShow.sort((a, b) =>
+          new Date(JSON.parse(b).qn_create_time.substring()) - new Date(JSON.parse(a).qn_create_time.substring()));
+        return this.questionnaireListShow
+      }
+      else return null
     },
     async sortByCreateTimeMAX() {
       console.log(JSON.parse(this.questionnaireListShow[0]).qn_create_time)
       console.log(JSON.parse(this.questionnaireListShow[0]).qn_create_time.substring(0, 19))
+      if (this.questionnaireListShow.length > 0) {
+        this.questionnaireListShow = this.questionnaireListShow.sort((b, a) =>
+          new Date(JSON.parse(b).qn_create_time.substring()) - new Date(JSON.parse(a).qn_create_time.substring()));
+        return this.questionnaireListShow
+      }
 
-      this.questionnaireListShow = this.questionnaireListShow.sort((b, a) =>
-        new Date(JSON.parse(b).qn_create_time.substring()) - new Date(JSON.parse(a).qn_create_time.substring()));
-      return this.questionnaireListShow
+      else return null
     },
     // 按endTime排序
 
 
     // 按问卷回收量排序
     async sortByQuestionnaireCountMIN() {
-      return this.questionnaireListShow.sort((a, b) => JSON.parse(a).qn_answersheet_count - JSON.parse(b).qn_answersheet_count);
+      if (this.questionnaireListShow.length > 0)
+        return this.questionnaireListShow.sort((a, b) => JSON.parse(a).qn_answersheet_count - JSON.parse(b).qn_answersheet_count);
+      else return null
     },
     async sortByQuestionnaireCountMAX() {
-      return this.questionnaireListShow.sort((b, a) => JSON.parse(a).qn_answersheet_count - JSON.parse(b).qn_answersheet_count);
+      if (this.questionnaireListShow.length > 0)
+        return this.questionnaireListShow.sort((b, a) => JSON.parse(a).qn_answersheet_count - JSON.parse(b).qn_answersheet_count);
+      else return null
     },
 
     // 根据当前排序方式显示数据列表

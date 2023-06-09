@@ -71,6 +71,11 @@ export default {
           }
         });
       },
+
+      mounted() {
+        console.log("MOUNTTTTTTTTTTTTTTTTTTTTTTTTTTED")
+      },
+      
       
     }
 }

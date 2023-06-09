@@ -165,6 +165,11 @@ components: {
       }
     })
   },
+  mounted() {
+    this.$router.push({
+      name: 'home',
+    })
+  },
 }
 </script>
 

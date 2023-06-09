@@ -9,9 +9,13 @@ export async function postQuestionnaire_Create(data) {
 }
 // 点击问卷链接时调用，创建新的答卷人或查找已存在答卷人，并创建新的答卷
 export async function postQuestionnaire_Fill(id) {
+    const dt = {
+        "key": id
+    }
     return request({
         method: 'POST',
-        url: `/questionnaire/fill_questionnaire/${id}`,
+        url: `/questionnaire/fill_questionnaire`,
+        data: dt
     })
 }
 //暂存回答

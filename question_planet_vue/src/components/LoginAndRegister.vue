@@ -19,14 +19,13 @@
 
         <div class="remember-forgot">
           <label><input type="checkbox" v-model="isRemember">记住密码</label>
-          <a href="" style="color: aliceblue;">忘记密码</a>
+          <a href="" @click="forgetPass" style="color: aliceblue;">忘记密码</a>
         </div>
 
         <button class="btn" @click="login">登录</button>
 
         <div class="login-register">
-          <p style="color: aliceblue;">没有账号?<a href="#" class="register-link"
-              style="color: aliceblue;">注册一个</a></p>
+          <p style="color: aliceblue;">没有账号?<a href="#" class="register-link" style="color: aliceblue;">注册一个</a></p>
         </div>
       </form>
     </div>
@@ -86,18 +85,23 @@ export default {
         password1: '',
         password2: ''
       },
+      userChange: {
+        username: '',
+        password1: '',
+        password2: ''
+      },
       isAgree: false,
       isRemember: false
     }
   },
   methods: {
-    login() {
+    async login() {
       const data = JSON.stringify(this.user)
       console.log(data)
 
 
 
-      this.$api.userInfo.postUserInfo_UserLogin(data).then((response) => {
+      await this.$api.userInfo.postUserInfo_UserLogin(data).then((response) => {
         if (response.data['errno'] === 0) {
 
           Message.success("登录成功")
@@ -148,6 +152,101 @@ export default {
 
       })
     },
+
+  forgetPass() {
+    // const
+    // this.$api.userInfo.postUserInfo_ChangeUserInfo(data)
+    const data={
+      "username": this.user.username
+    }
+    console.log("data.username"+data.username)
+
+
+    this.$api.userInfo.postUserInfo_SendVeri(data).then((res)=>{
+      alert("what fuck")
+                if (res.data.errno == 0) {
+            //发送邮箱成功，等验证码
+
+            this.$prompt('请输入验证码', '提示', {
+              confirmButtonText: '确定',
+              cancelButtonText: '取消',
+            }).then(({ value }) => {
+              console.log("value2:jsontring" + JSON.stringify(value))
+              // console.log("value2:jsontring"+JSON.stringify(value2))
+              console.log("value2:" + value)
+              console.log("res.data.code" + res.data.code)
+              var value1 
+              if (value == res.data.code) {
+
+                
+
+                //改邮箱
+                this.$message({
+                  type: 'success',
+                  message: '验证码验证成功'
+                });
+
+                this.$prompt('请输入新密码', '提示', {
+              confirmButtonText: '确定',
+              cancelButtonText: '取消',
+            }).then(({ value })=>{
+                this.userChange.password1 = value;
+                this.userChange.password2 = value;
+
+                const tmp = {
+                    "username": this.user.username,
+                    "password1": value,
+                    "password2": value,
+                }
+                this.$api.userInfo.postUserInfo_ResetPassword(tmp).then((res1)=>{
+                  if(res1.data.errno==0){
+                    this.$message({
+                    type: 'success',
+                    message: '修改成功'
+                });
+                  }else{
+                    this.$message({
+                   type: 'error',
+                   message: '修改失敗'
+                });
+                  }
+                })
+
+            }).catch(()=>{
+              this.$message({
+                   type: 'info',
+                   message: '取消輸入'
+                });
+            })
+                // this.addressIsBind = true;
+                
+
+              }
+              else {
+                this.$message({
+                  type: 'error',
+                  message: '验证码错误'
+                });
+              }
+
+            }).catch(() => {
+              this.$message({
+                type: 'info',
+                message: '取消输入'
+              });
+            })
+          }
+          else {
+            this.$message({
+              type: 'error',
+              message: '验证码发送失败'
+            });
+          }
+    })
+  
+  },
+
+
     register() {
       console.log("isagree:"+this.isAgree)
         if(this.isAgree===false){

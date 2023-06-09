@@ -62,12 +62,12 @@ const routes = [
     component: UserInfoView
   },
   {
-    path: '/answer/:qn_id',
+    path: '/answer/:key',
     name: 'Answer',
     component: Answer
   },
   {
-    path: '/preview/:qn_id',
+    path: '/preview/:key',
     name: 'Preview',
     component: Preview
   },
