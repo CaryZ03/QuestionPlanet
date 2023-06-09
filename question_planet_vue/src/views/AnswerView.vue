@@ -188,7 +188,7 @@ export default {
             test_is_submitted: false,
         };
     },
-    mounted() {
+    created() {
         
         this.create_as();
     },
@@ -232,11 +232,11 @@ export default {
                         _this.as_id = response.data.as_id;
                         console.log(_this.as_id);
 
-                        this.load_qn();
+                        _this.load_qn();
                     }
                     else {
                         alert("寄啦！")
-                        this.$router.push({
+                        _this.$router.push({
                             name: 'home'
                         })
                     }
