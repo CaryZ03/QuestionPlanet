@@ -188,13 +188,10 @@ export default {
             test_is_submitted: false,
         };
     },
-    async created() {
+    created() {
         this.key = this.$route.params.key;
-        await this.create_as();
-        
-
-
-
+        console.log(key)
+        this.create_as();
     },
     methods: {
         change_to_qn_normal() {
