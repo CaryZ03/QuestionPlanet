@@ -14,8 +14,6 @@ urlpatterns = [
     path('copy_questionnaire/<int:qn_id>', copy_questionnaire, name='copy_questionnaire'),
     path('check_questionnaire/<int:qn_id>', check_questionnaire, name='check_questionnaire'),
     path('delete_questionnaire', delete_questionnaire, name='delete_questionnaire'),
-    path('publish_questionnaire/<int:qn_id>', publish_questionnaire, name='publish_questionnaire'),
-    path('close_questionnaire/<int:qn_id>', close_questionnaire, name='close_questionnaire'),
     # 管理员操作
     path('change_questionnaire_status', change_questionnaire_status, name='change_questionnaire_status'),
 ]

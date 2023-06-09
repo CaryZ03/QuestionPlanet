@@ -52,7 +52,7 @@ def fill_questionnaire(request):
             filler = Filler.objects.create(filler_ip=filler_ip)
             filler.save()
         token_key = create_token(filler.filler_id, False)
-    qn_key = request.GET.get('key')
+    qn_key = json.loads(request.body).get('key')
     print(qn_key)
     if not Questionnaire.objects.filter(qn_key=qn_key).exists():
         return JsonResponse({'errno': 2001, 'msg': "问卷不存在"})
@@ -269,28 +269,6 @@ def delete_questionnaire(request, user):
 @login_required
 @questionnaire_exists
 @require_http_methods(['POST'])
-def publish_questionnaire(request, user, qn_id):
-    qn = Questionnaire.objects.get(qn_id=qn_id)
-    qn.qn_status = 'published'
-    qn.save()
-    qn_key = qn.qn_key
-    return JsonResponse({'errno': 0, 'msg': "问卷发布成功", 'key': qn_key})
-
-
-@csrf_exempt
-@login_required
-@questionnaire_exists
-@require_http_methods(['POST'])
-def close_questionnaire(request, user, qn_id):
-    qn = Questionnaire.objects.get(qn_id=qn_id)
-    qn.qn_status = 'closed'
-    an.save()
-    return JsonResponse({'errno': 0, 'msg': "问卷关闭成功"})
-
-@csrf_exempt
-@login_required
-@questionnaire_exists
-@require_http_methods(['POST'])
 def change_questionnaire_status(request, user):
     data_json = json.loads(request.body)
     qn_id = data_json.get('qn_id')
@@ -300,6 +278,8 @@ def change_questionnaire_status(request, user):
     qn.save()
     if status == 'published':
         qn.qn_publish_time = now()
+        qn_key = qn.qn_key
+        return JsonResponse({'errno': 0, 'msg': "问卷发布成功", 'key': qn_key})
     return JsonResponse({'errno': 0, 'msg': "问卷状态更改成功"})
 
 

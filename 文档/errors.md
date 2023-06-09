@@ -832,6 +832,12 @@ else
     "errno": 0,
     "msg": "问卷状态更改成功"
 }
+if 'published'
+{
+    "errno": 0,
+    "msg": "问卷发布成功",
+    "key": key
+}
 ```
 
 ### 错误码：无
