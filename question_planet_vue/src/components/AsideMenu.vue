@@ -20,40 +20,40 @@
                 <div class="title">
                     <p>Menu </p>
                 </div>
-                <div class="menu">
+                <div @click="createNewQ" class="menu">
                     <div class="item">
                         <div class="light"></div>
                         <div class="licon"><span class="iconfont icon-wenjian"></span></div>
-                        <div class="con" @click="createNewQ" style="font-size: 20px;">从空白创建</div>
+                        <div class="con" style="font-size: 20px;">从空白创建</div>
                         <div class="ricon"><span class="iconfont icon-shezhi"></span></div>
                     </div>
-                    <div class="item">
+                    <div @click="$refs.fileInput.click()"  class="item">
                         <div class="light"></div>
                         <div class="licon"><span class="iconfont icon-qipao1"></span></div>
-                        <div @click="$refs.fileInput.click()" class="con" style="font-size: 20px;">从模板创建</div>
+                        <div class="con" style="font-size: 20px;">从模板创建</div>
                         <input ref="fileInput" type="file" @change="onFileChange" style="display: none">
                         <div class="ricon"></div>
                     </div>
-                    <div class="item">
+                    <div @click="triggerParentEvent(0)" class="item">
                         <div class="light"></div>
                         <div class="licon"><span class="iconfont icon-qipao1"></span></div>
-                        <div class="con" @click="triggerParentEvent(0)" style="font-size: 20px;">已创建问卷</div>
+                        <div class="con"  style="font-size: 20px;">已创建问卷</div>
                         <div class="ricon"></div>
                     </div>
-                    <div class="item">
+                    <div @click="triggerParentEvent(1)" class="item">
                         <div class="light"></div>
                         <div class="licon">
                             <span class="iconfont icon-xiaolian"></span>
                         </div>
-                        <div class="con" @click="triggerParentEvent(1)" style="font-size: 20px;">已填写问卷</div>
+                        <div class="con"  style="font-size: 20px;">已填写问卷</div>
                         <div class="ricon"><span class="iconfont icon-caidan1"></span></div>
                     </div>
-                    <div class="item">
+                    <div @click="triggerParentEvent(2)" class="item">
                         <div class="light"></div>
                         <div class="licon">
                             <span class="iconfont icon-shexiang"></span>
                         </div>
-                        <div class="con" @click="triggerParentEvent(2)" style="font-size: 20px;">垃圾箱</div>
+                        <div class="con"  style="font-size: 20px;">垃圾箱</div>
                         <div class="ricon"></div>
                     </div>
                 </div>

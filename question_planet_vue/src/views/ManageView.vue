@@ -196,6 +196,7 @@ export default {
       }
       console.log(this.$store.state.token_key)
       console.log(this.$store.state.curUserID)
+      this.questionnaireListShow=null
       await this.$api.userInfo.getUserInfo_GetQList(data).then((res) => {
 
         this.questionnaireList = res.data['qn_info']
@@ -228,7 +229,8 @@ export default {
       }
       console.log(this.$store.state.token_key)
       console.log(this.$store.state.curUserID)
-      this.$api.userInfo.getUserInfo_GetQList(data).then((res) => {
+      this.questionnaireListShow=null
+      await this.$api.userInfo.getUserInfo_GetQList(data).then((res) => {
         console.log(res.data['qn_info'])
         this.questionnaireList = res.data['qn_info']
         this.questionnaireListShow = res.data['qn_info']
@@ -242,7 +244,8 @@ export default {
       }
       console.log(this.$store.state.token_key)
       console.log(this.$store.state.curUserID)
-      this.$api.userInfo.getUserInfo_GetQList(data).then((res) => {
+      this.questionnaireListShow=null
+      await this.$api.userInfo.getUserInfo_GetQList(data).then((res) => {
         console.log("!!!!!!!!!!!!!!!")
         console.log(res.data['qn_info'] + "!!!!!!!!!!!!!!!")
         this.questionnaireList = res.data['qn_info']

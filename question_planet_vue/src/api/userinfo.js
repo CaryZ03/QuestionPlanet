@@ -1,7 +1,7 @@
 import request from "@/utils/request";
 
 //用户注册
-export function postUserInfo_Register(data) {
+export async function postUserInfo_Register(data) {
     return request({
         method: 'POST',
         url: '/user/user_register',
@@ -41,14 +41,14 @@ export async function postUserInfo_ResetPassword(data) {
     })
 }
 //登出
-export function postUserInfo_Logout() {
+export async function postUserInfo_Logout() {
     return request({
         method: 'POST',
         url:  '/user/logout',
     })
 }
 //cancel_account
-export function postUserInfo_CancelAccount(data) {
+export async function postUserInfo_CancelAccount(data) {
     return request({
         method: 'POST',
         url:  '/user/cancel_account',
@@ -57,7 +57,7 @@ export function postUserInfo_CancelAccount(data) {
 }
 
 // check_profile,获取用户信息
-export function getUserInfo_GetUserInfo(id) {
+export async function getUserInfo_GetUserInfo(id) {
     return request({
         method: 'GET',
         url:  '/user/check_profile',
@@ -68,7 +68,7 @@ export function getUserInfo_GetUserInfo(id) {
 }
 
 //check_profile_admin
-export function postUserInfo_GetAdminInfo(data) {
+export async function postUserInfo_GetAdminInfo(data) {
     return request({
         method: 'POST',
         url:  '/user/check_profile_admin',
@@ -77,7 +77,7 @@ export function postUserInfo_GetAdminInfo(data) {
 }
 
 // change_profile
-export function postUserInfo_ChangeUserInfo(data) {
+export async function postUserInfo_ChangeUserInfo(data) {
     return request({
         method: 'POST',
         url:  '/user/change_profile',
@@ -86,7 +86,7 @@ export function postUserInfo_ChangeUserInfo(data) {
 }
 
 // change_profile admin
-export function postUserInfo_ChangeAdminInfo(data) {
+export async function postUserInfo_ChangeAdminInfo(data) {
     return request({
         method: 'POST',
         url:  '/user/change_profile_admin',
@@ -95,7 +95,7 @@ export function postUserInfo_ChangeAdminInfo(data) {
 }
 
 // 获取用户问卷列表
-export function getUserInfo_GetQList(data) {
+export async function getUserInfo_GetQList(data) {
     const id=data.uid
     const type=data.type
     console.log(data.uid)
@@ -111,7 +111,7 @@ export function getUserInfo_GetQList(data) {
 }
 
 // 封禁用户
-export function postUserInfo_ChangeUserStatus(user) {
+export async function postUserInfo_ChangeUserStatus(user) {
     return request({
         method: 'POST',
         url:  '/user/change_user_status',
