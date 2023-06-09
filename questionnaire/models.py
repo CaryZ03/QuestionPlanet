@@ -75,6 +75,7 @@ class AnswerSheet(Model):
 
 class Questionnaire(Model):
     qn_id = AutoField(primary_key=True)
+    qn_key = CharField(max_length=200, null=True)
     qn_title = TextField(null=True)
     qn_description = TextField(null=True)
     qn_types = (
@@ -105,6 +106,7 @@ class Questionnaire(Model):
     def to_json(self):
         info = {
             "qn_id": self.qn_id,
+            "qn_key": self.qn_key,
             "qn_title": self.qn_title,
             "qn_description": self.qn_description,
             "qn_type": self.qn_type,

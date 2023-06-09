@@ -193,31 +193,6 @@
                 </div>
             </el-collapse-item>
 
-            <!-- 图片选择题工具 -->
-            <el-collapse-item name="6" class="tool mb-2">
-                <template slot="title">
-                    <i class="el-icon-picture-outline"></i>图片选择题
-                </template>
-                <div class="tool-body">
-                    <!-- <h5 class="tool-title"><i class="el-icon-picture-outline"></i>图片选择题</h5> -->
-                    <!-- <p class="tool-text">问卷中用户需要从多个图片选项中选择一个。</p> -->
-                    <el-button type="primary" class="btn btn-primary btn-sm" icon="el-icon-circle-plus" size="small"
-                        @click="addQuestion('image')" round>添加图片选择题</el-button>
-                </div>
-            </el-collapse-item>
-
-            <!-- 进度条工具 -->
-            <el-collapse-item name="7" class="tool mb-2">
-                <template slot="title">
-                    <i class="el-icon-s-data"></i>进度条
-                </template>
-                <div class="tool-body">
-                    <!-- <h5 class="tool-title"><i class="el-icon-s-data"></i>进度条</h5> -->
-                    <!-- <p class="tool-text">显示当前用户填写问卷的进度。</p> -->
-                    <el-button type="primary" class="btn btn-primary btn-sm" icon="el-icon-circle-plus" size="small"
-                        round>添加进度条</el-button>
-                </div>
-            </el-collapse-item>
 
         </el-collapse>
 
@@ -373,6 +348,7 @@
                         <div v-if="qn_is_test && (question.q_type === 'single' || question.q_type === 'multiple')">
                             <span class="red_star">*&nbsp;</span>
                             <span class="title">正确答案</span>
+                            <span class="title">[答案应由诸如0,1,2,3的选项以及英文逗号组成]</span>
                             <el-input placeholder="请输入正确答案" v-model="question.q_correct_answer" clearable></el-input>
                         </div>
 

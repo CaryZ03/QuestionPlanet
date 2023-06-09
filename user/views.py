@@ -41,14 +41,10 @@ def send_email_verification(email, code):
     username = "2843004375@qq.com"
     password = "atawlpndwpqodfhe"
 
-    try:
-        # 连接SMTP服务器并发送邮件
-        with smtplib.SMTP_SSL(smtp_server, smtp_port) as server:
-            server.login(username, password)
-            server.sendmail(sender, receiver, msg.as_string())
-            return True
-    except Exception as e:
-        return False
+    # 连接SMTP服务器并发送邮件
+    with smtplib.SMTP_SSL(smtp_server, smtp_port) as server:
+        server.login(username, password)
+        server.sendmail(sender, receiver, msg.as_string())
 
 
 def create_token(uid, is_admin):
@@ -213,16 +209,15 @@ def send_verification_code(request):
     email = data_json.get('email')
     if email:
         code = randint(100000, 999999)
-        if not send_email_verification(email, str(code)):
-            return JsonResponse({'errno': 1043, 'msg': '邮件发送失败'})
+        send_email_verification(email, str(code))
         return JsonResponse({'errno': 0, 'msg': '邮件发送成功', 'code': code})
     if User.objects.filter(user_name=username).exists():
         user = User.objects.get(user_name=username)
         email = user.user_email
         if email:
             code = randint(100000, 999999)
-            if not send_email_verification(email, str(code)):
-                return JsonResponse({'errno': 1043, 'msg': '邮件发送失败'})
+            send_email_verification(email, str(code))
+            print(1)
             return JsonResponse({'errno': 0, 'msg': '邮件发送成功', 'code': code})
         return JsonResponse({'errno': 1042, 'msg': '邮箱不存在'})
     else:

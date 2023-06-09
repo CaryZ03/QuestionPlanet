@@ -315,7 +315,8 @@ class UserToken(Model):
     "password2": password2,
     "signature": signature,
     "email": email*,
-    "tel": tel*
+    "tel": tel*,
+    "company":company,
 }
 ```
 
@@ -561,13 +562,17 @@ class Questionnaire(Model):
 
 ### 描述：点击问卷链接时调用，创建新的答卷人或查找已存在答卷人，并创建新的答卷
 
-### URL：fill_questionnaire/<qn_id>
-
 ### 请求类型：POST
 
 ### Header：Authorization
 
-### 输入数据：无
+### 输入数据：
+
+```
+{
+	"key": key
+}
+```
 
 ### 返回数据：
 
@@ -575,6 +580,7 @@ class Questionnaire(Model):
 {
     "errno": 0,
     "msg": "答卷创建成功",
+    "qn_id": 问卷id,
     "as_id": 答卷id, 
     "temp_save": 答卷暂存数据
 }
@@ -830,6 +836,12 @@ else
 {
     "errno": 0,
     "msg": "问卷状态更改成功"
+}
+if 'published'
+{
+    "errno": 0,
+    "msg": "问卷发布成功",
+    "key": key
 }
 ```
 

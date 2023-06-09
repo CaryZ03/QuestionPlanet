@@ -33,15 +33,47 @@
 
 <script>
 export default {
+    name:"company",
+     
     data(){
         return{
-            corperationName:null,
-            isCorpBind: false,
+      corperationName:null,
+      isCorpBind: false,
+      address: null,
+      addressIsBind: false,
+      phoneIsBind: false,
+      phone: null,
+    
+
+      userKey: 114514,
+      sign: '还没有签名捏',
+
+      userName: this.$store.state.curUsername,
+      userId: this.$store.state.curUserID,
+      avatarUrl: 'https://gimg2.baidu.com/image_search/src=http%3A%2F%2Fc-ssl.duitang.com%2Fuploads%2Fitem%2F202005%2F10%2F20200510010150_2zSAt.thumb.1000_0.jpeg&refer=http%3A%2F%2Fc-ssl.duitang.com&app=2002&size=f9999,10000&q=a80&n=0&g=0n&fmt=auto?sec=1687439195&t=d763d2921c0bd1ae6f6629ed0afcdd65'
         }
     },
 
     methods:{
-        bindName() {
+
+      uploadData(data) {
+      console.log("data to be upload is: "+JSON.stringify(data));
+      this.$api.userInfo.postUserInfo_ChangeUserInfo(JSON.stringify(data)).then((response) => {
+        console.log("response data is: "+JSON.stringify(response.data))
+        if (response.data.errno == 0) {
+          console.log("上传用户信息成功")
+        }
+      }).catch(error => {
+        alert("上传用户信息失败")
+        console.log(error)
+      })
+    },
+
+
+
+      bindName() {
+        //获取数据
+
         this.$prompt('请输入企业名', '提示', {
           confirmButtonText: '确定',
           cancelButtonText: '取消',
@@ -50,8 +82,22 @@ export default {
             type: 'success',
             message: '你的企业名是: ' + value
           });
+
           this.isCorpBind = true;
           this.corperationName = value;
+        
+          const tmp = {
+          "uid": this.userId,
+          "username": this.userName,
+          "password1": this.userKey,
+          "password2": this.userKey,
+          "signature": this.sign,
+          "email": this.address,
+          "tel": this.phone,
+          "company":this.corperationName,
+          }
+          this.uploadData(tmp);
+
         }).catch(() => {
           this.$message({
             type: 'info',
@@ -72,10 +118,46 @@ export default {
         });
       },
 
-      mounted() {
-        console.log("MOUNTTTTTTTTTTTTTTTTTTTTTTTTTTED")
-      },
-      
+      mounted: function () {
+        console.log("mounted begins");
+        const tmpUser = {
+          "uid": this.$store.state.curUserID
+        }
+        this.$api.userInfo.getUserInfo_GetUserInfo(this.$store.state.curUserID).then((response) => {
+          console.log(tmpUser)
+          console.log(response.data)
+          if (response.data.errno == 0) {
+            console.log("获取用户信息成功")
+            console.log(response.data.user_info)
+            const userObj = JSON.parse(response.data.user_info);
+
+            this.userId = userObj.user_id;
+            this.userName = userObj.user_name;
+            this.userKey = userObj.user_password;
+            this.address = userObj.user_email;
+            this.phone = userObj.user_tel;
+            this.sign = userObj.user_signature;
+            if(this.sign == null)
+              this.sign = "还没有签名捏";
+            if (this.address != null)
+              this.addressIsBind = true;
+            if (this.phone != null)
+              this.phoneIsBind = true;
+          }
+        }).catch(error => {
+          alert("获取用户信息失败")
+          console.log(error)
+        })
+
+    },
+
+    // props:{
+    //         parentdata:{
+    //             type:String,
+    //             default:""
+    //         }
+    //     }
+
       
     }
 }
